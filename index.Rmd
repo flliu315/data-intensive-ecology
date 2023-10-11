@@ -1,0 +1,34 @@
+---
+title: "Data-Driven Ecology"
+image: "images/Datascience.jpg"
+links:
+  # - label: LinkedIn
+  #   url: "https://linkedin.com/"
+  # - label: Twitter
+  #   url: "https://twitter.com/"
+  - label: GitHub
+    url: "https://github.com/flliu315"
+  - label: Email
+    url: "flliu315@163.com"
+output:
+  postcards::trestles
+site: distill::distill_website
+---
+ 
+# Welcome!
+<!-- We are setting up a website to promote the use of R - a leading data science programming language - for the data-driven ecological research. -->
+
+<!-- On this website, you can find details on: -->
+
+<!-- - Getting Started -->
+<!-- - Modelling Lessons -->
+
+This class walks participants through the steps required to use R for a wide array of data analysis relevant to research in biology and ecology.
+
+The core skills we will cover are as follows:
+
+- best practices in data retriever, management, and visualization
+- basic knowledge about data analysis with machine learning methods  
+- beneficial practices in modeling complex patterns and processes
+
+The class is extremely participatory, where a lot of training modules are delivered based on the learners' needs.

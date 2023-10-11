@@ -1,0 +1,20 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About this site",
+      "description": "Some additional details about the website",
+      "author": [],
+      "contents": "\r\n\r\n\r\n\r\n",
+      "last_modified": "2023-10-11T22:22:32+08:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Data-Driven Ecology",
+      "author": [],
+      "contents": "\r\n\r\n          \r\n          \r\n          Data-driven Ecology\r\n          \r\n          \r\n          Home\r\n          About\r\n          ☰\r\n          \r\n          \r\n      \r\n        \r\n          \r\n            \r\n              \r\n            \r\n              Data-Driven Ecology\r\n            \r\n            \r\n              \r\n                \r\n                    \r\n                      \r\n                        GitHub\r\n                      \r\n                    \r\n                  \r\n                                    \r\n                    \r\n                      \r\n                        Email\r\n                      \r\n                    \r\n                  \r\n                                  \r\n            \r\n          \r\n        \r\n        \r\n        \r\n          \r\n            \r\n            Welcome!\r\n            \r\n            \r\n            \r\n            \r\n            This class walks participants through the steps required\r\n            to use R for a wide array of data analysis relevant to\r\n            research in biology and ecology.\r\n            The core skills we will cover are as follows:\r\n            best practices in data retriever, management, and\r\n            visualization\r\n            basic knowledge about data analysis with machine\r\n            learning methods\r\n            beneficial practices in modeling complex patterns and\r\n            processes\r\n            The class is extremely participatory, where a lot of\r\n            training modules are delivered based on the learners’\r\n            needs.\r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n      \r\n        \r\n          \r\n            \r\n              \r\n            \r\n              Data-Driven Ecology\r\n            \r\n            \r\n              \r\n                \r\n                                    \r\n                    \r\n                      GitHub\r\n                    \r\n                  \r\n                                    \r\n                    \r\n                      Email\r\n                    \r\n                  \r\n                                  \r\n              \r\n            \r\n            \r\n              \r\n              Welcome!\r\n              \r\n              \r\n              \r\n              \r\n              This class walks participants through the steps\r\n              required to use R for a wide array of data analysis\r\n              relevant to research in biology and ecology.\r\n              The core skills we will cover are as follows:\r\n              best practices in data retriever, management, and\r\n              visualization\r\n              basic knowledge about data analysis with machine\r\n              learning methods\r\n              beneficial practices in modeling complex patterns and\r\n              processes\r\n              The class is extremely participatory, where a lot of\r\n              training modules are delivered based on the learners’\r\n              needs.\r\n              \r\n            \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
+      "last_modified": "2023-10-11T22:22:33+08:00"
+    }
+  ],
+  "collections": []
+}
