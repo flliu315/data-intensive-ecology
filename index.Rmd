@@ -6,10 +6,10 @@ links:
   #   url: "https://linkedin.com/"
   # - label: Twitter
   #   url: "https://twitter.com/"
-  - label: GitHub
-    url: "https://github.com/flliu315"
-  - label: Email
-    url: "flliu315@163.com"
+  - label: '<i class="fab fa-github"></i> GitHub'
+    url: 'https://github.com/flliu315 target = "_blank"'
+  - label: '<i class="fas fa-envelope"></i> Email'
+    url: 'flliu315@163.com target = "_blank"'
 output:
   postcards::trestles
 site: distill::distill_website
