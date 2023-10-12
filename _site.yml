@@ -1,8 +1,9 @@
 name: "."
-title: "Data-driven Ecology"
+title: "Home"
 description: |
   Data-driven Ecology
 output_dir: "docs"
+theme: rgirls-theme.css
 navbar:
   right:
     - text: "Home"

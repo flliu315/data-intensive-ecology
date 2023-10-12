@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amaranth&family=Open+Sans&display=swap');
+/* base variables */
+
+/* Edit the CSS properties in this file to create a custom
+   Distill theme. Only edit values in the right column
+   for each row; values shown are the CSS defaults.
+   To return any property to the default,
+   you may set its value to: unset
+   All rows must end with a semi-colon.                      */
+
+/* Optional: embed custom fonts here with `@import`          */
+/* This must remain at the top of this file.                 */
+
+
+
+html {
+  /*-- Main font sizes --*/
+  --title-size:      40px;
+  --body-size:       18px;
+  --code-size:       16px;
+  --aside-size:      12px;
+  --fig-cap-size:    13px;
+  /*-- Main font colors --*/
+  --title-color:     #01161E;
+  --header-color:    #01161E;
+  --body-color:      #01161E;
+  --aside-color:     #01161E;
+  --fig-cap-color:   #01161E;
+  /*-- Specify custom fonts ~~~ must be imported above   --*/
+  --heading-font:    Amaranth;
+  --mono-font:       monospace;
+  --body-font:       "Opens Sans";
+  --navbar-font:     Amaranth;  /* websites + blogs only */
+}
+
+/*-- ARTICLE METADATA --*/
+d-byline {
+  --heading-size:    0.6rem;
+  --heading-color:   rgba(0, 0, 0, 0.5);
+  --body-size:       0.8rem;
+  --body-color:      rgba(0, 0, 0, 0.8);
+}
+
+/*-- ARTICLE TABLE OF CONTENTS --*/
+.d-contents {
+  --heading-size:    20px;
+  --contents-size:   16px;
+}
+
+/*-- ARTICLE APPENDIX --*/
+d-appendix {
+  --heading-size:    15px;
+  --heading-color:   rgba(0, 0, 0, 0.65);
+  --text-size:       0.8em;
+  --text-color:      rgba(0, 0, 0, 0.5);
+}
+
+/*-- WEBSITE HEADER + FOOTER --*/
+/* These properties only apply to Distill sites and blogs  */
+
+.distill-site-header {
+  --title-size:       30px;
+  --text-color:       rgba(255, 255, 255, 0.8);
+  --text-size:        25px;
+  --hover-color:      white;
+  --bkgd-color:       #0F2E3D;
+}
+
+.distill-site-footer {
+  --text-color:       rgba(255, 255, 255, 0.8);
+  --text-size:        15px;
+  --hover-color:      white;
+  --bkgd-color:       #0F2E3D;
+}
+
+/*-- Additional custom styles --*/
+/* Add any additional CSS rules below                      */
+
+h1 {
+  color: black;
+  font-size: 36px;
+}
+
+.btn-outline-dark {
+    background-color: transparent; 
+    color: rgba(12, 232, 48);
+    border: 1px solid;
+    border-color: rgba(12, 232, 48);
+}
+
+.btn-outline-dark:hover {
+    background-color: rgba(195, 74, 121);
+    border-color: rgba(195, 74, 121);
+    color: white;
+}
+
+d-article h1 {
+  color: blue !important;
+  font-size: 38px;
+}
+
+/*single space for the lists*/
+d-article li {
+    margin-bottom: 0em;
+}
+
+/* Change link appearance on contributor page */ 
+d-article a {
+  color: red; /* adjust side content color of my favorite*/
+  border-bottom: none;
+}
+
+
+/* making code chunks with scroll bar-my personal favorite */
+
+/* the code below will change output chunk properties */
+d-article pre { 
+  border-radius: 5px; /* rounded chunk window*/
+  font-size: 12px; /* output text size */
+  color: black; /* output text colour */
+  background-color: #F0F0F0; /* output chunk background colour */
+  padding: 5px 5px 5px 18px; /* top,right,bottom,left padding values */
+  overflow: auto !important; /* enables scroll bar */ 
+}
+
+/* the code below will change source code chunk properties */
+d-article div.sourceCode pre { 
+  border-radius: 5px;
+  background-color: #D9D9D9;
+  color: black;
+  padding: 5px 5px 5px 18px;
+  overflow: auto !important;
+}
