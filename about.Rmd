@@ -1,10 +1,67 @@
 ---
-title: "About this site"
+title: "About the class"
 description: |
-  Some additional details about the website
+  ECOL6002P, the second semester of an academic year
+  
+  Instructors: Fanglin Liu
+ 
+  Teaching assistants:
+ 
+  When & where: Wednesday and Friday 3,4,5 (9:45-12:10), 3A409
+ 
+  Some notes by Fanglin Liu: https://github.com/flliu315
+
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# Introduce of the class
+
+<mark style="background-color: #F0F0F0">Ecology is the study of the relationships between  plants/animals, including humans, and their abiotic environment</mark>. It seeks to understand the vital connections between living organisms and the world around them.
+Ecology also provides information about the benefits of ecosystems and how we can use Earth’s resources in ways that leave the environment healthy for future generations. 
+
+Read more [here](./images/mod_ecol.pdf)
+
+The distributed sensor networks allow for the acquisition of huge volumes of data on many relevant aspects, ranging from soil and vegetation characteristics, abiotic conditions like weather, to animals' behavior. The collection of large amounts of data leads to <mark style="background-color: #F0F0F0">a shift away from frequentist hypothesis testing towards analytics</mark> that is more focused on prediction, classification, pattern recognition or anomaly detection. To this end, machine learning techniques are often used, usually by high performance computing. 
+
+In the digital era, researchers are embracing data science, i.e., unifying data processing, statistics, artificial intelligence and their related algorithms to extract knowledge from data. Hence, <mark style="background-color: #F0F0F0">data science is increasingly becoming an integral part of decision making in many fields</mark>, including ecology and wildlife conservation. To keep up with these steps, young scientists and students need to become acquainted with the terms, concepts and methodology of data science, including the integration and pre-processing of data from different sources, and the engineering of informative and discriminating features for creating effective algorithms.
+
+This class covers the main elements <mark style="background-color: #F0F0F0">using a data science approach to solve ecological problems</mark>. Students will be guided through the main concepts and skills that are required to become a successful data scientist. This class builds upon, and expands, the understanding and skills generated in other courses, and focuses on combining these in an interdisciplinary way to be optimally able to solve ecological problems with a data-driven approach. In the class, students will increase their knowledge and skills that will benefit their future career in academia.
+
+Read more [here](./images/mod_ecol.pdf)
+
+# Preparing for the class
+- <mark style="background-color: #F0F0F0">Make sure to bring your own computer</mark> for this class, with access to school wifi and enough battery for three hours of work (or bring your power cable). Any operating system (Windows, Mac, Linux) is OK, as far as you are able to operate it.
+- <mark style="background-color: #F0F0F0">Install the latest version of R and RStudio</mark> before you come for the first class - see instructions [here](rstudio_rpackage.html).
+- If you used R and RStudio before, please make sure that you updated to the version required for this class; instructions on how to update and required R and RStudio versions are [here](rstudio_rpackage.html).
+- It is essential that we all are using the same version of R and RStudio, to avoid the situation that you will get error messages just because of using outdated program versions.
+- This textbook provides many learning resources and reference materials for the class.
+
+# Expected learning outcomes
+
+- Experience with programming in R is needed to follow and successfully complete this course. The students without prior experience with programming in R are expected to <mark style="background-color: #F0F0F0">master R programming</mark> in the class, including:
+  
+  - Main types of R objects (vector, matrix, data frame, list), reading and exporting data, manipulating data (sorting, merging), creating fully reproducible R script
+  
+  - How to draw effective scientific figures, including how to choose them and draw them, as well as raster vs vector graphics
+
+- After successful completion of this class, students are expected to be able to understand the significance of data science in <mark style="background-color: #F0F0F0">solving typical ecological problems</mark>, including:
+
+  - understand how key features of ecological data influence the selection, training, validation and evaluation of algorithms;
+
+  - identify and select machine learning algorithms appropriate to specific ecological problems;
+
+  - apply data science skills (data processing, feature engineering, and machine learning algorithms) to analyse ecological data;
+
+  - critically evaluate the results and performance of trained algorithms, and assess the reliability and adequacy of trained algorithms in predicting ecological phenomena;
+
+  - create ecological insight from data using a data science approach.
+
+# Final evaluation
+The final evaluation consists of three parts:
+
+- Homework assignments (30%), see [here](homework_finalpresent.html)
+- Activity in the class, individual work (40%)
+- Final presentation (30%), see [here](homework_finalpresent.html)

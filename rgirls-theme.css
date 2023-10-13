@@ -96,7 +96,7 @@ h1 {
 }
 
 d-article h1 {
-  color: blue !important;
+  color: 219ebc !important;
   font-size: 38px;
 }
 
@@ -107,7 +107,7 @@ d-article li {
 
 /* Change link appearance on contributor page */ 
 d-article a {
-  color: red; /* adjust side content color of my favorite*/
+  color: green; /* adjust side content color of my favorite*/
   border-bottom: none;
 }
 

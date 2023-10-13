@@ -31,4 +31,4 @@ The core skills we will cover are as follows:
 - basic knowledge about data analysis with machine learning methods  
 - beneficial practices in modeling complex patterns and processes
 
-The class is extremely participatory, where a lot of training modules are delivered based on the learners' needs.
+The class is extremely participatory, where a lot of training modules are delivered based on the learner's needs.
