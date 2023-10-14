@@ -1,0 +1,100 @@
+---
+title: "Lesson 1: Writing R script"
+description: |
+  Learning R objects and their characteristics should give you excellent tools to make your R scripts flexible and efficient. You'll learn how to define R objects, to manipulate them and to write R scrips for analysis.
+# author:
+#   - name: Nora Jones 
+#     url: https://example.com/norajones
+#     affiliation: Spacely Sprockets
+#     affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Using R understand language to tell R what and how do the thing that you want. We refer this discription to "script". 
+
+## 1. R script and manipulation
+### 1.1 Creating a R script
+A script is simply a text file that contains a set of commands and comments. It can be saved and reused later. It can also be edited so you can execute a modified version of the commands.
+
+To create a new script in RStudio, you can open a new empty script by clicking the <mark style="background-color: #F0F0F0">New File-->New File Menu-->R Script</mark>. The script editor opens with an empty script, which is ready for text entry. Here is an example to familiarize you with the Script Editor interface.
+
+![](images/R_rcript_example.png)
+
+### 1.2 Saving an R script 
+
+You can save your script by clicking on the **Save** icon at the top of the Script Editor panel. When you do that, a Save File dialog will open. 
+
+The default script name is **Untitled.R**. The Untitled part is highlighted. You will save this script as **First script.R**. Start typing **First script**. RStudio overwrites the highlighted default name with your new name, leaving the .R file extension.
+
+Notice that RStudio will save your script to your current working folder. Press the **Save** button and your script is saved to your working folder. Notice that the name in the file at the top of the Script Editor panel now shows your saved script file name. 
+
+While it is not necessary to use an **.R** file extension for your R scripts, it does make it easier for RStudio to work with them if your use this file extension. 
+
+### 1.3 Opening an R script
+
+Click on the **Open an existing file** icon in the RStudio toolbar. A choose file dialog will open. Select the R script you want to open and click the **Open** button. Your script will open in the Script Editor panel with the script name in an editor tab. 
+
+### 1.4 Executing code in a R script
+
+The **Run** button in the Script Editor panel toolbar will run either the current line of code or any block of selected code. You can use your **First script.R** code to gain familiarity with this functionality.
+
+Place the cursor anywhere in line 3 of your script [x = 34]. Now press the **Run** button in the Script Editor panel toolbar. Three things happen: 1) the code is transferred to the command console, 2) the code is executed, and 3) the cursor moves to the next line in your script. Press the **Run** button three more times. RStudio executes lines 4, 5, and 6 of your script. 
+
+### 1.5 Comments in an R script
+
+In scripts, it can be very useful to save a bit of text which is not to be evaluated by R. You can leave a note to yourself about what the next line is supposed to do, what its strengths and limitations are, or anything else you want to remember later. To leave a note, we use “comments”, which are a line of text that starts with the hash symbol #. Anything on a line after a # will be ignored by R.
+
+```{r echo=TRUE}
+# This is a comment. Running this in R will have no effect.
+```
+
+
+## 2. Understaning objects and operators in R script
+### 2.1 Defining R objects
+In RStudio, if you want to create a object called x and give it a value of 4 using the symbol "<-", we would write:
+
+```{r echo=TRUE}
+x <- 4
+x
+```
+
+The middle "<-" tells R to assign the value on the right to the object on the left. After running the command above, when running x in a command, it would be replaced by its value 4. If adding 3 to x, the expect would get 7.
+
+```{r echo=TRUE}
+x + 3
+```
+
+Object in R can store more than just simple numbers. It can store lists of numbers, functions, graphics, etc., depending on what values get assigned to the object.
+
+You can always reassign a new value to a object. If telling R that x is equal to 32:
+
+```{r echo=TRUE}
+x <- 32
+```
+
+then x takes its new value:
+
+```{r echo=TRUE}
+x
+```
+
+Naming objects and functions in R is pretty flexible. A name has to start with a letter, but that can be followed by letters or numbers. Names in R are case-sensitive, which means that Weights and weights are completely different things to R. <mark style="background-color: #F0F0F0">A good idea is to give object names be as descriptive as possible</mark>, so that you will know what you meant later on when looking at it. Sometimes clear naming means that it is best to have multiple words in the name, but you can’t have spaces. A common approach is to <mark style="background-color: #F0F0F0">chain the words with underscores</mark>, as in weights_before_hospital. 
+
+### 2.2 Operators and object manipulation
+
+An operator is a symbol that tells the compiler to perform specific mathematical or logical manipulations. R language is rich in built-in operators and provides following types of operators.
+
+- Arithmetic Operators: +, -, *, /
+- Relational Operators: >, <, =, !=, etc
+- Logical Operators: TRUE, FALSE
+- Assignment Operators: <-  
+- Miscellaneous Operators: %in%, :, %*%

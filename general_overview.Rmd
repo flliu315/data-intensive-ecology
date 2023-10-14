@@ -1,0 +1,214 @@
+---
+title: "Overview: From data to models"
+description: |
+  The growth of Earth observation systems together with innovative data processing and analysis provide opportunities to monitor spatial–temporal changes of biodiversity and to evaluate the effects of human impact on ecological processes. In this section we will give a general introduce about the ecological data sources, and the methods for data pre-process and modelling with machine learning.
+# author:
+#   - name: Nora Jones 
+#     url: https://example.com/norajones
+#     affiliation: Spacely Sprockets
+#     affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+# output: distill::distill_article
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. Ecodata sources
+
+### 1.1 General introduce
+
+There are lots of mix databases, websites, and tools to find [interdisciplinary data](https://libguides.furman.edu/earthandenvironmentalscience/data-and-statistics) for your ecological researches. For example, this [iDigBIo](https://www.idigbio.org/) website provides natural history museum and fossil records about specimens all over the world. 
+
+There is a growing need for baseline data to evaluate the changes in biodiversity at the community level and to distinguish these change that can be attributed to external factors, such as anthropogenic activities, from underlying natural change. Here lists three aspects of global long-term datasets that benefit to macroecological reseraches.
+
+### 1.2 The data of biodiversity
+
+The changes of species abundance and distribution can be tracked using a long-term dataset, which is simply information on the variety, and ideally the abundance, of species (or other taxonomic units) at one or more locations at a number of points in time. Such datasets can be retrievered from many repositories:
+
+- **GBIF**: [This web]((https://www.gbif.org/)) provides an international network and data infrastructure funded by the world's governments and aimed at providing anyone, anywhere, open access to data about all types of life on Earth.
+
+- **FragSAD**: [This dataset](https://risweb.st-andrews.ac.uk/portal/en/researchoutput/fragsad(eceb8d91-336e-4812-8efc-694d22489b78).html) collects species abundance and distribution in habitat fragments from temperate forests and grasslands from all continents except Antarctica. The data include invertebrates, plants, birds, mammals, and reptiles and amphibians.
+
+- **BIEN**: [This web](https://bien.nceas.ucsb.edu/bien/) brings together many types of data needed to address several pressing ecological and global change questions. You access to the data of all plant species in the New World, including: 1) plant observations from herbarium and plots, and species geographic distribution maps; 2) vegetation and plot inventories and plant traits; 3) cross-continent, continent, and country-level species lists.
+
+### 1.3 Eco-environmental data
+
+The general methods of environmental data has been derived from maps, which include GIS data and remote sensing images for investigation of environmental matrices, such as soil, water, vegetation, and air, etc., and a better understanding of ecological and environmental interactions to support the development of sustainable solutions.
+
+- **GIS data**: [This page](https://freegisdata.rtwilson.com/) provides a categorised list of links to over 500 sites providing freely available geographic datasets - all ready for loading into a Geographic Information System. The data include Boundaries, Elevation, Weather/climate, Hydrology, Snow/Ice, and Land Cover, etc.
+
+- **Remote sensing images**: [NASA](https://www.nasa.gov/) has a wide variety of satellite and aerial remote sensing datasets and interactive maps at their Earthdata Search and other sites. In addition, Remote sensing of light emissions offers a unique perspective for investigations into some human behaviors. Day/Night Band (DNB) data are often used for estimating population, assessing electrification of remote areas, monitoring disasters and conflict, and understanding biological impacts of increased light pollution.
+
+### 1.4 Citizen Science
+
+Citizen Science can be used as a methodology where public volunteers help in collecting and classifying data, which are used extensively in studies of biodiversity and pollution (For details, see box1).
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box1: Citizen science </b></p>
+<p style='margin-left:1em;'>
+
+Citizen science, a two-way cooperation between the scientific and public communities in the long-term monitoring programs, is not new. One of the oldest citizen science programs is organised by the National Audubon Society. In the winter of 2000–2001, the participants came up to 52471 people in 1823 places involved 17 countries. Advances in electronic recording and communication systems via the web and mobile phones have led to a resurgence with projects like [ProjectBudburst](www.windows.ucar.edu/citizen_science/budburst/index). Involving unpaid volunteers has the advantages of being economic, can extend the geographic range of study sites and the frequency of visits. Exploring the citizen science data collection can be optimized for biodiversity research.<br>
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
+</p></span>
+</div><br>
+
+## 2. Exploratory Data Analysis
+
+### 2.1 Data integration
+
+Various data sources provide information on the study system components that operate at different scales. Macro-ecology is the study of ecological patterns and processes at broad spatio-temporal scales. Such broad- and multi-scale research questions need combining disparate datasets from different data sources.
+
+The most common challenges for data integration were: (1) mismatches in spatial or temporal scale of data sources, (2) differences in the quantity and/or information content of data sources, (3) sampling biases, and (4) optimizating model development and assessment. One of the task of data exploratory analysis (EDA) is to integrate data correctly.
+
+### 2.2 Data pre-process
+
+Some datasets contain missing data. You should properly handle them, either exclude them from your analysis or delete them. Also, datasets may include some outliers and features of the data that might be unexpected. You must understand where outliers occur and how variables are related, which can help designing statistical analyses that yield meaningful results.
+
+### 2.3 Statistics analysis
+
+Another task of EDA is to identify general patterns in the data. The patterns should be revealed before further analysis. You can use descriptive statistics to complete such work. Scatterplots and correlation coefficients can provide useful information on relationships between pairs of variables. But when analyzing numerous variables, basic methods of multivariate visualization can provide greater insights. Mapping data also is critical for understanding spatial relationships among samples.
+
+## 3. Machine learning models
+
+### 3.1 Decision tree
+
+Ecological data are specifically known to be non-linear and highly dimensional with intense interaction effects. To make statistic methods work, which assume linearity, researchers cope in various ways, including data transformations and break up systems into bits with fewer complexes. However, machine learning (ML) techniques have been shown to outperform traditional statistical approaches in solving the problems.
+
+Lots of ML algorithms have been developed, including unsupervised ML and supervised ML. Unsupervised ML is often used to identify patterns in data. Supervised ML is used to train machine to learn from other examples for predicting a categorical outcome (classification) or a numeric outcome (regression), or inferring the relationships between the outcome and its explanatory variables.. Thus, supervised ML is widely used to make predictions and inferences
+
+The widely used ML in ecology is tree-base algorithms. For these methods, a tree is built by iteratively splitting the data set based on a rule that results in the divided groups being more homogeneous than the group before.
+
+The basic idea behind the algorithm is to find a point in the independent variable to split the data-set into 2 parts, so that the mean squared error (mse) is the minimized at that point. The algorithm does this in a repetitive fashion and forms a tree-like structure. Let’s consider a dataset where we have 2 variables, as shown below:
+
+```{r eval=FALSE}
+df <- read.csv(file = "xy_tree.csv",
+               header=T, sep=";")
+# x <- df$x
+# y <- df$y
+# class(df)
+# names(df)
+attach(df)
+plot(x, y, pch=21)
+
+```
+
+The first step is to sort X from min to max, and use the median of the first 2 points of X (i.e. (84 + 100)/2 = 92) to divide the dataset into 2 parts (Part A and Part B) , separated by x < 92 and X ≥ 92.
+
+The averages of all Y values in Part A and those of all Y values in Part B are used to be the output of the decision tree for x < 92 and x ≥ 92 respectively. Based on the predicted and original values, calculate the mse according to the formula:
+
+$$mse = \frac{1}{n}\sum_{i = 1}^{n} (y_i-\hat{y_i})$$
+
+We repeat the procedure using for the second 2 points of X (i.e. (100 + 180)/2 = 140), and split the dataset into part A (X < 140) and part B (X ≥ 140) as predicted output. Based on the 2 parts, we calculate mse as step 1. Similarly, mse is repeatedly calcualted for the third 2 points of X, the fourth 2 points of X, ..., till $(n-1)^th$ 2 points of X.
+
+Now that we have n-1 mse, and choose the point, at which the mse is smallest. In this case, the point is x = 2115. Thus, we can split the dataset into the x < 2115 and x ≥ 2115 parts. The first split can be obtained using rpart package with maxdepth = 1 as follows:
+
+```{r}
+# run decision model with maxdepth = 1
+library(rpart)
+ctrl = rpart.control(maxdepth=1, # at most 1 split
+                    cp=0, # any positive improvement will do
+                    minsplit=1, # only one split
+                    minbucket=1, # leaves with 1 point are accepted
+                    ) 
+#fit <- rpart(y ~ x, 
+#             data = df, 
+#             control = ctrl, 
+#             method  = "anova")
+
+#rpart.plot(fit)
+
+```
+
+We can improve the tree by adding cross-validation like this:
+
+```{r}
+# run decision model with maxdepth = 3
+ctrl = rpart.control(maxdepth = 2, # at most 1 split
+                    cp = 0, # any positive improvement will do
+                    minsplit = 1, # only one split
+                    minbucket =1 , # leaves with 1 point are accepted
+                    xval = 0.35) # not need cross-validation
+#fit <- rpart(y ~ x, 
+#             data = df, 
+#             control = ctrl, 
+#             method  = "anova",
+#            ) 
+
+#rpart.plot(fit)
+
+```
+
+You then obtain decision boundary by running the codes:
+
+```{r}
+# plotcp(fit)
+# plot decision boundary
+#ibrary(tidyverse)
+#df %>%
+#  mutate(pred = predict(fit, df)) %>%
+#  ggplot(aes(x, y)) + theme_classic() +
+#  geom_point(alpha = 1, shape = 1, size = 3) +
+#  geom_line(aes(x, y), color = "blue", size = .75) +
+#  geom_line(aes(y = pred), color = "red", size = 0.75)
+```
+
+
+The left (x < 2115) and right (x ≥ 2115) parts are further recursively exposed to the same algorithm for the following split. When reducing mse, the tree can recursively split the data-set into a large number of subsets to the point where a set contains only one. Finally, we could obtain a piecewise function like below:
+
+```{r eval=FALSE}
+# fit depth 3 decision tree
+#fit <- rpart(y ~ x, 
+#             data = df, 
+#             method = "anova",
+#             control = rpart.control(maxdepth=3, # at most 1 split
+#                                    cp=0, # any positive improvement will do
+#                                    minsplit=1,
+#                                    minbucket=1, # leaves with 1 point are accepted
+#                                    xval=0)) # don't need crossvalidation
+#print(fit)
+#plotcp(fit)
+# plot decision boundary
+#df %>%
+#  mutate(pred = predict(fit, df)) %>%
+#  ggplot(aes(x, y)) + theme_classic() +
+#  geom_point(alpha = 1, shape = 1, size = 3) +
+#  geom_line(aes(x, y = truth), color = "blue", size = .75) +
+#  geom_line(aes(y = pred), color = "red", size = .75)
+
+#library(tree) 
+#model <- tree(y~x)
+#z <- seq(80,7000)
+#y <- predict(model,list(x=z))
+#plot(x, y, pch=21)
+#lines(z,y)
+```
+
+### 3.2 Random forest
+
+Random Forest is a relatively new tree-based method that fits a user-selected number of trees to a data set and then combines the predictions from all trees. The Random Forest algorithm creates a tree for a subsample of the data set. At every decision only a randomly selected subset of variables are used for the partitioning. The predicted output of an observation in the final tree is calculated by the majority of the predictions for that observation in all trees with ties split randomly.
+
+Ensemble tree-based methods, especially Random Forest, have been shown to outperform statistical and other ML methods in ecology applications. They can cope with small sample sizes, mixed data types, and missing data. The single-tree methods are fast to calculate and the results are easy to interpret, but they are susceptible to overfitting and need “pruning” of terminal nodes. The ensemble methods are computationally expensive, but resist overfitting. Random Forest can provide measures of relative variable importance and the data point similarity that can be useful in other analyses, but can be clouded by correlations between independent variables. 
+
+### 3.3 Artificial Neural Networks
+
+#### Multiple percetion machine
+
+Artificial Neural Network (ANN) is a ML approach inspired by the way neurological systems process information. There are many ANN algorithms, which are supervised or unsupervised learners, but only a few are typically used in ecology. An ANN has three parts: 1) the input layer, 2) the hidden layer, and 3) the output layer. 
+
+Each layer have several “neurons”. Each neuron is connected to the other neurons in the neighboring layer, but not the neurons in the same or in non-adjacent layers. The input layer contains a neuron for an independent variable. The output layer can have one neuron (for binary or continuous output) or more (for categorical output). The number of neurons in the hidden layer can be changed by the user to optimize the trade-off between overfitting and variance. Too many neurons in this layer can lead to overfitting. Each neuron has an activity level and each connection has a weight. The activity level of the input neurons are set by the value of the independent variable. Training the ANN involves an algorithmic search for an optimal set of connection weights that produces an output value with a small error relative to the observed value. Performance can be sensitive to initial connection weights and the number of hidden neurons, so multiple networks should be processed while varying these parameters.
+
+ANN can be a powerful modeling tool when the underlying relationships are unknown and the data are imprecise and noisy. Interpretation of the ANN can be difficult and ANNs are often referred to as a “black box” method. Many ANNs mimic standard statistical methods, so a good practice while using ANNs is to also include a rigorous suite of validation tests and a general linear model for comparison.
+
+#### Deep learning
+
+A neural network comprises an input layer, a hidden layer, and an output layer. Deep learning, on the other hand, is made up of several hidden layers of neural networks that perform complex operations on massive amounts of structured and unstructured data.

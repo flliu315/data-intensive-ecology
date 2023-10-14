@@ -1,0 +1,681 @@
+---
+title: "Lesson 2: Data manipluation"
+description: |
+  In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis.
+# author:
+#   - name: Nora Jones 
+#     url: https://example.com/norajones
+#     affiliation: Spacely Sprockets
+#     affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. Acquring data from R
+### 1.1 The data within R
+
+There are several ways to find the included datasets in R:
+
+- Using data() to list the datasets of all loaded packages (not only the ones from the datasets package); the datasets are ordered by package
+
+- Using data(package = .packages(all.available = TRUE)) to list all datasets in the available packages on your computer (i.e. also the not-loaded ones)
+
+- Using data(package = "packagename") to list the datasets built in the package, so data(package = "plyr") will give the datasets in the plyr package
+
+### 1.2 The data outside R
+
+In R you can read data from files stored outside the R environment. You can also write data into files which will be stored and accessed by computers. R can read and write into various file formats like csv, excel, xml etc.
+
+The file should be present in current working directory so that R can read it. You can set our own directory and read files from there. You can use the getwd() function to check current directory, and also use setwd()functional to set a new working directory.
+
+```{r}
+# Get and print current working directory.
+print(getwd())
+
+# Set current working directory.
+# setwd("/web/com")
+```
+
+#### A CSV or excel File
+
+The csv file is a text file in which the values in the columns are separated by a comma. You can use read.csv() function to read it into R.
+
+Microsoft Excel is the most widely used spreadsheet which stores data in the .xls or .xlsx format. R can read directly from the files using some specific packages, such as *xlsx* package.
+
+```{r}
+# Verify the package is installed.
+any(grepl("xlsx",installed.packages()))
+
+# Load the library into R workspace.
+# library("xlsx")
+```
+
+#### From the web site
+
+Many websites can provide data. For example, WHO provides reports on health and medical information in the form of CSV, txt and XML files. Using R, we can programmatically extract data from websites. Some R  packages, such as "RCurl", "XML", and "stringr", are used to connect to the URL’s, identify required links for the data and download them to R environment.
+
+```{r}
+#install.packages("RCurl")
+#install.packages("XML")
+#install.packages("stringr")
+#install.packages("plyr")
+```
+
+For example, if you visit the URL [weather data](https://www.geos.ed.ac.uk/~weather/jcmb_ws/) and download the CSV files using R for the year 2015.
+
+```{r}
+# Read the URL.
+#url <- "http://www.geos.ed.ac.uk/~weather/jcmb_ws/"
+
+# Gather the html links present in the webpage.
+#links <- getHTMLLinks(url)
+
+# Identify only the links which point to the JCMB 2015 files. 
+#filenames <- links[str_detect(links, "JCMB_2015")]
+
+# Store the file names as a list.
+#filenames_list <- as.list(filenames)
+
+# Create a function to download the files by passing the URL and filename list.
+#downloadcsv <- function (mainurl,filename) {
+#   filedetails <- str_c(mainurl,filename)
+#   download.file(filedetails,filename)
+#}
+
+# Now apply the l_ply function and save the files into the current R working directory.
+#l_ply(filenames,downloadcsv,mainurl = "http://www.geos.ed.ac.uk/~weather/jcmb_ws/")
+```
+
+#### From the databases
+
+The data is Relational database systems are stored in a normalized format. So, to carry out statistical computing you will need very advanced and complex Sql queries. But R can connect easily to many relational databases like MySql, Oracle, Sql server etc. and fetch records from them as a dataframe. Once the data is available in the R environment, it becomes a normal R data set and can be manipulated or analyzed using packages and functions. Below you will be using MySql as our reference database for connecting to R.
+
+Once the *RMySQL* package is installed we create a connection object in R to connect to the database. It takes the username, password, database name and host name as input.
+
+```{r}
+# Create a connection Object to MySQL database.
+# We will connect to the sampel database named "sakila" that comes with MySql installation.
+
+#mysqlconnection = dbConnect(MySQL(), user = 'root', password = '', dbname = 'sakila', host = 'localhost')
+
+# List the tables available in this database.
+# dbListTables(mysqlconnection)
+```
+
+You can query the database tables in MySql using the  dbSendQuery() function. The query executs in MySql and the result is returned using the fetch() function. Finally it is stored as a dataframe in R.
+
+```{r}
+# Query the "actor" tables to get all the rows.
+# result = dbSendQuery(mysqlconnection, "select * from actor")
+
+# Store the result in a R data frame object. n = 5 is used to fetch first 5 rows.
+# data.frame = fetch(result, n = 5)
+# print(data.fame)
+```
+
+You can pass any valid select query to get the result.
+
+```{r}
+#result = dbSendQuery(mysqlconnection, "select * from actor where last_name = 'TORN'")
+
+# Fetch all the records(with n = -1) and store it as a data frame.
+# data.frame = fetch(result, n = -1)
+# print(data)
+```
+
+You can update the rows in a Mysql table by passing the update query to the dbSendQuery() function.
+
+```{r}
+# dbSendQuery(mysqlconnection, "update mtcars set disp = 168.5 where hp = 110")
+```
+
+You can create tables in the MySql using the dbWriteTable() function. It overwrites the table if it already exists and takes a dataframe as input.
+
+```{r}
+# Create the connection object to the database where we want to create the table.
+#mysqlconnection = dbConnect(MySQL(), user = 'root', password = '', dbname = 'sakila', host = 'localhost')
+
+# Use the R data frame "mtcars" to create the table in MySql.
+# All the rows of mtcars are taken inot MySql.
+# dbWriteTable(mysqlconnection, "mtcars", mtcars[, ], overwrite = TRUE)
+```
+
+You can drop the tables in MySql database passing the drop table statement into the dbSendQuery() in the same way as we used it for querying data from tables.
+
+```{r}
+#dbSendQuery(mysqlconnection, 'drop table if exists mtcars')
+```
+
+
+## 2. Data types and manipulation
+Generally, you may store information of data types like character, integer, floating point, and Boolean, etc. Based on the data type of a variable, the operating system allocates memory and decides what can be stored. There are many types of R-objects. The frequently used ones are:
+
+- Vectors
+- Lists
+- Matrices
+- Arrays
+- Factors
+- Data Frames
+
+### 2.1 Vectors and maniplation
+#### Vectors
+
+In R the very basic data types are the R-objects called vectors. When creating a vector with more than one element, you should use c() function which means to combine the elements into a vector.
+
+```{r echo=TRUE}
+# Create a vector.
+apple <- c('red','green',"yellow")
+print(apple)
+
+```
+
+#### Vector manipulation
+
+Two vectors of same length can be added, subtracted, multiplied or divided giving the result as a vector output.
+
+```{r}
+# Create two vectors.
+v1 <- c(3,8,4,5,0,11)
+v2 <- c(4,11,0,8,1,2)
+
+# Vector addition.
+add.result <- v1+v2
+print(add.result)
+
+# Vector subtraction.
+sub.result <- v1-v2
+print(sub.result)
+
+# Vector multiplication.
+multi.result <- v1*v2
+print(multi.result)
+
+# Vector division.
+divi.result <- v1/v2
+print(divi.result)
+```
+
+Elements in a vector can be sorted using the sort() function.
+
+```{r}
+v <- c(3,8,4,5,0,11, -9, 304) # increasing order
+
+# Sort the elements of the vector.
+sort.result <- sort(v)
+print(sort.result)
+
+```
+
+```{r}
+# Sort the elements in the reverse order.
+revsort.result <- sort(v, decreasing = TRUE)
+print(revsort.result)
+```
+
+### 2.2 lists and manipluation
+#### Lists
+
+A list is an R-object which can contain many different types of elements inside it like vectors, functions and even another list inside it.
+
+```{r echo=TRUE}
+# Create a list.
+list1 <- list(c(2,5,3),21.3,sin)
+
+# Print the list.
+print(list1)
+```
+
+#### List manipulation
+
+A list can be converted to a vector so that the elements of the vector can be used for further manipulation. All the arithmetic operations on vectors can be applied after the list is converted into vectors. To do this conversion, we use the **unlist()** function. It takes the list as input and produces a vector.
+
+```{r}
+# Create lists.
+list1 <- list(1:5)
+print(list1)
+
+list2 <-list(10:14)
+print(list2)
+
+```
+
+```{r}
+# Convert the lists to vectors.
+v1 <- unlist(list1)
+v2 <- unlist(list2)
+
+print(v1)
+print(v2)
+
+# Now add the vectors
+result <- v1+v2
+print(result)
+```
+
+### 2.3 Matrics and manipulation
+#### Matrices
+
+A matrix is a two-dimensional rectangular R-object. It can be created using a vector input to the matrix function.
+
+```{r echo=TRUE}
+# Create a matrix.
+M = matrix(c('a','a','b','c','b','a'), nrow = 2, ncol = 3, byrow = TRUE)
+print(M)
+```
+
+#### Matrix manipulation
+
+Create a matrix taking a vector of numbers as input.
+
+```{r}
+# Elements are arranged sequentially by row.
+M <- matrix(c(3:14), nrow = 4, byrow = TRUE)
+print(M)
+
+# Elements are arranged sequentially by column.
+N <- matrix(c(3:14), nrow = 4, byrow = FALSE)
+print(N)
+
+# Define the column and row names.
+rownames = c("row1", "row2", "row3", "row4")
+colnames = c("col1", "col2", "col3")
+
+P <- matrix(c(3:14), nrow = 4, byrow = TRUE, dimnames = list(rownames, colnames))
+print(P)
+```
+
+Various mathematical operations are performed on the matrices using the R operators. The result of the operation is also a matrix.
+
+```{r}
+# Create two 2x3 matrices.
+matrix1 <- matrix(c(3, 9, -1, 4, 2, 6), nrow = 2)
+print(matrix1)
+
+matrix2 <- matrix(c(5, 2, 0, 9, 3, 4), nrow = 2)
+print(matrix2)
+
+# Add the matrices.
+result <- matrix1 + matrix2
+cat("Result of addition","\n")
+print(result)
+
+# Subtract the matrices
+result <- matrix1 - matrix2
+cat("Result of subtraction","\n")
+print(result)
+```
+
+### 2.4 Arrays and manipulation
+#### Arrays
+
+While matrices are confined to two dimensions, arrays can be of any number of dimensions. The array function takes a dim attribute which creates the required number of dimension. Below is an example array with two elements which are 3x3 matrices each. Arrays can store data in more than two dimensions.
+
+```{r echo=TRUE}
+# Create an array.
+a <- array(c('green','yellow'),dim = c(3,3,2)) #  2 matrices each with 3 rows and 3 columns
+print(a)
+```
+
+#### Array Manipulation
+
+Arrays are the R-objects that can store data in more than two dimensions. If we create an array of dimension (2, 3, 4) then it creates 4 rectangular matrices each with 2 rows and 3 columns. Arrays can store only data type.
+
+An array is created using the array() function. It takes vectors as input and uses the values in the dim parameter to create an array.
+
+```{r}
+# Create two vectors of different lengths.
+vector1 <- c(5,9,3)
+vector2 <- c(10,11,12,13,14,15)
+
+# Take these vectors as input to the array.
+result <- array(c(vector1,vector2),dim = c(3,3,2))
+print(result)
+```
+
+### 2.5 Factors and manipulation
+#### Factors
+
+Factors are the R-objects which are created using a vector. It stores a vector along with the distinct values of the elements in the vector as labels. The labels are always character irrespective of whether it is numeric or character or Boolean etc. in the input vector. They are useful in statistical modeling.
+
+Factors are created using the **factor()** function. The **nlevels()** functions gives the count of levels.
+
+```{r echo=TRUE}
+# Create a vector
+apple_colors <- c('green','green','yellow','red','red','red','green')
+
+# Create a factor object
+factor_apple <- factor(apple_colors)
+
+# Print the factor
+print(factor_apple)
+print(nlevels(factor_apple))
+```
+
+#### Factor Manipulation
+
+Factors are the R-objects that are used to categorize the data and store it as levels. They can store both strings and integers. They are useful in the columns that have a limited number of unique values. Like "Male, "Female" and True, False etc. They are useful in data analysis for statistical modeling.
+
+```{r}
+# Create a vector as input.
+data <- c("East","West","East","North","North","East","West","West","West","East","North")
+
+print(data)
+print(is.factor(data))
+
+# Apply the factor function.
+factor_data <- factor(data)
+
+print(factor_data)
+print(is.factor(factor_data))
+```
+
+### 2.6 Data frames and manipulation
+#### Data Frames
+
+Data frames are tabular data objects. Unlike a matrix in data frame each column can contain different modes of data. The first column can be numeric while the second column can be character and third column can be logical. It is a list of vectors of equal length.
+
+Data Frames are created using the **data.frame()** function.
+
+```{r echo=TRUE}
+# Create the data frame.
+BMI <- 	data.frame(
+   gender = c("Male", "Male","Female"), 
+   height = c(152, 171.5, 165), 
+   weight = c(81,93, 78),
+   Age = c(42,38,26)
+)
+print(BMI)
+```
+
+#### Data frame Manipulation
+A data frame is a table or a two-dimensional array-like structure in which each column contains values of one variable and each row contains one set of values from each column. You can use data.frame() function to create a dataframe.
+
+```{r}
+# Create the data frame.
+emp.data <- data.frame(
+   emp_id = c (1:5), 
+   emp_name = c("Rick","Dan","Michelle","Ryan","Gary"),
+   salary = c(623.3,515.2,611.0,729.0,843.25), 
+   
+   start_date = as.Date(c("2012-01-01", "2013-09-23", "2014-11-15", "2014-05-11", "2015-03-27")),
+   stringsAsFactors = FALSE
+)
+# Print the data frame.			
+print(emp.data) 
+```
+
+The structure of the data frame can be seen by using str() function.
+
+```{r}
+# Get the structure of the data frame.
+str(emp.data)
+```
+
+The statistical summary and nature of the data can be obtained by applying summary() function.
+
+```{r}
+# Print the summary.
+print(summary(emp.data))
+```
+
+Extract specific column from a dataframe using column name.
+
+```{r}
+# Extract Specific columns.
+result <- data.frame(emp.data$emp_name,emp.data$salary)
+print(result)
+```
+
+Extract the first two rows and then all columns.
+
+```{r}
+# Extract first two rows.
+result <- emp.data[1:2,]
+print(result)
+```
+
+Extract 3rd and 5th row with 2nd and 4th column.
+
+```{r}
+# Extract 3rd and 5th row with 2nd and 4th column.
+result <- emp.data[c(3,5),c(2,4)]
+print(result)
+```
+
+A dataframe can be expanded by adding columns and rows.
+
+```{r}
+# Add the "dept" coulmn.
+emp.data$dept <- c("IT","Operations","IT","HR","Finance")
+v <- emp.data
+print(v)
+```
+
+To add more rows permanently to an existing data frame, we need to bring in the new rows in the same structure as the existing data frame and use the rbind() function.
+
+```{r}
+# Create the second data frame
+emp.newdata <- 	data.frame(
+   emp_id = c (6:8), 
+   emp_name = c("Rasmi","Pranab","Tusar"),
+   salary = c(578.0,722.5,632.8), 
+   start_date = as.Date(c("2013-05-21","2013-07-30","2014-06-17")),
+   dept = c("IT","Operations","Fianance"),
+   stringsAsFactors = FALSE
+)
+
+# Bind the two data frames.
+emp.finaldata <- rbind(emp.data,emp.newdata)
+print(emp.finaldata)
+```
+
+#### Data reshape
+
+Data Reshaping in R is about changing the way data is organized into rows and columns. Most of the time data processing in R is done by taking the input data as a dataframe. It is easy to extract data from the rows and columns of a data frame but there are situations when we need the dataframe in a format that is different from format in which we received it. R has many functions to split, merge and change the rows to columns and vice-versa in a data frame.
+
+You can join multiple vectors to create a data frame using the cbind()function. Also we can merge two data frames using rbind() function.
+
+```{r}
+# Create vector objects.
+city <- c("Tampa","Seattle","Hartford","Denver")
+state <- c("FL","WA","CT","CO")
+zipcode <- c(33602,98104,06161,80294)
+
+# Combine above three vectors into one data frame.
+addresses <- cbind(city,state,zipcode)
+
+# Print a header.
+cat("# # # # The First data frame\n") 
+
+# Print the data frame.
+print(addresses)
+
+# Create another data frame with similar columns
+new.address <- data.frame(
+   city = c("Lowry","Charlotte"),
+   state = c("CO","FL"),
+   zipcode = c("80230","33949"),
+   stringsAsFactors = FALSE
+)
+
+# Print a header.
+cat("# # # The Second data frame\n") 
+
+# Print the data frame.
+print(new.address)
+
+# Combine rows form both the data frames.
+all.addresses <- rbind(addresses,new.address)
+
+# Print a header.
+cat("# # # The combined data frame\n") 
+
+# Print the result.
+print(all.addresses)
+```
+
+You can merge two dataframes by using the merge() function. The data frames must have same column names on which the merging happens.
+
+In the example below, you consider the data sets about Diabetes in the MASS package. we merge the two data sets based on the values of blood pressure ("bp") and body mass index ("bmi"). To choose these two columns for merging, the records where values of two variables match in both data sets are combined together to form a single data frame.
+
+```{r}
+library(MASS)
+merged.Pima <- merge(x = Pima.te, y = Pima.tr,
+   by.x = c("bp", "bmi"),
+   by.y = c("bp", "bmi")
+)
+print(merged.Pima)
+nrow(merged.Pima)
+```
+
+One of the most interesting aspects of R is about changing the shape of the data in multiple steps to get a desired shape. The functions used to do this are called melt() and cast(). We consider the dataset called ships in the MASS package.
+
+```{r}
+library(MASS)
+# print(ships)
+```
+
+You can cast the molten data into a new form where the aggregate of each type of ship for each year is created. It is done using the cast() function.
+
+
+## 3. Data visualization in R
+
+### 3.1 Pie charts
+
+In R the pie chart is created using the pie() function which takes positive numbers as a vector input.
+
+```{r}
+# Create data for the graph.
+#x <-  c(21, 62, 10,53)
+#labels <-  c("London","New York","Singapore","Mumbai")
+
+#piepercent<- round(100*x/sum(x), 1)
+
+# Give the chart file a name.
+#png(file = "city_percentage_legends.jpg")
+
+# Plot the chart.
+#pie(x, labels = piepercent, main = "City pie chart",col = rainbow(length(x)))
+#legend("topright", c("London","New York","Singapore","Mumbai"), cex = 0.8, fill = rainbow(length(x)))
+
+# Save the file.
+# dev.off()
+```
+
+### 3.2 Bar charts
+
+The below script will create and save the bar chart in the current R working directory.
+
+```{r}
+# Create the data for the chart
+#H <- c(7,12,28,3,41)
+#M <- c("Mar","Apr","May","Jun","Jul")
+
+# Give the chart file a name
+#png(file = "barchart_months_revenue.png")
+
+# Plot the bar chart 
+#barplot(H,names.arg=M,xlab="Month",ylab="Revenue",col="blue",
+#main="Revenue chart",border="red")
+
+# Save the file
+# dev.off()
+```
+
+### 3.3 Boxplots
+
+Boxplots are created in R by using the boxplot() function.
+
+```{r}
+# Obtain the data set "mtcars"
+#input <- mtcars[,c('mpg','cyl')]
+
+# Give the chart file a name.
+#png(file = "boxplot_with_notch.png")
+
+# Plot the chart.
+#boxplot(mpg ~ cyl, data = mtcars, 
+#   xlab = "Number of Cylinders",
+#   ylab = "Miles Per Gallon", 
+#   main = "Mileage Data",
+#   notch = TRUE, 
+#   varwidth = TRUE, 
+#   col = c("green","yellow","purple"),
+#   names = c("High","Medium","Low")
+#)
+# Save the file.
+# dev.off()
+```
+
+### 3.4 Histograms
+
+R creates histogram using hist() function. This function takes a vector as an input and uses some more parameters to plot histograms.
+
+```{r}
+# Create data for the graph.
+#v <- c(9,13,21,8,36,22,12,41,31,33,19)
+
+# Give the chart file a name.
+#png(file = "histogram_lim_breaks.png")
+
+# Create the histogram.
+#hist(v,xlab = "Weight",col = "green",border = "red", xlim = c(0,40), ylim = c(0,5), breaks = 5)
+
+# Save the file.
+# dev.off()
+```
+
+### 3.5 Line Charts
+
+A line chart is a graph that connects a series of points by drawing line segments between them. The plot() function is used to create the line graph.
+
+```{r}
+# Create the data for the chart.
+#v <- c(7,12,28,3,41)
+#t <- c(14,7,6,19,3)
+
+# Give the chart file a name.
+#png(file = "line_chart_2_lines.jpg")
+
+# Plot the bar chart.
+#plot(v,type = "o",col = "red", xlab = "Month", ylab = "Rain fall", 
+#   main = "Rain fall chart")
+
+#lines(t, type = "o", col = "blue")
+
+# Save the file.
+# dev.off()
+```
+
+### 3.6 Scatterplots
+
+Scatterplots show many points plotted in the Cartesian plane. Each point represents the values of two variables. One variable is chosen in the horizontal axis and another in the vertical axis. The simple scatterplot is created using the plot() function.
+
+```{r}
+# Get the input values.
+#input <- mtcars[,c('wt','mpg')]
+
+# Give the chart file a name.
+#png(file = "scatterplot.png")
+
+# Plot the chart for cars with weight between 2.5 to 5 and mileage between 15 and 30.
+#plot(x = input$wt,y = input$mpg,
+#   xlab = "Weight",
+#   ylab = "Milage",
+#   xlim = c(2.5,5),
+#   ylim = c(15,30),		 
+#   main = "Weight vs Milage"
+#)
+	 
+# Save the file.
+# dev.off()
+```
+
