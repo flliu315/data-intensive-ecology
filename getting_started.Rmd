@@ -1,5 +1,5 @@
 ---
-title: "Working R with Rstudio and linking r-project to github"
+title: "Working R with github"
 # description: |
 #   A new article created using the Distill format.
 # author:
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 You need to install R and RStudion on your computers. We will go through the following steps to install two free programs. Also, you'll understand basic R commands, and the RStudio interface with R in order to start programming.
 
-## 1. Using Rstudio interact with R
+## 1. Using Rstudio to interact with R
 ### 1.1 Installing R and RStudio
 <mark style="background-color: #F0F0F0">R and RStudio</mark> are two separate pieces of software: 
 
@@ -92,7 +92,7 @@ On the right hand side, you should see a small chart showing your Account Usage.
 - Check everything is installed…you should get TRUE’s if everything worked.
 
 
-### 1.3 Installing R packages
+### 1.4 Installing R packages
 
 Most of the work in R is done by basic functions, which are wrapped into packages. Except for basic functions, R packages have build-in sample data sets. 
 
@@ -141,7 +141,7 @@ library(RSQLite)
 It is recommended to keep your R version and all packages up to date. To update the packages that you have installed, click **`Update`** in the **`Packages`** tab in the bottom right panel of RStudio, or go to <mark style="background-color: #F0F0F0">`Tools > Check for Package Updates...`</mark>. 
 
 
-## 2. Creating an R project
+## 2. Creating a R project
 ### 2.1 Using a project to organize your work
 When using R several years ago, it is ususally to first set a working directory using <mark style="background-color: #F0F0F0">setwd()</mark>, which takes an absolute file path as an input and sets it as the current working directory of the R process, and to then use <mark style="background-color: #F0F0F0">getwd()</mark> for finding out whether the current working directory is correctly set. The problem with this approach is that since <mark style="background-color: #F0F0F0">setwd()</mark> relies on an absolute file path. This makes the links break very easily, and very difficult to share your analysis with others.
 
@@ -151,8 +151,6 @@ This .Rproj file can be created by going to <mark style="background-color: #F0F0
 
 ### 2.2 Working directory structure
 This directory structure ‘template’ can provide a good starting point for organizing projects if workflow is new to you. However, different projects will have different needs, and thus one should think about what is needed and what will happen while setting up the working directory structure. A template of an R project like [this](https://www.r-bloggers.com/2018/08/structuring-r-projects/):
-
-
 
 #### The data folder
 
@@ -189,7 +187,7 @@ In Output folder, save all your outputs here, including plots, HTML, and data ex
 
 There is a main runner script or potentially a small number. These go through scripts in a sequence. It is a sensible idea in such a case to establish sequential subfolders or sequentially numbered scripts that are executed in sequence. Typically, this model performs better if there are at most a handful distinct pipelines.
 
-## 3. Connecting an R project to Github
+## 3. Connecting a R project to Github
 ### 3.1 Checkinf that RStudio can find Git
 The first task is to ensure that Git can be located by RStudio on your machine. To do this, open <mark style="background-color: #F0F0F0">RStudio</mark> and go to <mark style="background-color: #F0F0F0">Tools > Global Options > Git/SVN</mark>.
 
@@ -227,3 +225,88 @@ If you have an existing project in RStudio and decide later that maintaining ver
 # git push -u origin main
 ```
 
+
+
+## 4. Writing R code
+### 4.1 Using script
+Using R understand language to tell R what and how do the thing that you want. We refer this discription to "script". 
+
+#### Creating R script
+A script is simply a text file that contains a set of commands and comments. It can be saved and reused later. It can also be edited so you can execute a modified version of the commands.
+
+To create a new script in RStudio, you can open a new empty script by clicking the <mark style="background-color: #F0F0F0">New File-->New File Menu-->R Script</mark>. The script editor opens with an empty script, which is ready for text entry. Here is an example to familiarize you with the Script Editor interface.
+
+![](images/R_rcript_example.png)
+
+#### Saving R script 
+
+You can save your script by clicking on the **Save** icon at the top of the Script Editor panel. When you do that, a Save File dialog will open. 
+
+The default script name is **Untitled.R**. The Untitled part is highlighted. You will save this script as **First script.R**. Start typing **First script**. RStudio overwrites the highlighted default name with your new name, leaving the .R file extension.
+
+Notice that RStudio will save your script to your current working folder. Press the **Save** button and your script is saved to your working folder. Notice that the name in the file at the top of the Script Editor panel now shows your saved script file name. 
+
+While it is not necessary to use an **.R** file extension for your R scripts, it does make it easier for RStudio to work with them if your use this file extension. 
+
+#### Opening R script
+
+Click on the **Open an existing file** icon in the RStudio toolbar. A choose file dialog will open. Select the R script you want to open and click the **Open** button. Your script will open in the Script Editor panel with the script name in an editor tab. 
+
+
+#### Commenting R script
+
+In scripts, it can be very useful to save a bit of text which is not to be evaluated by R. You can leave a note to yourself about what the next line is supposed to do, what its strengths and limitations are, or anything else you want to remember later. To leave a note, we use “comments”, which are a line of text that starts with the hash symbol #. Anything on a line after a # will be ignored by R.
+
+```{r echo=TRUE}
+# This is a comment. Running this in R will have no effect.
+```
+
+#### Executing R script
+
+The **Run** button in the Script Editor panel toolbar will run either the current line of code or any block of selected code. You can use your **First script.R** code to gain familiarity with this functionality.
+
+Place the cursor anywhere in line 3 of your script [x = 34]. Now press the **Run** button in the Script Editor panel toolbar. Three things happen: 1) the code is transferred to the command console, 2) the code is executed, and 3) the cursor moves to the next line in your script. Press the **Run** button three more times. RStudio executes lines 4, 5, and 6 of your script. 
+
+### 4.2 Using rmarkdown
+Learn how to construct an RMarkdown file, please visit [the site](https://ourcodingclub.github.io/tutorials/rmarkdown/).
+
+### 4.3 Objects and operators
+#### R objects
+In RStudio, if you want to create a object called x and give it a value of 4 using the symbol "<-", we would write:
+
+```{r echo=TRUE}
+x <- 4
+x
+```
+
+The middle "<-" tells R to assign the value on the right to the object on the left. After running the command above, when running x in a command, it would be replaced by its value 4. If adding 3 to x, the expect would get 7.
+
+```{r echo=TRUE}
+x + 3
+```
+
+Object in R can store more than just simple numbers. It can store lists of numbers, functions, graphics, etc., depending on what values get assigned to the object.
+
+You can always reassign a new value to a object. If telling R that x is equal to 32:
+
+```{r echo=TRUE}
+x <- 32
+```
+
+then x takes its new value:
+
+```{r echo=TRUE}
+x
+```
+
+Naming objects and functions in R is pretty flexible. A name has to start with a letter, but that can be followed by letters or numbers. Names in R are case-sensitive, which means that Weights and weights are completely different things to R. <mark style="background-color: #F0F0F0">A good idea is to give object names be as descriptive as possible</mark>, so that you will know what you meant later on when looking at it. Sometimes clear naming means that it is best to have multiple words in the name, but you can’t have spaces. A common approach is to <mark style="background-color: #F0F0F0">chain the words with underscores</mark>, as in weights_before_hospital. 
+
+#### R operators
+
+An operator is a symbol that tells the compiler to perform specific mathematical or logical manipulations. R language is rich in built-in operators and provides following types of operators.
+
+- Arithmetic Operators: +, -, *, /
+- Relational Operators: >, <, =, !=, etc
+- Logical Operators: TRUE, FALSE
+- Assignment Operators: <-  
+- Miscellaneous Operators: %in%, :, %*%

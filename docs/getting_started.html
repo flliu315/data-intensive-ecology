@@ -88,29 +88,29 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>Home: Working R with Rstudio and linking r-project to github</title>
+  <title>Home: Working R with github</title>
 
 
 
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2023-10-13"/>
-  <meta property="article:created" itemprop="dateCreated" content="2023-10-13"/>
+  <meta property="article:published" itemprop="datePublished" content="2023-10-14"/>
+  <meta property="article:created" itemprop="dateCreated" content="2023-10-14"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Home: Working R with Rstudio and linking r-project to github"/>
+  <meta property="og:title" content="Home: Working R with github"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Home"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Home: Working R with Rstudio and linking r-project to github"/>
+  <meta property="twitter:title" content="Home: Working R with github"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Working R with Rstudio and linking r-project to github"]},{"type":"character","attributes":{},"value":["2023-10-13"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Working R with github"]},{"type":"character","attributes":{},"value":["2023-10-14"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2485,7 +2485,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Working R with Rstudio and linking r-project to github","authors":[],"publishedDate":"2023-10-13T00:00:00.000+08:00"}
+{"title":"Working R with github","authors":[],"publishedDate":"2023-10-14T00:00:00.000+08:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2505,7 +2505,8 @@ Lessons
 <span class="down-arrow">&#x25BE;</span>
 </button>
 <div class="nav-dropdown-content">
-<a href="general_overview.html">General Overview</a>
+<a href="general_overview.html">Lesson 1: General overview</a>
+<a href="data_manipulation.html">Lesson 2: Data manipulation</a>
 <a href="data_driven.html">Data and Models</a>
 </div>
 </div>
@@ -2519,7 +2520,7 @@ Lessons
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Working R with Rstudio and linking r-project to github</h1>
+<h1>Working R with github</h1>
 
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
@@ -2532,31 +2533,37 @@ Lessons
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#using-rstudio-interact-with-r" id="toc-using-rstudio-interact-with-r">1. Using Rstudio interact with R</a>
+<li><a href="#using-rstudio-to-interact-with-r" id="toc-using-rstudio-to-interact-with-r">1. Using Rstudio to interact with R</a>
 <ul>
 <li><a href="#installing-r-and-rstudio" id="toc-installing-r-and-rstudio">1.1 Installing R and RStudio</a></li>
 <li><a href="#updating-r-and-rstudio" id="toc-updating-r-and-rstudio">1.2 Updating R and RStudio</a></li>
 <li><a href="#setting-up-rstudio-cloud" id="toc-setting-up-rstudio-cloud">1.3 Setting up RStudio Cloud</a></li>
-<li><a href="#installing-r-packages" id="toc-installing-r-packages">1.3 Installing R packages</a></li>
+<li><a href="#installing-r-packages" id="toc-installing-r-packages">1.4 Installing R packages</a></li>
 </ul></li>
-<li><a href="#creating-an-r-project" id="toc-creating-an-r-project">2. Creating an R project</a>
+<li><a href="#creating-a-r-project" id="toc-creating-a-r-project">2. Creating a R project</a>
 <ul>
 <li><a href="#using-a-project-to-organize-your-work" id="toc-using-a-project-to-organize-your-work">2.1 Using a project to organize your work</a></li>
 <li><a href="#working-directory-structure" id="toc-working-directory-structure">2.2 Working directory structure</a></li>
 <li><a href="#general-settings" id="toc-general-settings">2.3 General settings</a></li>
 <li><a href="#automatically-running" id="toc-automatically-running">2.4 Automatically running</a></li>
 </ul></li>
-<li><a href="#connecting-an-r-project-to-github" id="toc-connecting-an-r-project-to-github">3. Connecting an R project to Github</a>
+<li><a href="#connecting-a-r-project-to-github" id="toc-connecting-a-r-project-to-github">3. Connecting a R project to Github</a>
 <ul>
 <li><a href="#checkinf-that-rstudio-can-find-git" id="toc-checkinf-that-rstudio-can-find-git">3.1 Checkinf that RStudio can find Git</a></li>
 <li><a href="#adding-a-new-r-project-to-github" id="toc-adding-a-new-r-project-to-github">3.2 Adding a new R project to GitHub</a></li>
 <li><a href="#adding-an-existing-r-project-to-github" id="toc-adding-an-existing-r-project-to-github">3.3 Adding an existing R project to GitHub</a></li>
 </ul></li>
+<li><a href="#writing-r-code" id="toc-writing-r-code">4. Writing R code</a>
+<ul>
+<li><a href="#using-script" id="toc-using-script">4.1 Using script</a></li>
+<li><a href="#using-rmarkdown" id="toc-using-rmarkdown">4.2 Using rmarkdown</a></li>
+<li><a href="#objects-and-operators" id="toc-objects-and-operators">4.3 Objects and operators</a></li>
+</ul></li>
 </ul>
 </nav>
 </div>
 <p>You need to install R and RStudion on your computers. We will go through the following steps to install two free programs. Also, you’ll understand basic R commands, and the RStudio interface with R in order to start programming.</p>
-<h2 id="using-rstudio-interact-with-r">1. Using Rstudio interact with R</h2>
+<h2 id="using-rstudio-to-interact-with-r">1. Using Rstudio to interact with R</h2>
 <h3 id="installing-r-and-rstudio">1.1 Installing R and RStudio</h3>
 <p><mark style="background-color: #F0F0F0">R and RStudio</mark> are two separate pieces of software:</p>
 <ul>
@@ -2620,7 +2627,7 @@ but if you wish to do so you can check
 <li>Copy and install the packages we’ll need.</li>
 <li>Check everything is installed…you should get TRUE’s if everything worked.</li>
 </ul>
-<h3 id="installing-r-packages">1.3 Installing R packages</h3>
+<h3 id="installing-r-packages">1.4 Installing R packages</h3>
 <p>Most of the work in R is done by basic functions, which are wrapped into packages. Except for basic functions, R packages have build-in sample data sets.</p>
 <p>By default, a set of R packages is installed during R installation. There also are many packages that are needed to install later from the central repositories like <a href="https://cran.r-project.org/">CRAN</a> or <a href="https://www.bioconductor.org/">Bioconductor</a>, as well as developer repositories like R-Forge(<a href="https://r-forge.r-project.org/" class="uri">https://r-forge.r-project.org/</a>) or <a href="https://github.com/">GitHub</a>.</p>
 <h4 id="installing-r-packages-1">Installing R packages</h4>
@@ -2666,7 +2673,7 @@ packages by pasting the following code into the console:</p>
 </div>
 <h4 id="updating-r-packages">Updating R packages</h4>
 <p>It is recommended to keep your R version and all packages up to date. To update the packages that you have installed, click <strong><code>Update</code></strong> in the <strong><code>Packages</code></strong> tab in the bottom right panel of RStudio, or go to <mark style="background-color: #F0F0F0"><code>Tools &gt; Check for Package Updates...</code></mark>.</p>
-<h2 id="creating-an-r-project">2. Creating an R project</h2>
+<h2 id="creating-a-r-project">2. Creating a R project</h2>
 <h3 id="using-a-project-to-organize-your-work">2.1 Using a project to organize your work</h3>
 <p>When using R several years ago, it is ususally to first set a working directory using <mark style="background-color: #F0F0F0">setwd()</mark>, which takes an absolute file path as an input and sets it as the current working directory of the R process, and to then use <mark style="background-color: #F0F0F0">getwd()</mark> for finding out whether the current working directory is correctly set. The problem with this approach is that since <mark style="background-color: #F0F0F0">setwd()</mark> relies on an absolute file path. This makes the links break very easily, and very difficult to share your analysis with others.</p>
 <p>An RStudio project solves the problem of ‘fragile’ file paths by making file paths relative. An RStudio projects is the file that sits in the root directory, with the extension .Rproj. When your RStudio session is running through .Rproj, the current working directory points to the root folder where that .Rproj file is saved.</p>
@@ -2703,7 +2710,7 @@ packages by pasting the following code into the console:</p>
 </ul>
 <h3 id="automatically-running">2.4 Automatically running</h3>
 <p>There is a main runner script or potentially a small number. These go through scripts in a sequence. It is a sensible idea in such a case to establish sequential subfolders or sequentially numbered scripts that are executed in sequence. Typically, this model performs better if there are at most a handful distinct pipelines.</p>
-<h2 id="connecting-an-r-project-to-github">3. Connecting an R project to Github</h2>
+<h2 id="connecting-a-r-project-to-github">3. Connecting a R project to Github</h2>
 <h3 id="checkinf-that-rstudio-can-find-git">3.1 Checkinf that RStudio can find Git</h3>
 <p>The first task is to ensure that Git can be located by RStudio on your machine. To do this, open <mark style="background-color: #F0F0F0">RStudio</mark> and go to <mark style="background-color: #F0F0F0">Tools &gt; Global Options &gt; Git/SVN</mark>.</p>
 <p>Under <mark style="background-color: #F0F0F0">“Git executable”</mark>, you should be able to see a path to Git. Take ubuntu as example, it will be in <mark style="background-color: #F0F0F0">/usr/bin/git</mark>.</p>
@@ -2734,7 +2741,75 @@ packages by pasting the following code into the console:</p>
 <span><span class='co'># git push -u origin main</span></span></code></pre>
 </div>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="writing-r-code">4. Writing R code</h2>
+<h3 id="using-script">4.1 Using script</h3>
+<p>Using R understand language to tell R what and how do the thing that you want. We refer this discription to “script”.</p>
+<h4 id="creating-r-script">Creating R script</h4>
+<p>A script is simply a text file that contains a set of commands and comments. It can be saved and reused later. It can also be edited so you can execute a modified version of the commands.</p>
+<p>To create a new script in RStudio, you can open a new empty script by clicking the <mark style="background-color: #F0F0F0">New File–&gt;New File Menu–&gt;R Script</mark>. The script editor opens with an empty script, which is ready for text entry. Here is an example to familiarize you with the Script Editor interface.</p>
+<p><img src="images/R_rcript_example.png" /></p>
+<h4 id="saving-r-script">Saving R script</h4>
+<p>You can save your script by clicking on the <strong>Save</strong> icon at the top of the Script Editor panel. When you do that, a Save File dialog will open.</p>
+<p>The default script name is <strong>Untitled.R</strong>. The Untitled part is highlighted. You will save this script as <strong>First script.R</strong>. Start typing <strong>First script</strong>. RStudio overwrites the highlighted default name with your new name, leaving the .R file extension.</p>
+<p>Notice that RStudio will save your script to your current working folder. Press the <strong>Save</strong> button and your script is saved to your working folder. Notice that the name in the file at the top of the Script Editor panel now shows your saved script file name.</p>
+<p>While it is not necessary to use an <strong>.R</strong> file extension for your R scripts, it does make it easier for RStudio to work with them if your use this file extension.</p>
+<h4 id="opening-r-script">Opening R script</h4>
+<p>Click on the <strong>Open an existing file</strong> icon in the RStudio toolbar. A choose file dialog will open. Select the R script you want to open and click the <strong>Open</strong> button. Your script will open in the Script Editor panel with the script name in an editor tab.</p>
+<h4 id="commenting-r-script">Commenting R script</h4>
+<p>In scripts, it can be very useful to save a bit of text which is not to be evaluated by R. You can leave a note to yourself about what the next line is supposed to do, what its strengths and limitations are, or anything else you want to remember later. To leave a note, we use “comments”, which are a line of text that starts with the hash symbol #. Anything on a line after a # will be ignored by R.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># This is a comment. Running this in R will have no effect.</span></span></code></pre>
+</div>
+</div>
+<h4 id="executing-r-script">Executing R script</h4>
+<p>The <strong>Run</strong> button in the Script Editor panel toolbar will run either the current line of code or any block of selected code. You can use your <strong>First script.R</strong> code to gain familiarity with this functionality.</p>
+<p>Place the cursor anywhere in line 3 of your script [x = 34]. Now press the <strong>Run</strong> button in the Script Editor panel toolbar. Three things happen: 1) the code is transferred to the command console, 2) the code is executed, and 3) the cursor moves to the next line in your script. Press the <strong>Run</strong> button three more times. RStudio executes lines 4, 5, and 6 of your script.</p>
+<h3 id="using-rmarkdown">4.2 Using rmarkdown</h3>
+<p>Learn how to construct an RMarkdown file, please visit <a href="https://ourcodingclub.github.io/tutorials/rmarkdown/">the site</a>.</p>
+<h3 id="objects-and-operators">4.3 Objects and operators</h3>
+<h4 id="r-objects">R objects</h4>
+<p>In RStudio, if you want to create a object called x and give it a value of 4 using the symbol “&lt;-”, we would write:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>4</span></span>
+<span><span class='va'>x</span></span></code></pre>
+</div>
+<pre><code>[1] 4</code></pre>
+</div>
+<p>The middle “&lt;-” tells R to assign the value on the right to the object on the left. After running the command above, when running x in a command, it would be replaced by its value 4. If adding 3 to x, the expect would get 7.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>x</span> <span class='op'>+</span> <span class='fl'>3</span></span></code></pre>
+</div>
+<pre><code>[1] 7</code></pre>
+</div>
+<p>Object in R can store more than just simple numbers. It can store lists of numbers, functions, graphics, etc., depending on what values get assigned to the object.</p>
+<p>You can always reassign a new value to a object. If telling R that x is equal to 32:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fl'>32</span></span></code></pre>
+</div>
+</div>
+<p>then x takes its new value:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>x</span></span></code></pre>
+</div>
+<pre><code>[1] 32</code></pre>
+</div>
+<p>Naming objects and functions in R is pretty flexible. A name has to start with a letter, but that can be followed by letters or numbers. Names in R are case-sensitive, which means that Weights and weights are completely different things to R. <mark style="background-color: #F0F0F0">A good idea is to give object names be as descriptive as possible</mark>, so that you will know what you meant later on when looking at it. Sometimes clear naming means that it is best to have multiple words in the name, but you can’t have spaces. A common approach is to <mark style="background-color: #F0F0F0">chain the words with underscores</mark>, as in weights_before_hospital.</p>
+<h4 id="r-operators">R operators</h4>
+<p>An operator is a symbol that tells the compiler to perform specific mathematical or logical manipulations. R language is rich in built-in operators and provides following types of operators.</p>
+<ul>
+<li>Arithmetic Operators: +, -, *, /</li>
+<li>Relational Operators: &gt;, &lt;, =, !=, etc</li>
+<li>Logical Operators: TRUE, FALSE</li>
+<li>Assignment Operators: &lt;-<br />
+</li>
+<li>Miscellaneous Operators: %in%, :, %*%</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

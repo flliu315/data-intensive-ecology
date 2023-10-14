@@ -12,12 +12,11 @@ navbar:
       href: getting_started.html
     - text: "Lessons"
       menu:
-        - text: "Lesson 1: Writing R-script"
-          href: R_script.html
+        - text: "Lesson 1: General overview"
+          href: general_overview.html
         - text: "Lesson 2: Data manipulation"
           href: data_manipulation.html
-        - text: "Lesson 3: General overview"
-          href: general_overview.html
+
         - text: "Data and Models"
           href: data_driven.html
     - text: "Blog"

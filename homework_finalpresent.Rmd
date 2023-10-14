@@ -1,0 +1,108 @@
+---
+title: "Homework assignments and Final presentation"
+description: |
+ Homework assignments and Final presentation are two important parts of the class, each of which will give you 30% of the overall credit if you finish them all and submit them on time!
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Homework assignments
+
+### 1.1 Preparing assignments
+
+There will be a total of 9-10 homework assignments during the semester, each counting for ~ 3% of the total evaluation.
+
+- Always be created and saved an R script as a *.R file, which is reproducible (see [here](https://davidzeleny.net/wiki/doku.php/recol:reproducible_script) what reproducible means)
+- Always be included your name (Chinese) and student ID, which is inserted as the first line of the R script like this:
+
+```{r}
+# Ecology Homework x, Author: your_name, Student ID: xxxxxxxx
+```
+
+- Usually be uploaded the R script into your github before the deadline. Otherwise, 50% of the grade is going down.
+
+### 1.2 Rules for evaluation
+Each homework is evaluated on a scale between 0 to 100% in the following way:
+
+- Submit the homework on time, and it is correct: 100%, but it has some flaws, we will minus the following:
+
+  - missing header line: -10%
+  - garbage code present, e.g. names (data), View (Df): -10%
+  - script saved as a wrong file type: -20%
+  - script not reproducible: -10%
+  - script not clean and tidy: -10% (see [here](https://davidzeleny.net/wiki/doku.php/recol:clean_and_tidy_script) what clean and tidy script means)
+
+- Submit the homework late, but is correct but late: 50%
+
+- Submit the homework on time, but it is wrong: 30% 
+
+- Not submit the homework at all: 0%
+
+## 2. Final presentation
+
+### 2.1 Suggested topics
+
+Free to choose what topic you want to present, considering that it fits the following criteria:
+
+- the topic is related to your interest/study
+- you solved it in R
+- it is reasonably simple that everyone in the class can have at least a rough idea of what is going on
+
+### 2.2 How will we do it
+
+- Last two classes will be focused on these presentations and discussions. Half of the students will present the first and half the second class
+
+- Each presentation is very brief with exactly four slides (saved this talk in pdf)
+
+- After the section with talks, we will start a personal discussion. At that moment, you will be either presenter or reviewer. Each presenter will be evaluated by teachers and several other reviewers
+
+- Each presenter will sit with her/his computer at the table with an empty chair beside it, and reviewers will come for discussion. Each reviewer will have assigned presenters she/he has to visit, plus can visit some others and discuss.
+
+- As a presenter, you need to present your project and then be available for discussion
+
+As a reviewer, you need to be present at the class for talks and for personal review
+
+### 2.3 Rules for presentation
+
+- Prepare a presentation with exactly four slides:
+
+ - Slide 1: Opening slide with the title of your presentation, your name (Chinese), your major and the year of the study
+ 
+  - Slide 2: Brief introductory slide - what's going on, what kind of data and what kind of problem/method
+  
+  - Slide 3: Results - what came out? (figures, numbers, or something else)
+  
+ - Slide 4: the highlights of the R script used for the presentation. The highlights may include important libraries and functions used in the script or important sections of the R code. Do not copy the whole R code!
+
+- Presentation slides, presentations and R code annotation should be in English
+
+- The presentation should take 3 minutes
+
+- Please check the pdf file; please, make sure you upload your slides and R code before the deadline!
+
+- R code should be fully reproducible, but it should be as tidy as possible.
+
+- Note that all presentations and all R codes will be made available to all students within the class!
+
+## 3. Rules for evaluation
+
+The evaluation will consist of two equal parts: evaluation by classmates and evaluation by me. As a reviewer, you need to evaluate four criteria (presentation, idea, whether they understand their R code, and whether the R code is correct, tidy and clean, see below)
+
+Rules for evaluation (max 30% of overall class score):
+
+|  items           |            criteria     |     scores     |
+|------------------|:------------------------|---------------:|
+| Presentation  | Whether to relate, and whether to attract the attention. If not, leave blank.| 6% |
+| Idea |    	How interesting is the idea, in your opinion?   |   6% |
+| R code | Whether and how the R code works, if clearly, is ok |    6% |
+| R code correct, tidy & clean? |Can the script run, and is it reproducible? Is it free of mistakes? |    6% |
+| Reviewing others | Doing and returning the review of 5 presenters assigned to you as reviewers |    6% |
+| Total | |    30% |
