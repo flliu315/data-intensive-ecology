@@ -12,13 +12,12 @@ navbar:
       href: getting_started.html
     - text: "Lessons"
       menu:
-        - text: "Lesson 1: General overview"
+        - text: "General overview"
           href: general_overview.html
-        - text: "Lesson 2: Data manipulation"
-          href: data_manipulation.html
-
-        - text: "Data and Models"
-          href: data_driven.html
+        - text: "Data exploratory analysis"
+          href: data_exploration.html
+        - text: "Machine learning models"
+          href: ml_models.html
     - text: "Blog"
       href: blog.html
 output: distill::distill_article
