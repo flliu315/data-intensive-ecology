@@ -1,0 +1,26 @@
+[
+  {
+    "path": "posts/2023-10-15-datasci-chatgpt/",
+    "title": "How to use Chatgpt for data science",
+    "description": "ChatGPT can assist data scientists in automating various aspects of their workflow, including data cleaning and preprocessing, model training, and result interpretation. It also highlights how ChatGPT has the potential to provide new insights and improve decision-making processes by analyzing unstructured data.",
+    "author": [],
+    "date": "2023-10-16",
+    "categories": [],
+    "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nRead more here.\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2023-10-16T00:20:17+08:00",
+    "input_file": {}
+  },
+  {
+    "path": "posts/2023-10-15-r-chat-gpt/",
+    "title": "How to integrate chatGPT in R",
+    "description": "ChatGPT provides a set of features to assist in R coding. This blog describes how to work R with ChatGPT.",
+    "author": [],
+    "date": "2023-10-15",
+    "categories": [],
+    "contents": "\r\nThere are lots of websites to help people with some R experience to learn R or be more productive.Here is a concise guide to work R with chat-GPT.\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2023-10-15T23:46:40+08:00",
+    "input_file": {}
+  }
+]

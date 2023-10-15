@@ -1,0 +1,28 @@
+---
+title: "How to use Chatgpt for data science"
+description: |
+  ChatGPT can assist data scientists in automating various aspects of their workflow, including data cleaning and preprocessing, model training, and result interpretation. It also highlights how ChatGPT has the potential to provide new insights and improve decision-making processes by analyzing unstructured data.
+# author: []
+# date: 2023-10-15
+# output:
+#   distill::distill_article:
+#     self_contained: false
+
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Distill is a publication format for scientific and technical writing, native to the web.
+
+Read more [here](AI_study.pdf).
+
+

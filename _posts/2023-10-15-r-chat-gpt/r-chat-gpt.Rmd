@@ -1,0 +1,24 @@
+---
+title: "How to integrate chatGPT in R"
+description: |
+  ChatGPT provides a set of features to assist in R coding. This blog describes how to work R with ChatGPT.
+# author:
+#   - name: Unknown
+# date: 2023-10-15
+# output:
+#   distill::distill_article:
+#     self_contained: false
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+There are lots of websites to help people with some R experience to learn R or be more productive. [Here](https://rpubs.com/nirmal/setting_chat_gpt_R) is a concise guide to work R with chat-GPT. 
