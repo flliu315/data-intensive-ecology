@@ -1,5 +1,5 @@
 ---
-title: "Additional materials"
+title: "My great Blog"
 listing: posts
 ---
 

@@ -2,13 +2,13 @@
   {
     "path": "posts/2023-10-15-datasci-chatgpt/",
     "title": "How to use Chatgpt for data science",
-    "description": "ChatGPT can assist data scientists in automating various aspects of their workflow, including data cleaning and preprocessing, model training, and result interpretation. It also highlights how ChatGPT has the potential to provide new insights and improve decision-making processes by analyzing unstructured data.",
+    "description": "ChatGPT can assist data scientists in data cleaning and preprocessing, model training, and result interpretation, as well as insights into decision-making processes.",
     "author": [],
     "date": "2023-10-16",
     "categories": [],
-    "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nRead more here.\r\n\r\n\r\n\r\n",
+    "contents": "\r\nRead more here.\r\n\r\n\r\n\r\n",
     "preview": {},
-    "last_modified": "2023-10-16T00:20:17+08:00",
+    "last_modified": "2023-10-16T21:46:53+08:00",
     "input_file": {}
   },
   {
