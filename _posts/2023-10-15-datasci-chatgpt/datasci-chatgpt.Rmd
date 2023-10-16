@@ -21,6 +21,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Read more [here](AI_study.pdf).
+Read more [here](AI-assisted-study.pdf).
 
 
