@@ -11,13 +11,19 @@ description: |
  
   Some notes by Fanglin Liu: https://github.com/flliu315
 
+date: "`r Sys.Date()`"
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Introduce of the class
+## 1. Introduce of the class
 
 <mark style="background-color: #F0F0F0">Ecology is the study of the relationships between  plants/animals, including humans, and their abiotic environment</mark>. It seeks to understand the vital connections between living organisms and the world around them.
 Ecology also provides information about the benefits of ecosystems and how we can use Earth’s resources in ways that leave the environment healthy for future generations. 
@@ -32,14 +38,14 @@ This class covers the main elements <mark style="background-color: #F0F0F0">usin
 
 Read more [here](./images/mod_ecol.pdf)
 
-# Preparing for the class
+## 2. Preparing for the class
 - <mark style="background-color: #F0F0F0">Make sure to bring your own computer</mark> for this class, with access to school wifi and enough battery for three hours of work (or bring your power cable). Any operating system (Windows, Mac, Linux) is OK, as far as you are able to operate it.
 - <mark style="background-color: #F0F0F0">Install the latest version of R and RStudio</mark> before you come for the first class - see instructions [here](rstudio_rpackage.html).
 - If you used R and RStudio before, please make sure that you updated to the version required for this class; instructions on how to update and required R and RStudio versions are [here](rstudio_rpackage.html).
 - It is essential that we all are using the same version of R and RStudio, to avoid the situation that you will get error messages just because of using outdated program versions.
 - This textbook provides many learning resources and reference materials for the class.
 
-# Expected learning outcomes
+## 3. Expected learning outcomes
 
 - Experience with programming in R is needed to follow and successfully complete this course. The students without prior experience with programming in R are expected to <mark style="background-color: #F0F0F0">master R programming</mark> in the class, including:
   
@@ -59,7 +65,7 @@ Read more [here](./images/mod_ecol.pdf)
 
   - create ecological insight from data using a data science approach.
 
-# Final evaluation
+## 4. Final evaluation
 The final evaluation consists of three parts:
 
 - Homework assignments (30%), see [here](homework_finalpresent.html)
