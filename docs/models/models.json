@@ -1,5 +1,17 @@
 [
   {
+    "path": "models/2023-10-17-one-shot-learning-with-r/",
+    "title": "Lesson 6: One Shot Learning with R",
+    "description": "One-shot learning is a machine learning algorithm using a limited amount of training set data to compare the similarities and differences between two images. This section will introduce you touUse R keras for building self define generator, building self define layer, building self define backend function.",
+    "author": [],
+    "date": "2023-10-18",
+    "categories": [],
+    "contents": "\r\n\r\nContents\r\nExample 1: Recognization of mnist number\r\n\r\nExample 1: Recognization of mnist number\r\nStep 1 : Data Load\r\nRead Data and Split into train、validate and test\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2023-10-18T00:21:01+08:00",
+    "input_file": {}
+  },
+  {
     "path": "models/2023-10-15-advanced-machine-learning/",
     "title": "Lesson 2: Advanced Machine Learning",
     "description": "Welcome to the introduction to Deep Learning! Using Keras and Tensorflow, you'll learn how to: 1) create a fully-connected neural network architecture, 2) apply neural nets to regression and classification, 3) train neural nets with stochastic gradient descent, and 4) improve performance with dropout, batch normalization, and other techniques.",
