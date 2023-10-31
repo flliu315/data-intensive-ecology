@@ -1,7 +1,7 @@
 ---
 title: "Lesson 2: Advanced Machine Learning"
 description: |
-   Welcome to the introduction to Deep Learning! Using Keras and Tensorflow, you'll learn how to: 1) create a fully-connected neural network architecture, 2) apply neural nets to regression and classification, 3) train neural nets with stochastic gradient descent, and 4) improve performance with dropout, batch normalization, and other techniques.
+   Unlike classic mechine learning in which features are extracted manually, deep learning (DL) can automatically extract features from data. When the amount of data is increased, DL is an effective algorithm, and gives better performance than classic machine larning. This section will guide you how to build DL with your own data.
 # author: []
 # date: 2023-10-15
 # output:
@@ -21,86 +21,82 @@ preview: multi_layer.png
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## 1. Deep learning and its application to ecology
+DL is a subfield of machine learning that works with algorithms inspired by the structure and functions of the human brain called "neural networks". It has 3 types of neural networks: Artificial Neural Network (ANN), Convolutional Neural Network (CNN) and Recurrent Neural Network (RNN), and has a large number of potential applications in ecology, such as image recognition, analysis of acoustic signals, or any other tasks.
 
-### 1.1 Artificial neural networks and deep learning
+## 1. Building and running DL with R
 
-Artificial neural networks are a class of machine learning algorithms that are loosely based on biological neural networks. Advances in the availability of high performance computers allow neural networks to be larger and deeper. Deep learning is a subfield of machine learning primarily concerned with these deep neural networks.
+### 1.1 R packages for neural networks
+There are some [packages](https://subscription.packtpub.com/book/big-data-and-business-intelligence/9781788992893/1/ch01lvl1sec06/setting-up-your-r-environment) that can fit basic neural networks. For example, the **nnet** package can fit feed-forward neural networks with one hidden layer. The **neuralnet** package fits neural networks with multiple hidden layers using back-propagation. The **RSNNS** package makes many model components for training a wide variety of models. The **deepnet** package provides a number of tools for deep learning, as well as allows for different activation functions and the use of dropout for regularization.
 
-- **single_layer perception**
+The **h2o** (https://www.h2o.ai/) is an excellent, general machine learning framework written in Java, and has an API that allows you to use it from R. However, most deep learning practitioners prefer other deep learning libraries, such as **TensorFlow**, **CNTK**, and **MXNet**. **Keras** is actually a frontend abstraction for other deep learning libraries, and can use TensorFlow in the background. 
 
-![](single_layer.png)
+### 1.2 Setting R env for running keras
+**Keras** is a high-level, open source, deep learning framework that emphasizes iterative and fast development. **Keras** models can be deployed on practically any environment, such as a web server, iOS, Android, a browser, or the Raspberry Pi. Now using Tensorflow’s Keras is recommended over the standalone keras package.
 
-- **Multilayer perception**
+To learn more about using Keras in R, go to https://keras.rstudio.com; this link will also has more examples of R and Keras, as well as a handy Keras cheat sheet that gives a thorough reference to all of the functionality of the Keras package. Please pay much attention to the link of the different languages, and understand it for operating on them. 
 
-MLPs (multilayer perceptron) traditionally comprise at least 3 layers: an input layer, a hidden layer, and an output layer. 
+![](r_python.png)
 
-![](multi_layer.png)
+For running keras in Rstudio, you should make sure which python that you can use, and create a virtual environment, such as python3.8-venv.
 
-- **Deep learning**
+```{r echo=TRUE}
+# library(reticulate)
+# py_config() # for environment information
+# install_python # for linux OS 
+# install_miniconda() # for win OS
+```
 
-MLPs often comprise many more layers, allowing them to solve more complex problems. Much of the recent focus has been concentrated in the subfield of deep learning, which is concerned with the study of neural networks comprising many layers. New algorithm was required.
+You can install the python packages of tensorflow and keras using py_install() function from reticulate or open the terminal within Rstudio to install them using pip. After that, you should install the R packages of keras and tensorflow. 
 
+```{r}
+# reticulate::py_install(c('tensorflow-gpu==2.2','tensorflow-addons'), pip = TRUE)
+# devtools::install_github("rstudio/keras")
+# library(keras)
+```
 
-### 1.2 Deep learning for ecological networks 
+## 2. Artificial Neural Network
 
-An ecological network is typically described as a graph G = (V, E) with vertices V representing species, and edges E describing the interactions between the species. This framework allows edges to be either directed or undirected, which means that the interaction can flow from one species to another (in the case of a food web), or the interaction can be mutual (in the case of a host-parasite network). In some networks,
-the edge can also be weighted, to describe the strength of an interaction. This is often used in food webs, to show the rate of flow of energy between species. Binary networks can be considered a special case of weighted networks, where the edge weights are simply set to either 0 or 1. Additionally, the edges can be labelled to represent different types of interaction - these networks are known as multilayer networks. The vertices of an ecological network can also be labelled, for example in bipartite networks where the vertices are labelled so that they belong to one of two groups. Networks such as host-parasite or seed dispersal networks are generally bipartite, since a single species is rarely both a host and parasite.
+### 2.1 The architechture of ANN
+ANN is a forward propagation network that is consists of artificial neurons together and grouped in different levels known as layers. These are the 3 layers applied in structured artificial neural networks: Input Layer, Hidden Layer and Output Layer. This network is like this:
 
-For mathematical convenience, a network can be described by an adjacency matrix. A network with n species would be represented by a real-valued n × n adjacency matrix A, where $A_{ij}$ is the weight of the interaction between the i-th species and the j-th species. This means that the adjacency matrix is symmetric in undirected networks, and asymmetric in directed networks.
+![](ANN.png){width=40% heigh=20% .external}
+The architechture of ANN is different from that ofRNN, whichise used in natural language and speech recognition applications by processing sequential data. RNN can process different types of data at various moments in time. Its Architecture is like this.
 
-**Topological analysis**
+![](RNN.png){width=40% heigh=20% .external}
 
-A key aim of ecosystem analysis is to determine how stable an ecosystem is, and how it might react to environmental change. Therefore, a large amount of research has been concerned with determining the stability of ecosystems using theoretical techniques. These ideas were introduced by Elton, who described a community matrix M of size n × n for which the (i, j)-th entry represents the impact that a species h has on another species j around an equilibrium point of some unobserved dynamical system. This allowed stability analysis techniques from dynamical systems literature to be used, where a system is considered stable to small perturbations if the eigenvalues λ of M all have negative real parts. The original study was concerned with random community matrices, but the same ideas have since been refined and applied to realistic community matrices. This area of research has been used to contribute to the ongoing debate about the relationship between biodiversity and ecosystem stability.
+### 2.2 Constructing ANN networks
 
-**Species importance metrics**
- 
-It is often of interest to ecologists which species are the most influential within their ecosystem. These species are known as keystone species. This has consequences in conservation, since the loss of a keystone species could lead to the collapse of an entire ecosystem. Traditionally, keystone species were identified from their natural history, but it is often difficult to experimentally verify this. This has led to
-the introduction of graph-theoretic species importance metrics which aim to discover keystone species by considering the topology of the network.
+A Keras model is the Sequential or functional class. Here we focus on the sequential model and pay attention to: 1) creating a fully-connected neural network architecture, 2) applying neural nets to regression and classification, 3) training neural nets with stochastic gradient descent, and 4) improving performance with dropout, batch normalization, and other techniques. For more details, see [the site](https://www.kaggle.com/code/ryanholbrook/a-single-neuron)
 
-**Network structure prediction**
-
-Machine learning algorithms are able to discover patterns in data, and use those patterns to make predictions about previously unseen data samples. This had led to widespread use of ML in many different domains to automate laborious tasks which are expensive in terms of both time and money. Ecological networks are generally constructed in such ways, and therefore it is highly desirable to develop
-machine learning algorithms which automate the process.
-
-**Missing link prediction**
-
-Missing link prediction - as the name suggests - is the problem of predicting which links are missing from a network. There is a wealth of literature in network analysis concerning this problem and its applications to a range of complex networks. Recently, attention has turned to the problem of link prediction in the context of ecological networks. This has immediately useful practical applications in ecology. The randomness present in an ecosystem makes it unlikely that all actual interactions are
-observed when collecting data to construct ecological networks. Therefore, the use of link prediction algorithms could help ecologists to discover actual unobserved interactions when used in conjunction with traditional ecological network construction methods.
-
-## 2. Deep learning including fully-connected neural networks 
-
-### 2.1 Linear model with a single or multiple input
-
-The most impressive advances in artificial intelligence have been in the field of deep learning. Deep learning is an approach to machine learning characterized by deep stacks of computations, which can disentangle the kinds of complex and hierarchical patterns in the most challenging real-world datasets. Their power and scalabile neural networks have become the defining model of deep learning. 
-
-Neural networks are composed of neurons, where each neuron individually performs only a simple computation. The fundamental component of a neural network is the individual neuron(see box). 
+Neural networks are composed of neurons, each of which individually performs only a simple computation (see the box1). 
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
 <p style='margin-top:1em; text-align:center'>
-<b>Box : The models with single and multiple inputs</b></p>
+<b>Box 1: Basic knowledge of neural networks</b></p>
 <p style='margin-left:1em;'>
 
 **Single Input**
 
-Though individual neurons will usually only function as part of a larger network, it's often useful to start with a single neuron model as a baseline. Single neuron models are linear models.
+A larger network starts with a single neuron model as a baseline. Single neuron models are linear models. For example, training a model with 'sugars' as input and 'calories' as output in the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals) like this.
 
-For example, training a model with 'sugars' (grams of sugars per serving) as input and 'calories' (calories per serving) as output in the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), we might find the bias is $b=90$ and the weight is $w=2.5$. We could estimate the calorie content of a cereal with 5 grams of sugar per serving like this:
-
+<br>
 <center>
-![](SingleInput.png){width="90%"}
-</center><br>
+![](linearUnit.png){width="30%"}
+</center></br>
+
+The formula for this neuron would be $y=wx+b$
 
 **Multiple Inputs**
 
-The 80 Cereals dataset has many more features than just 'sugars'. What if we wanted to expand our model to include things like fiber or protein content? That's easy enough. We can just add more input connections to the neuron, one for each additional feature. To find the output, we would multiply each input to its connection weight and then add them all together.
+If we wanted to expand our model to include things like fiber or protein content, we can just add more input connections to the neuron, and multiply each input to its connection weight and then add them all together.
 
+<br>
 <center>
-![](MultipleInput.png)
-</center><br>
+![](MultipleInput.png){width=30%}
+</center></br>
 
-The formula for this neuron would be  $y=w_{0}x_{0}+w_{1}x_{1}+w_{2}x_{2}+b$. A linear unit with two inputs will fit a plane, and a unit with more inputs than that will fit a hyperplane.
+The formula for this neuron would be  $y=w_{0}x_{0}+w_{1}x_{1}+w_{2}x_{2}+b$.
 <br>
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
@@ -108,70 +104,60 @@ The formula for this neuron would be  $y=w_{0}x_{0}+w_{1}x_{1}+w_{2}x_{2}+b$. A 
 </div>
 <br>
 
-Here describe a diagram of a [neuron or unit](https://www.kaggle.com/code/ryanholbrook/a-single-neuron). Does the formula $y=wx+b$  look familiar? It's the slope-intercept equation, where $w$ is the slope and $b$ is the y-intercept.
-
-<center>
-![The Linear Unit:  y=wx+b](linearUnit.png){width="70%"}
-</center>
-
-The input is $x$. Its connection to the neuron has a weight which is $w$. Whenever a value flows through a connection, you multiply the value by the connection's weight. For the input $x$, what reaches the neuron is $w * x$. A neural network "learns" by modifying its weights.
-
-The b is a special kind of weight we call the bias. The bias doesn't have any input data associated with it; instead, we put a 1 in the diagram so that the value that reaches the neuron is just $b$ (since $1 * b = b$). The bias enables the neuron to modify the output independently of its inputs.
-
-The $y$ is the value the neuron ultimately outputs. To get the output, the neuron sums up all the values it receives through its connections. This neuron's activation is $y = w * x + b$, or as a formula  $y = wx+b$.
+We can define the sequential model for allowing a neural network to "learns" by modifying the weight of each feature.
 
 ```{r echo=TRUE}
-# Create a network with 1 linear unit
+# Create a network with one linear unit
 #model = keras.Sequential([
 #    layers.Dense(units=1, input_shape=[3])
 #])
 ```
 
-The first argument, units, defining how many outputs we want. In this case just predicting 'calories', so units=1. The second argument, input_shape, telling Keras the dimensions of the inputs. Setting input_shape=[3] ensures the model will accept three features as input ('sugars', 'fiber', and 'protein'). This model is now ready to be fit to training data!
+The first argument, units, defining how many outputs we want. In this case just predicting 'calories', so units=1. The second argument, input_shape, telling Keras the dimensions of the inputs. Setting input_shape=[3] ensures the model to accept three features as input ('sugars', 'fiber', and 'protein'). This model is now ready to be fit to training data!
 
-
-### 2.2 Stacking many linear models for deep neural networks
-
-We can build neural networks capable of learning the complex kinds of relationships that deep neural nets work for. The key idea here is that we can combine and modify these single units to model more complex relationships. We have some nonlinearity with activation functions, let's see the box2 to understand how we can stack layers to get complex data transformations.
+We can combine and modify these single units to model more complex relationships that deep neural nets work for. Let's see the box2 to understand how we stack layers to get complex data transformations. We have some nonlinearity with activation functions (see the box2).
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
 <p style='margin-top:1em; text-align:center'>
-<b>Box : The models with single and multiple inputs</b></p>
+<b>Box 2: Constructing neural networks</b></p>
 <p style='margin-left:1em;'>
 
 **Layers**
 
-Neural networks typically organize their neurons into layers. We collect together linear units, and then get a dense layer through a common set of inputs. A layer can be, essentially, any kind of data transformation. Many layers, like the convolutional and recurrent layers, transform data through use of neurons and differ primarily in the pattern of connections they form. Others though are used for feature engineering or just simple arithmetic.
+We collect together linear units, and then get a dense layer through a common set of inputs. 
 
-![](DenseLayer1.png)
+<br><center>
+![](DenseLayer1.png){width=30%}
+</center></br>
 
-You could think of each layer in a neural network as performing some kind of relatively simple transformation. Through a deep stack of layers, a neural network can transform its inputs in more and more complex ways. In a well-trained neural network, each layer is a transformation getting us a little bit closer to a solution.
+Each layer in a neural network performs relatively simple transformation. Through a deep stack of layers, a neural network can transform its inputs in more and more complex ways.
 
-**The Activation Function**
+**Activation Function**
 
-Dense layers by themselves can never move us out of the world of lines and planes. Without activation functions, neural networks can only learn linear relationships. What we need are activation functions to fit curves. The most common activation function is the rectifier function max(0,x).
-
-![](ReLU.png)
-The rectifier function has a graph that's a line with the negative part "rectified" to zero. Applying the function to the outputs of a neuron will put a bend in the data, moving us away from simple lines.
-
-When we attach the rectifier to a linear unit, we get a rectified linear unit or ReLU. Applying a ReLU activation to a linear unit means the output becomes $max(0, w * x + b)$, which we might draw in a diagram like:
-
-![](ReLUunit.png)
+Without activation functions, neural networks can only learn linear relationships (lines and planes). So we need are activation functions to fit curves. The common activation function is the rectifier function max(0,x).
 
 <br>
+<center>
+![](ReLU.png){width=40%}
+</center>
+</br>
+
+When we attach the rectifier to a linear unit, we get a rectified linear unit or ReLU. Applying a ReLU activation to a linear unit means the output becomes $max(0, w * x + b)$. We stack layers inside a Sequential model, and add an activation function after the hidden layers, the network has the ability to learn more complex (non-linear) relationships in the data.
+
+<br><center>
+![](StackingLayers.png){width=50%}
+</center></br>
+
+Notice that the final (output) layer is a linear unit (meaning, no activation function). That makes this network appropriate to a regression task, where we are trying to predict some arbitrary numeric value. Other tasks (like classification) might require an activation function on the output.
+
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
 </p></span>
 </div>
 <br>
 
-We build deep neural networks by stacking layers inside a Sequential model. By adding an activation function after the hidden layers, we gave the network the ability to learn more complex (non-linear) relationships in the data.
-
-![](StackingLayers.png)
-Now, notice that the final (output) layer is a linear unit (meaning, no activation function). That makes this network appropriate to a regression task, where we are trying to predict some arbitrary numeric value. Other tasks (like classification) might require an activation function on the output.
-
-The Sequential model we've been using will connect together a list of layers in order from first to last: the first layer gets the input, the last layer produces the output. This creates the model in the figure above:
+The Sequential model we've been using will connect together a list of layers in order from first layer (input) to last layer (output). This creates a model in the above figure.
 
 ```{r echo=TRUE}
 #model = keras.Sequential([
@@ -182,9 +168,9 @@ The Sequential model we've been using will connect together a list of layers in 
 ##])
 ```
 
-As for the dataset of of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), we've chosen a three-layer network with over 1500 neurons. This network should be capable of learning fairly complex relationships in the data.
+As for the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), we've chosen a three-layer network with over 1500 neurons. This network should be capable of learning fairly complex relationships in the data.
 
-```{r}
+```{r echo=TRUE}
 #model = keras.Sequential([
 #    layers.Dense(512, activation='relu', input_shape=[11]),
 #    layers.Dense(512, activation='relu'),
@@ -193,54 +179,47 @@ As for the dataset of of [cereals](https://www.kaggle.com/datasets/crawford/80-c
 #])
 ```
 
+### 2.3 Compiling neutral networks
 
-## 3. Training neutral network models
-
-Like machine learning tasks, training a network model in fact is to adjust its weights so that it can transform the features (inputs) into the target (output). the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), for instance, we want a network that can take each cereal 'sugar', 'fiber', and 'protein' content and produce a prediction for that cereal 'calories'. If successfully train a network to do that, its weights must represent some relationships between those features and that target.
+Training a network model is to adjust its weights so that it can transform the features (inputs) into the target (output). If successfully train a network, its weights must represent some relationships between those features and that target (see the box3).
 
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
 <p style='margin-top:1em; text-align:center'>
-<b>Box : The models with single and multiple inputs</b></p>
+<b>Box 3: Compiling neural networks</b></p>
 <p style='margin-left:1em;'>
 
 **The Loss Function**
 
-The loss function measures the disparity between the the target's true value and the value the model predicts. Different problems call for different loss functions. A common loss function for regression is the mean absolute error (MAE), i.e., abs(y_true - y_pred). 
+The loss function measures the disparity between the the target's true value and the value the model predicts. A common loss function for regression is the mean absolute error (MAE), i.e., abs(y_true - y_pred). Besides MAE, other loss functions for regression problems are the mean-squared error (MSE) or the Huber loss (both available in Keras). For classification, the common function is to measure the accuracy.
 
-![](LossFunc.png)
-Besides MAE, other loss functions you might see for regression problems are the mean-squared error (MSE) or the Huber loss (both available in Keras).
+**Optimizer, minibatch and epoch**
 
-**The Activation Function**
-
-Virtually all of the optimization algorithms used in deep learning belong to a family called stochastic gradient descent. They are iterative algorithms that train a network in steps like this:
+All of the optimization algorithms used in deep learning belong to a family called stochastic gradient descent (SGD). They are iterative algorithms that train a network in steps like this:
 
 - Sample some training data and run it through the network to make predictions.
 - Measure the loss between the predictions and the true values.
 - Finally, adjust the weights in a direction that makes the loss smaller.
 
-![](SGD.gif)
+Adam is an SGD algorithm that has an adaptive learning rate that makes it suitable for most problems without any parameter tuning. Adam is a great general-purpose optimizer. RMSpro is a good one for regression problems.
 
 Each iteration's sample of training data is called a minibatch (often "batch"), while a complete round of the training data is called an epoch. The number of epochs you train is how many times the network will see each training example.
 
-The animation shows the linear model, which is trained with SGD. The pale red dots depict the entire training set, while the solid red dots are the minibatches. Every time SGD sees a new minibatch, it will shift $w$ and $b$ toward their correct values on that batch. Batch after batch, the line eventually converges to its best fit. 
-
 **Learning Rate and Batch Size**
 
-The learning rate and the size of the minibatches are the two parameters that have the largest effect on how the SGD training proceeds. Fortunately, for most work it won't be necessary to do an extensive hyperparameter search to get satisfactory results. Adam is an SGD algorithm that has an adaptive learning rate that makes it suitable for most problems without any parameter tuning. Adam is a great general-purpose optimizer.
+The learning rate and the size of the minibatches are the two parameters that have the largest effect on how the SGD training proceeds.  
 
-<br>
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
 </p></span>
 </div>
 <br>
 
-After understanding the two things, we should compile in the optimizer and loss function.
+After understanding these things, we should compile the squential model with the optimizer and loss function.
 
 
-```{r}
+```{r echo=TRUE}
 #model.compile(
 #    optimizer='adam',
 #    loss='mae',
@@ -249,7 +228,7 @@ After understanding the two things, we should compile in the optimizer and loss 
 
 Now we're ready to start the training! We've told Keras to feed the optimizer 256 rows of the training data at a time (the batch_size) and to do that 10 times all the way through the dataset (the epochs).
 
-```{r}
+```{r echo=TRUE}
 #history = model.fit(
 #    X_train, y_train,
 #    validation_data=(X_valid, y_valid),
@@ -258,29 +237,14 @@ Now we're ready to start the training! We've told Keras to feed the optimizer 25
 #)
 ```
 
-## 4. Improving the performance of network models
+### 2.4 Improving network models
 
-### 4.1 Increasing capacity and including early stop
-
-Keras will keep a history of the training and validation loss over the epochs that it is training the model. We'll examine the learning curves for evidence of underfitting and overfitting for correcting it.
-
-**Learning Curves**
-
-We train a model by choosing weights or parameters that minimize the loss on a training set. We need to evaluate it on a new set of data, the validation data, to accurately assess a model's performance.
-
-When we train a model we've been plotting the loss on the training set epoch by epoch. To this we'll add a plot the validation data too. These plots we call the learning curves.
-
-![](LearnCurve.png)
-When a model learns signal both curves go down, but when it learns noise a gap is created in the curves. The size of the gap tells you how much noise the model has learned. Ideally, we would create models that learn all of the signal and none of the noise. We can get the model to learn more signal at the cost of learning more noise. So long as the trade is in our favor, the validation loss will continue to decrease.
-
-![](UnfitOverfit.png)
-**Capacity**
-
-A model's capacity refers to the size and complexity of the patterns it is able to learn. For neural networks, this will largely be determined by how many neurons it has and how they are connected together. If it appears that your network is underfitting the data, you should try increasing its capacity.
+**Capacity**: A model's capacity refers to the size and complexity of the patterns it is able to learn. For neural networks, this is largely determined by how many neurons it has and how they are connected together. If it appears that your network is underfitting data, you should try increasing its capacity.
 
 You can increase the capacity of a network either by making it wider (more units to existing layers) or by making it deeper (adding more layers). Wider networks have an easier time learning more linear relationships, while deeper networks prefer more nonlinear ones. Which is better just depends on the dataset.
 
-```{r}
+
+```{r echo=TRUE}
 #model = keras.Sequential([
 #    layers.Dense(16, activation='relu'),
 #    layers.Dense(1),
@@ -298,16 +262,44 @@ You can increase the capacity of a network either by making it wider (more units
 #])
 ```
 
+
+**Early Stopping**: Keras keeps a history of the training and validation loss over the epochs. We'll examine the learning curves for evidence of underfitting and overfitting for correcting it (see the box4).
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 4: Improving neural networks</b></p>
+<p style='margin-left:1em;'>
+
+**Learning Curves**
+
+When we train a model we've been plotting the loss on the training set epoch by epoch. To this we'll add a plot the validation data too. These plots we call the learning curves.
+
+<center>
+![](LearnCurve.png){width=40%}
+</center>
+
+When a model learns signal both curves go down, but when it learns noise a gap is created in the curves. You should create models that minimize the size of the gap.
+
 **Early Stopping**
 
 When a model is too eagerly learning noise, the validation loss may start to increase during training. To prevent this, we can simply stop the training whenever it seems the validation loss isn't decreasing anymore. Interrupting the training this way is called early stopping.
 
-![](StopPoint.png)
+<center>
+![](StopPoint.png){width=40%}
+</center>
+
 Once we detect that the validation loss is starting to rise again, we can reset the weights back to where the minimum occured. This ensures that the model won't continue to learn noise and overfit the data.
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
+</p></span>
+</div>
+<br>
 
 In Keras, we include early stopping in our training through a callback. A callback is just a function you want run every so often while the network trains. The early stopping callback will run after every epoch.
 
-```{r}
+```{r echo=TRUE}
 #early_stopping = callbacks.EarlyStopping(
 #    min_delta=0.001, # minimium amount of change to count as an improvement
 #    patience=20, # how many epochs to wait before stopping
@@ -315,20 +307,36 @@ In Keras, we include early stopping in our training through a callback. A callba
 #)
 ```
 
-### 4.2 Dropout and Batch Normalization
+**Special layers**: There are some special layers that do not contain any neurons, but that they are added prevent overfitting and stabilize training. See the box5
 
-There are some special layers that do not contain any neurons, but that they are added prevent overfitting and stabilize training.
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 5: Adding special layers</b></p>
+<p style='margin-left:1em;'>
 
 **Dropout**
 
-To break up these conspiracies, we randomly drop out some fraction of a layer's input units every step of training, making it much harder for the network to learn those spurious patterns in the training data. Instead, it has to search for broad, general patterns, whose weight patterns tend to be more robust.
+We randomly drop out some fraction of a layer's input units every step of training, making it much harder for the network to learn those spurious patterns in the training data. Instead, it has to search for broad, general patterns, whose weight patterns tend to be more robust. If you're familiar with random forests as an ensemble of decision trees, it's the same idea.
 
-You could also think about dropout as creating a kind of ensemble of networks. The predictions will no longer be made by one big network, but instead by a committee of smaller networks. Individuals in the committee tend to make different kinds of mistakes, but be right at the same time, making the committee as a whole better than any individual. (If you're familiar with random forests as an ensemble of decision trees, it's the same idea.)
+<center>
+![](Dropout.gif){width=40%}
+</center>
 
-![](Dropout.gif)
+**Batch Normalization**
+
+It's generally a good idea to put all of your data on a common scale. If it's good to normalize the data before it goes into the network, maybe normalizing inside the network would be better! This special kind of layer can do this. A batch normalization layer looks at each batch as it comes in, first normalizing the batch with its own mean and standard deviation, and then putting the data on a new scale with two trainable rescaling parameters.
+
+Batch normalization is another special layer, which can help correct training that is slow or unstable. 
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
 In Keras, the dropout rate argument rate defines what percentage of the input units to shut off. Put the Dropout layer just before the layer you want the dropout applied to:
 
-```{r}
+```{r echo=TRUE}
 #keras.Sequential([
 #    # ...
 #    layers.Dropout(rate=0.3), # apply 30% dropout to the next layer
@@ -336,66 +344,637 @@ In Keras, the dropout rate argument rate defines what percentage of the input un
 #    # ...
 #])
 ```
+As for batch normalization layers, you can put it after a layer...
 
-**Batch Normalization**
-
-Another special layer is "batch normalization" (or "batchnorm"), which can help correct training that is slow or unstable.
-
-With neural networks, it's generally a good idea to put all of your data on a common scale, perhaps with something like scikit-learn's StandardScaler or MinMaxScaler. Now, if it's good to normalize the data before it goes into the network, maybe normalizing inside the network would be better! This special kind of layer can do this. A batch normalization layer looks at each batch as it comes in, first normalizing the batch with its own mean and standard deviation, and then putting the data on a new scale with two trainable rescaling parameters.
-
-It seems that batch normalization can be used at almost any point in a network. You can put it after a layer...
-
-```{r}
+```{r echo=TRUE}
 #layers.Dense(16, activation='relu'),
 #layers.BatchNormalization(),
 ```
 
 ... or between a layer and its activation function:
 
-```{r}
+```{r echo=TRUE}
 #layers.Dense(16),
 #layers.BatchNormalization(),
 #layers.Activation('relu'),
 ```
-
 And if you add it as the first layer of your network it can act as a kind of adaptive preprocessor, standing in for something like Sci-Kit Learn's StandardScaler.
 
-## 5. Setup R environment for deeep learning
+### 2.5 Examples of ANN 
 
-### 5.1 R packages for neural networks
+You are suggested to visit [the site](https://rpubs.com/Nilafhiosagam/541333) or [another site](https://www.kaggle.com/code/yashgyy/deep-learning-with-r-keras-iris-dataset)
 
-There are some [packages](https://subscription.packtpub.com/book/big-data-and-business-intelligence/9781788992893/1/ch01lvl1sec06/setting-up-your-r-environment) that can fit basic neural networks. The **nnet** package is one package and it can fit feed-forward neural networks with one hidden layer. The **neuralnet** package fits neural networks with multiple hidden layers and can train them using back-propagation. We will also use the **RSNNS** package, which is an R wrapper of the Stuttgart Neural Network Simulator (SNNS). The RSNNS package makes many model components from SNNS available, making it possible to train a wide variety of models.
+<!-- **Step 1: Checking and setting environment** -->
 
-The **deepnet** package provides a number of tools for deep learning in R. Specifically, it can train RBMs and use these as part of DBNs to generate initial values to train deep neural networks. The deepnet package also allows for different activation functions, and the use of dropout for regularization.
+<!-- Please checking your Rstudio whether it runs in a virtural environment by opening the terminal in Rstudio. If not, doing the following things step-by-step and then examining it again. -->
 
-### 5.2 Deep learning frameworks for R
+<!-- ```{r echo=TRUE} -->
+<!-- # rm(list = ls()) -->
+<!-- # install.packages("reticulate") -->
+<!-- # reticulate::py_config() -->
+<!-- # reticulate::py_install(c('tensorflow-gpu==2.2','tensorflow-addons'), pip = TRUE) -->
+<!-- # library(keras) -->
+<!-- ``` -->
+<!-- Then loading the data and doing some pre-process them. -->
 
-There are a number of R packages available for neural networks, but few options for deep learning. The h2o (https://www.h2o.ai/) is an excellent, general machine learning framework written in Java, and has an API that allows you to use it from R. However, most deep learning practitioners prefer other deep learning libraries, such as TensorFlow, CNTK, and MXNet. There is a good choice of deep learning libraries that are supported in R—MXNet and Keras. **Keras** is actually a frontend abstraction for other deep learning libraries, and can use TensorFlow in the background. We will use MXNet, Keras, and TensorFlow in this class.
+<!-- **Sept 2: Load iris data and pre-process them** -->
 
-**MXNet**
+<!-- ```{r echo=TRUE} -->
+<!-- # library(tidyverse) -->
+<!-- # library(datasets) -->
+<!-- # data(iris) -->
+<!-- ``` -->
+<!-- keras working with a matrix, which elements are the same type, while the targets are factors, the rest is numeric. Use as.numeric() to convert the data to numbers -->
 
-MXNet is a deep learning library developed by Amazon. It can run on CPUs and GPUs. Apache MXNet is a flexible and scalable deep learning framework that supports convolutional neural networks (CNNs) and long short-term memory networks (LSTMs). It can be distributed across multiple processors/machines and achieves almost linear scale on multiple GPUs/CPUs. It is easy to install on R and it supports a good range of deep learning functionality for R. 
+<!-- ```{r echo=TRUE} -->
+<!-- # iris[,5] <- as.numeric(iris[,5]) -1 # Transfer the target into numbers, and all -1 for 0, 1, and 2 -->
+<!-- # iris <- as.matrix(iris) # Turn `iris` into a matrix -->
+<!-- # dimnames(iris) <- NULL # Set iris `dimnames` to `NULL`, that is, just a matrix -->
+<!-- ``` -->
 
-**Keras**
+<!-- The data are then split into training and test sets by running the following code -->
 
-Keras is a high-level, open source, deep learning framework created by Francois Chollet from Google that emphasizes iterative and fast development; it is generally regarded as one of the best options to use to learn deep learning. Keras has a choice of backend lower-level frameworks: TensorFlow, Theano, or CNTK, but it is most commonly used with TensorFlow. Keras models can be deployed on practically any environment, for example, a web server, iOS, Android, a browser, or the Raspberry Pi.
+<!-- ```{r echo=TRUE} -->
+<!-- set.seed(1234) -->
+<!-- ind <- sample(2, nrow(iris), replace=TRUE, prob=c(0.7, 0.3)) # Sample size "2" means two sets of 1 and 2, sample with replacement -->
 
-To learn more about using Keras in R, go to https://keras.rstudio.com; this link will also has more examples of R and Keras, as well as a handy Keras cheat sheet that gives a thorough reference to all of the functionality of the R Keras package. To install the keras package for R, run the following code:
+<!-- xtrain <- iris[ind==1, 1:4] # Split the features -->
+<!-- xtest <- iris[ind==2, 1:4] -->
+<!-- ytrain <- iris[ind==1, 5] # Split the targets -->
+<!-- ytest <- iris[ind==2, 5] -->
+<!-- ``` -->
 
-```{r echo=TRUE}
-#devtools::install_github("rstudio/keras")
-#library(keras)
-#install_keras()
-```
+<!-- For multi-class classification with neural networks, transforming the targets from vector value (0,1,2) to matrix with a boolean for each class -->
 
-Please pay much attention to the link of the different languages, and understand it for operating on them. 
+<!-- ```{r echo=TRUE} -->
+<!-- # trainLabels <- to_categorical(ytrain) # One hot encode training target values -->
+<!-- # testLabels <- to_categorical(ytest) # One hot encode test target values -->
+<!-- # print(testLabels) # Print out the iris.testLabels to double check the result -->
+<!-- ``` -->
 
-![](r_python.png)
+<!-- **Step 3: Constructing model and training the model** -->
 
-For ubuntu, you should make sure which python that you can use, and create a virtual environment, such as python3.8-venv, for running keras in Rstudio. 
+<!-- Initializing a sequential model that is fully connected, with an activation functions -->
 
-```{r echo=TRUE}
-#reticulate::py_config()
-```
+<!-- ```{r echo=TRUE} -->
+<!-- # model <- keras_model_sequential() # Initialize a sequential model -->
+<!-- # model %>% # Add layers to the model: 4 columns -->
+<!-- #   layer_dense(units = 8, activation = 'relu', input_shape = c(4)) %>%  -->
+<!-- #   layer_dense(units = 3, activation = 'softmax') -->
+<!-- # summary(model) # Print a summary of a model -->
+<!-- ``` -->
 
+<!-- With two arguments of optimizer and loss, compiling and fitting the model to training data -->
 
+<!-- ```{r echo=TRUE} -->
+<!-- # model %>% compile( # Compile the model -->
+<!-- #   loss = 'categorical_crossentropy', # binary classes use binary_crossentropy -->
+<!-- #   optimizer = 'adam', # can use Stochastic Gradient Descent (SGD) and RMSprop -->
+<!-- #   metrics = 'accuracy' #  for a regression use MSE. -->
+<!-- # ) -->
+<!-- ``` -->
+
+<!-- After that, training the model. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # history <- model %>% fit( # Store the fitting history in `history`  -->
+<!-- #   xtrain,  -->
+<!-- #   trainLabels,  -->
+<!-- #   epochs = 200, -->
+<!-- #   batch_size = 5,  -->
+<!-- #   validation_split = 0.2 -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # plot(history) # Plot the history -->
+<!-- ``` -->
+
+<!-- **Step 4: Evaluating the model** -->
+<!-- Visualizing the training history to make two separate, one for the model loss and another for its model accuracy -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # plot(history$metrics$loss, main="Model Loss", xlab = "epoch",  -->
+<!-- #      ylab="loss", col="blue", type="l") # Plot the model loss of the training data -->
+<!-- # lines(history$metrics$val_loss, col="green") # Plot the model loss of the validation data -->
+<!-- # legend("topright", c("train","test"), col=c("blue", "green"), lty=c(1,1)) # Add legend -->
+<!-- #  -->
+<!-- # plot(history$metrics$acc, main="Model Accuracy", xlab = "epoch", ylab="accuracy", col="blue", type="l") # Plot the accuracy of the training data  -->
+<!-- # lines(history$metrics$val_acc, col="green") # Plot the accuracy of the validation data -->
+<!-- # legend("bottomright", c("train","test"), col=c("blue", "green"), lty=c(1,1)) # Add Legend -->
+<!-- ``` -->
+
+<!-- **Step 5: prediction with test data** -->
+<!-- Using the model to predict the labels for the test set. As for the multi-class classification with softmax, model %>% predict(x) %>% k_argmax(). As for binary classification with sigmoid, model %>% predict(x) %>% >(0.5) %>% k_cast("int32") -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # classes <- model %>%  -->
+<!-- #   predict(xtest, batch_size = 28) %>%  -->
+<!-- #   k_argmax() # get the max possibility of a specific class -->
+<!-- # table(ytest, as.vector(classes)) # Confusion matrix -->
+<!-- # score <- model %>% evaluate(xtest, testLabels, batch_size = 128) # Evaluate on test data and labels -->
+<!-- # print(score) # Print the score -->
+<!-- ``` -->
+
+<!-- **Step 6: Fine-tuning model** -->
+
+<!-- Adjusting the number of layers and hidden units as well as the number of epochs or the batch size to improve the model. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # model2 <- keras_model_sequential() # Initialize the sequential model -->
+<!-- # model2 %>% # Adding layers to model -->
+<!-- #   layer_dense(units = 8, activation = 'relu', input_shape = c(4)) %>%  -->
+<!-- #   layer_dense(units = 5, activation = 'relu') %>%  -->
+<!-- #   layer_dense(units = 3, activation = 'softmax') -->
+<!-- #  -->
+<!-- # model2 %>% compile(# Compile the model -->
+<!-- #   loss = 'categorical_crossentropy', -->
+<!-- #   optimizer = 'adam', -->
+<!-- #   metrics = 'accuracy' -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # model2 %>% fit(# Fit the model to the data -->
+<!-- #   xtrain, trainLabels,  -->
+<!-- #   epochs = 200, batch_size = 5,  -->
+<!-- #   validation_split = 0.2 -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # score2 <- model2 %>%  -->
+<!-- #   evaluate(xtest, testLabels, batch_size = 128)# Evaluate the model -->
+<!-- # print(score2) # Print the score -->
+<!-- ``` -->
+
+<!-- By reducing or adding hidden units to model for improving the model, like this. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # model3 <- keras_model_sequential() # Initialize a sequential model -->
+<!-- # model3 %>% # Add layers to model -->
+<!-- #   layer_dense(units = 28, activation = 'relu', input_shape = c(4)) %>%  -->
+<!-- #   layer_dense(units = 3, activation = 'softmax') -->
+<!-- #  -->
+<!-- # model3 %>% compile(# Compile the model -->
+<!-- #   loss = 'categorical_crossentropy', -->
+<!-- #   optimizer = 'adam', -->
+<!-- #   metrics = 'accuracy' -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # model3 %>% fit(# Fit the model to the data -->
+<!-- #   xtrain, trainLabels,  -->
+<!-- #   epochs = 200, batch_size = 5,  -->
+<!-- #   validation_split = 0.2 -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # score3 <- model3 %>%  -->
+<!-- #   evaluate(xtest, testLabels, batch_size = 128) # Evaluate the model -->
+<!-- #  -->
+<!-- # print(score3) # Print the score -->
+<!-- ``` -->
+
+<!-- **Step 7: Saving and Loading the best Model** -->
+
+<!-- You can save and reload the model, and even deploy them on other platforms  -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # save_model_hdf5(model, "results/my_model.h5") -->
+<!-- # model <- load_model_hdf5("results/my_model.h5") -->
+<!-- ``` -->
+
+<!-- #### 2.5.2 Runing DL for regression -->
+
+<!-- Building a regression model using deep learning algorithm, please refer to [the site](https://tensorflow.rstudio.com/tutorials/keras/regression). It also follows these steps. -->
+
+<!-- **Step 1: Checking the environment and loading packages** -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # rm(list = ls()) -->
+<!-- # library(tensorflow) # loading the the four packages -->
+<!-- # library(keras) -->
+<!-- # library(tidyverse) -->
+<!-- # library(tidymodels) -->
+<!-- ``` -->
+
+<!-- **Step 2: Loading data and pre-process** -->
+
+<!-- Loading the data from a website and then clearning them for further analysis. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data" # loading the data from a URL -->
+<!-- # col_names <- c("mpg","cylinders","displacement","horsepower","weight", -->
+<!-- #                "acceleration","model_year", "origin","car_name") -->
+<!-- # raw_dataset <- read.table( -->
+<!-- #   url, -->
+<!-- #   header = T, -->
+<!-- #   col.names = col_names, -->
+<!-- #   na.strings = "?" -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # dataset <- raw_dataset %>% select(-car_name) -->
+<!-- #  -->
+<!-- # # cleaning the data -->
+<!-- # lapply(dataset, function(x) sum(is.na(x))) %>% str() # Drop those rows with NA -->
+<!-- # dataset <- na.omit(dataset) -->
+<!-- #  -->
+<!-- # dataset <- recipe(mpg ~ ., dataset) %>%  # one-hot encode for the original column  -->
+<!-- #   step_num2factor(origin, levels = c("USA", "Europe", "Japan")) %>% -->
+<!-- #   step_dummy(origin, one_hot = TRUE) %>% # using step_dummy(one_hot = FALSE) for binary -->
+<!-- #   prep() %>% # update the recipe -->
+<!-- #   bake(new_data = NULL) # view preProcessing data  -->
+<!-- #  -->
+<!-- # glimpse(dataset) -->
+<!-- ``` -->
+
+<!-- Splitting the data into training and test sets, and separating features from labels. Using train set for building model and test set for evaluation of model. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # split <- initial_split(dataset, 0.8) -->
+<!-- # train_dataset <- training(split) -->
+<!-- # test_dataset <- testing(split)  -->
+<!-- ``` -->
+
+<!-- Reviewing the distribution of a few pairs of columns from the training set, then you may normalize the features and do some conversion of targets. There are lots of things that should be considered. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # train_dataset %>% -->
+<!-- #   select(mpg, cylinders, displacement, weight) %>% -->
+<!-- #   GGally::ggpairs() # help identifying the correlations among variables -->
+<!-- #  -->
+<!-- # skimr::skim(train_dataset) # an alternative to summary() # Note each feature covers a very different range -->
+<!-- #  -->
+<!-- # # Split features from labels and normalizing feature values of train set -->
+<!-- # train_features <- train_dataset %>% select(-mpg) -->
+<!-- # test_features <- test_dataset %>% select(-mpg) -->
+<!-- #  -->
+<!-- # train_labels <- train_dataset %>% select(mpg) -->
+<!-- # test_labels <- test_dataset %>% select(mpg) -->
+<!-- #  -->
+<!-- # # see the different of each feature range and possibly skipping the step -->
+<!-- # # my_skim <- skimr::skim_with(numeric = skimr::sfl(mean, sd)) # self-defining summary -->
+<!-- # # train_dataset %>% -->
+<!-- # #   select(where(~is.numeric(.x))) %>% -->
+<!-- # #   pivot_longer( -->
+<!-- # #     cols = everything(), names_to = "variable", values_to = "values") %>% -->
+<!-- # #   group_by(variable) %>% -->
+<!-- # #   summarise(mean = mean(values), sd = sd(values)) -->
+<!-- #  -->
+<!-- # normalizer <- layer_normalization(axis = -1L) # feature values transferred to the range [0,1] -->
+<!-- # normalizer %>% adapt(as.matrix(train_features)) -->
+<!-- # print(normalizer$mean) -->
+<!-- #  -->
+<!-- # # first <- as.matrix(train_features[1,]) -->
+<!-- # # cat('First example:', first) -->
+<!-- # # cat('Normalized:', as.matrix(normalizer(first))) -->
+
+<!-- # # Normalizing the 'horsepower' input feature  -->
+<!-- # horsepower <- matrix(train_features$horsepower) # creating a matrix of the feature -->
+<!-- # horsepower_normalizer <- layer_normalization(input_shape = shape(1), axis = NULL) -->
+<!-- # horsepower_normalizer %>% adapt(horsepower) -->
+<!-- ``` -->
+
+<!-- **Step 3: Building and evaluating linear Model ** -->
+
+<!-- First, building a linear regression with different conditions. First, building a linear regression between 'mpg' and 'horsepower', i.e., for 1 output. -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # horsepower_model <- keras_model_sequential() %>% -->
+<!-- #   horsepower_normalizer() %>% -->
+<!-- #   layer_dense(units = 1) -->
+<!-- # # summary(horsepower_model) -->
+<!-- # # Using the untrained model on the first 10 ‘horsepower’ values -->
+<!-- # # predict(horsepower_model, horsepower[1:10,]) -->
+
+<!-- # Configuring the training procedure with keras's compile(). -->
+<!-- # horsepower_model %>% compile( -->
+<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
+<!-- #   loss = 'mean_absolute_error' # to be optimized -->
+<!-- # ) -->
+
+<!-- # Executing to train a model for 100 epochs -->
+<!-- # history <- horsepower_model %>% fit( -->
+<!-- #   as.matrix(train_features$horsepower), -->
+<!-- #   as.matrix(train_labels), -->
+<!-- #   epochs = 100, -->
+<!-- #   verbose = 0, # Suppress logging -->
+<!-- #   validation_split = 0.2 # validation on 20% of the training data -->
+<!-- # ) -->
+<!-- # plot(history) # Visualizing the model’s training progress  -->
+
+<!-- # Collecting the results on the test set -->
+<!-- # test_results <- list() -->
+<!-- # test_results[["horsepower_model"]] <- horsepower_model %>% evaluate( -->
+<!-- #   as.matrix(test_features$horsepower), -->
+<!-- #   as.matrix(test_labels), -->
+<!-- #   verbose = 0 -->
+<!-- # ) -->
+<!-- # test_results -->
+<!-- ``` -->
+
+<!-- Second, building a linear regression with multiple inputs -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # # Constructing a linear regression Model -->
+<!-- # linear_model <- keras_model_sequential() %>% -->
+<!-- #   normalizer() %>% -->
+<!-- #   layer_dense(units = 1) -->
+
+<!-- # summary(horsepower_model) -->
+<!-- # Using the untrained model on the first 10 ‘horsepower’ values               -->
+<!-- # predict(linear_model, as.matrix(train_features[1:10, ])) -->
+<!-- # linear_model$layers[[2]]$kernel -->
+
+<!-- # # configuring the training procedure -->
+<!-- # linear_model %>% compile( -->
+<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
+<!-- #   loss = 'mean_absolute_error' -->
+<!-- # ) -->
+
+<!-- # # executing to train a model for 100 epochs -->
+<!-- # history <- linear_model %>% fit( -->
+<!-- #   as.matrix(train_features), -->
+<!-- #   as.matrix(train_labels), -->
+<!-- #   epochs = 100, -->
+<!-- #   verbose = 0, -->
+<!-- #   validation_split = 0.2 -->
+<!-- # ) -->
+
+<!-- # # Visualizing the model’s training progress  -->
+<!-- # plot(history)  -->
+<!-- #  -->
+<!-- # # Collecting the results on the test set -->
+<!-- # test_results[['linear_model']] <- linear_model %>% -->
+<!-- #   evaluate( -->
+<!-- #     as.matrix(test_features), -->
+<!-- #     as.matrix(test_labels), -->
+<!-- #     verbose = 0 -->
+<!-- #   ) -->
+<!-- ``` -->
+
+<!-- Third, building a deep neural network (DNN) regression with a single input -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # # Normalizing the 'horsepower' input feature  -->
+<!-- # horsepower <- matrix(train_features$horsepower) # creating a matrix of the feature -->
+<!-- # horsepower_normalizer <- layer_normalization(input_shape = shape(1), axis = NULL) -->
+<!-- # horsepower_normalizer %>% adapt(horsepower) -->
+<!-- #  -->
+<!-- # # Constructing a linear regression Model for 1 output -->
+<!-- # dnn_horsepower_model <- keras_model_sequential() %>% -->
+<!-- #   horsepower_normalizer() %>% -->
+<!-- #   layer_dense(64, activation = 'relu') %>% -->
+<!-- #   layer_dense(64, activation = 'relu') %>% -->
+<!-- #   layer_dense(1) -->
+<!-- #  -->
+<!-- # # configuring the training procedure with keras's compile() -->
+<!-- # dnn_horsepower_model %>% compile( -->
+<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
+<!-- #   loss = 'mean_absolute_error' # to be optimized -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # # executing to train a model for 100 epochs -->
+<!-- # history <- dnn_horsepower_model %>% fit( -->
+<!-- #   as.matrix(train_features$horsepower), -->
+<!-- #   as.matrix(train_labels), -->
+<!-- #   epochs = 100, -->
+<!-- #   verbose = 0,  -->
+<!-- #   validation_split = 0.2  -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # # Visualizing the model’s training progress  -->
+<!-- # plot(history)  -->
+<!-- #  -->
+<!-- # # Collecting the results on the test set -->
+<!-- # test_results[["dnn_horsepower_model"]] <- dnn_horsepower_model %>% evaluate( -->
+<!-- #   as.matrix(test_features$horsepower), -->
+<!-- #   as.matrix(test_labels), -->
+<!-- #   verbose = 0 -->
+<!-- # ) -->
+
+<!-- ``` -->
+
+<!-- Forth, building a deep neural network (DNN) regression with multiple inputs -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # # Normalizing the input features  -->
+<!-- # # normalizer <- layer_normalization(axis = -1L) # feature values transferred to the range [0,1] -->
+<!-- # # normalizer %>% adapt(as.matrix(train_features)) -->
+<!-- #  -->
+<!-- # # Constructing a linear regression Model -->
+<!-- # dnn_model <- keras_model_sequential() %>% -->
+<!-- #   normalizer() %>% -->
+<!-- #   layer_dense(64, activation = 'relu') %>% -->
+<!-- #   layer_dense(64, activation = 'relu') %>% -->
+<!-- #   layer_dense(1) -->
+<!-- #  -->
+<!-- # # configuring the training procedure -->
+<!-- # dnn_model %>% compile( -->
+<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
+<!-- #   loss = 'mean_absolute_error' -->
+<!-- # ) -->
+<!-- #  -->
+<!-- # # executing to train a model for 100 epochs -->
+<!-- # history <- dnn_model %>% fit( -->
+<!-- #   as.matrix(train_features), -->
+<!-- #   as.matrix(train_labels), -->
+<!-- #   epochs = 100, -->
+<!-- #   verbose = 0, -->
+<!-- #   validation_split = 0.2 -->
+<!-- # ) -->
+<!-- # # Visualizing the model’s training progress  -->
+<!-- # plot(history)  -->
+<!-- #  -->
+<!-- # # Collecting the results on the test set -->
+<!-- # test_results[['dnn_model']] <- dnn_model %>% -->
+<!-- #   evaluate( -->
+<!-- #     as.matrix(test_features), -->
+<!-- #     as.matrix(test_labels), -->
+<!-- #     verbose = 0 -->
+<!-- #   ) -->
+<!-- #  -->
+<!-- # sapply(test_results, function(x) x) -->
+<!-- ``` -->
+
+<!-- **Step 4: Make predictions**  -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # # make prediction on the test set -->
+<!-- # test_predictions <- predict(dnn_model, as.matrix(test_features)) -->
+<!-- # ggplot(data.frame(pred = as.numeric(test_predictions), mpg = test_labels$mpg)) + -->
+<!-- #   geom_point(aes(x = pred, y = mpg)) + -->
+<!-- #   geom_abline(intercept = 0, slope = 1, color = "blue") -->
+<!-- #  -->
+<!-- # # check the error distribution -->
+<!-- # qplot(test_predictions - test_labels$mpg, geom = "density") -->
+<!-- # error <- test_predictions - test_labels -->
+<!-- ``` -->
+
+<!-- **Step 5: saving the model and reloading it** -->
+
+<!-- ```{r echo=TRUE} -->
+<!-- # save_model_tf(dnn_model, 'results/dnn_model1.h5') -->
+<!-- # reloaded <- load_model_tf('results/dnn_model1') -->
+<!-- #  -->
+<!-- # test_results[['reloaded']] <- reloaded %>% evaluate( -->
+<!-- #   as.matrix(test_features), -->
+<!-- #   as.matrix(test_labels), -->
+<!-- #   verbose = 0 -->
+<!-- # ) -->
+<!-- ``` -->
+
+## 3. Convolutional Neural Network 
+
+### 3.1 The architecture of CNN
+CNN is designed for image recognition. They can capture the spatial characteristics of an image. They work in a way like this. 
+
+![Figure from https://serokell.io/blog/introduction-to-convolutional-neural-networks](convolutionNN.png){width=100% heigh=200% .external}
+The architectures contain three kinds of layers: convolutional layer, pooling layer, and fully-connected layer. For details about how each layer works, see [here](https://serokell.io/blog/introduction-to-convolutional-neural-networks), as well as [others](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks).
+
+### 3.2 Basic conception of CNN
+
+There is much information about CNN conception. You can watch [this video](https://www.youtube.com/watch?v=__6WSqmlJRk&t=10s).
+
+#### 3.2.1 Convolution on an image
+
+Let's take a look this imagine. It has 8x8 pixels, the values of which range from 0 to 255, representing black and white, respectively. For convolution on the imagine, see the box1. 
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 6: Convoluting on an imagine</b></p>
+<p style='margin-left:1em;'>
+
+**convolution operation**: Convolution is a fundamental operation in image processing because it is a highly effective way to extract features and filter noise from images. The convolution operation involves sliding the filter over the image, computing the dot product between the filter and the corresponding image pixels at each position, and assigning the result to the central pixel of the filter.
+
+<br>
+<center>
+![](convollayer.png){width=80%}
+</center>
+</br>
+You can use multiple filters extract pixel values for getting multiple feature maps, other than only one.
+
+<br>
+<center>
+![](convollayer2.png){width=80%}
+</center>
+</br>
+
+If convolution on a color image (i.e., RGB, three channels), you should select a filter with same channels to combined their values for a feature map like this.
+
+<br>
+<center>
+![](convollayer3.png){width=80%}
+</center>
+</br>
+
+For the convolution operation, you should notice the padding and stride. Padding and stride are two techniques used to improve convolutions operations and make the more efficient. 
+
+**padding**: CNNs commonly use convolution filters with odd height and width values, such as 1, 3, 5, or 7 to  avoid undesirable shrinkage of original imagines.
+
+<br>
+<center>
+![](padding.png){width=80%}
+</center>
+</br>
+
+**stride**: The amount of movement between applications of the filter to the input image is referred to as the stride. The stride of the filter on the input image can be used to downsample the size of the output feature map.
+
+<br>
+<center>
+![](stride.png){width=80%}
+</center>
+</br>
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+#### 3.2.2 Pooling operation
+
+After extracting features with filters, you can reduce data dimension and emphasize features by pooling layers (see the box7).
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 7: Pooling on a feature map</b></p>
+<p style='margin-left:1em;'>
+
+**pooling operation**: The pooling operation involves sliding a two-dimensional filter over each feature map and summarizing the features lying within the region covered by the filter.  This makes the model more robust to variations in the position of the features in the input image. 
+
+<br>
+<center>
+![](poolinglayer.png){width=80%}
+</center>
+</br>
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+#### 3.2.3 Flattening and activation functions
+
+After convolution and pooling steps, we are literally going to flatten our pooled feature map into a column like in the image below to feed ANN later on.
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 8: Flattening for a columon</b></p>
+<p style='margin-left:1em;'>
+
+Basically, flattening just takes the numbers row by row, and put them into this one long column.
+
+<br>
+<center>
+![](flatteninglayer.png){width=80%}
+</center>
+</br>
+
+**Activation function**: First note that the hidden and output layers usually have activation functions such as sigmoid, tanh, ReLU, identity, etc. Activation functions in hidden layers are usually nonlinear, e.g. ReLU (rectified linear unit), which is a piecewise linear function that introduces the most simple nonlinearity. ReLU  Those in an output layer used are linear function g(z)=z, such as softmax.  
+
+<br>
+<center>
+![](activation.png){width=60%}
+</center>
+</br>
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+### 3.3 An example of defining and training CNN Model
+#### 3.3.1 Designing CNN model
+
+Now there have some pictures of animals with dogs, cats and loans. There are many architectures for image classification, one of the most popular being convolutional neural networks (CNNs). CNNs are especially effective at image classification because they are able to automatically learn the spatial hierarchies of features, such as edges, textures, and shapes, which are important for recognizing objects in images.
+
+We define the CNN architecture using the Keras library. The model will consist of several convolutional layers followed by max pooling layers, and a fully connected layer with a softmax activation function (see the box9).
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 9: Designing a CNN model</b></p>
+<p style='margin-left:1em;'>
+
+Here is a CNN architecture for the classification of animal picture.
+<br>
+<center>
+![](imageclass.png){width=90%}
+
+![](imageclass2.png){width=90%}
+<center>
+</br>
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+#### 3.3.2 Defining and training CNN model
+
+For the code, please visit [the website](https://github.com/Metalesaek/image-classification)
+
+## 4. The application of DL to ecology
+
+- **Prediction of farmland fertility**: The networks receive images from satellites like LSAT and can use this information to classify lands based on their level of cultivation. Consequently, this data can be used for making predictions about the fertility level of the grounds or developing a strategy for the optimal use of farmland.
+
+- **Topological analysis**: A key aim of ecosystem analysis is to determine how stable an ecosystem is, and how it might react to environmental change. Therefore, a large amount of research has been concerned with determining the stability of ecosystems using theoretical techniques. These ideas were introduced by Elton, who described a community matrix M of size n × n for which the (i, j)-th entry represents the impact that a species h has on another species j around an equilibrium point of some unobserved dynamical system. This allowed stability analysis techniques from dynamical systems literature to be used, where a system is considered stable to small perturbations if the eigenvalues λ of M all have negative real parts. The original study was concerned with random community matrices, but the same ideas have since been refined and applied to realistic community matrices. This area of research has been used to contribute to the ongoing debate about the relationship between biodiversity and ecosystem stability.
+
+- **Species importance metrics**: It is often of interest to ecologists which species are the most influential within their ecosystem. These species are known as keystone species. This has consequences in conservation, since the loss of a keystone species could lead to the collapse of an entire ecosystem. Traditionally, keystone species were identified from their natural history, but it is often difficult to experimentally verify this. This has led to the introduction of graph-theoretic species importance metrics which aim to discover keystone species by considering the topology of the network.
+
+- **Network structure prediction**: Machine learning algorithms are able to discover patterns in data, and use those patterns to make predictions about previously unseen data samples. This had led to widespread use of ML in many different domains to automate laborious tasks which are expensive in terms of both time and money. Ecological networks are generally constructed in such ways, and therefore it is highly desirable to develop machine learning algorithms which automate the process. In addition,mMissing link prediction - as the name suggests - is the problem of predicting which links are missing from a network. There is a wealth of literature in network analysis concerning this problem and its applications to a range of complex networks. Recently, attention has turned to the problem of link prediction in the context of ecological networks. This has immediately useful practical applications in ecology. The randomness present in an ecosystem makes it unlikely that all actual interactions are observed when collecting data to construct ecological networks. Therefore, the use of link prediction algorithms could help ecologists to discover actual unobserved interactions when used in conjunction with traditional ecological network construction methods.

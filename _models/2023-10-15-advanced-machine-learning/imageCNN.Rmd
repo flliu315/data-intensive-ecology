@@ -1,0 +1,267 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Introduction
+
+In this paper we will make use of the convolutional neural network, the most widely deep learning method used for image classification, object detection,..etc. 
+
+In this paper we are going be learning how to build and train **convolutional neural network** model using small sample of images collected from google search. The data includes 30 images, each of which is either one of three types of animals: **cat**, **dog**, or **lion**, and each one has equally number of images, that is 10.   
+
+## Data preparation
+
+First, we call the packages needed along this paper and load the data into two different objects, one called **train**, will contain 7 instances of each animal type used for training the model, and another one, called **test**, will contain the remaining instances for the evaluation of the model performance.
+
+```{r comment="", warning=FALSE,message=FALSE}
+library(EBImage)
+library(keras)
+library(foreach)
+
+mytrain <- c(paste0("cat",1:7,".jpg"),paste0("dog",1:7,".jpg"),
+        paste0("lion",1:7,".jpg"))
+
+mytest <- c(paste0("cat",8:10,".jpg"),paste0("dog",8:10,".jpg"),
+        paste0("lion",8:10,".jpg"))
+
+setwd("C://Users/dell/Documents/image-classification/images")
+
+train <- lapply(mytrain, readImage)
+test <- lapply(mytest, readImage)
+
+setwd("C://Users/dell/Documents/image-classification")
+```
+
+
+Now let us first figure out what information each image contains . 
+
+```{r}
+train[[1]]
+```
+
+As we see this image is color image with 275 pxl hight, 183 pxl width and 3 chanels (RGB) since it is a color image.
+
+we can visualize  an image as follows: 
+
+```{r}
+plot(test[[4]])
+```
+
+If instead we want to visualize all the image as one block we can make use of **foreach** package to apply a for loop as follows.
+
+```{r comment="",results='hide', warning=FALSE,message=FALSE}
+par(mfrow=c(7,3))
+foreach(i=1:21) %do% {plot(train[[i]])}
+par(mfrow=c(1,1))
+```
+
+
+After taking a brief glance at our data, we found that the size of each image  is different from those of the other images which is not what our image classification model expects. That is why, the following script will resize all the images to have the same size **150x150x3**.
+
+```{r results='hide'}
+foreach(i=1:21) %do% {train[[i]] <- resize(train[[i]],150,150)}
+foreach(i=1:9) %do% {test[[i]] <- resize(test[[i]],150,150)}
+```
+ 
+To check the result we use the following:
+ 
+```{r}
+str(test)
+```
+ 
+ As we see all the images now have the same size as an array of 3 dimension. The next step  now is to combine all the images in one block.
+ 
+```{r}
+trainall <- combine(train)
+testall <- combine(test) 
+```
+ 
+We can display the output block usine the following:
+
+```{r}
+display(tile(trainall,7))
+```
+
+
+Now the images are nicely combined in one block with four dimension: number of instances (images), height, width, and number of channels, and this is the input that will be used in our model. However, to correctly read the input our model expects that the first dimension is the number instances, the second is height , the third is width, and the fourth is number of channels. 
+Let us check whether the input has the correct order or not.
+
+```{r}
+str(trainall)
+```
+
+This order is not correct since the number of instances is in the last position, so we reorder the positions as follows:
+
+```{r}
+trainall <- aperm(trainall, c(4,1,2,3))
+testall <- aperm(testall, c(4,1,2,3))
+```
+
+The Last thing that remains to be done, before customizing the architecture of our model, is to label the images in a variable then convert it to dummy variable.
+
+```{r}
+trainlabels <- rep(0:2, each=7)
+testlabels <- rep(0:2, each=3)
+trainy <- to_categorical(trainlabels)
+testy <- to_categorical(testlabels)
+```
+
+
+## Training the model:
+
+The architecture of our model will contain the following layers:
+
+1. Convolution layer that makes use of 255 filters with size 3x3 (since the input has 150x150x3 consequently the third dimension of the filter size will be 3 that is 3x3x3), and with **Relu** as activation function.
+2. maxPooling layer of 3x3 with strides=2.
+3. Convolution layer that makes use of 128 filters with size 5x5 , and with **Relu** function.
+4. maxPooling layer of 2x2 with strides=2.
+5. Convolution layer that makes use of 32 filters with size 3x3 , and with **Relu** function.
+6. maxPooling layer of 2x2 with strides=2.
+7. Flatten layer to collapse all the output elements into one giant vector to be able to connect to the traditional neural network with fully connected layers.
+8. dense layers composed of 256 nodes and with **leaky_relu** function. The slope for thee negative part will be **0.1**.
+9. Dropout layer with rate of 40%, this acts as regularization method by randomly ignoring 40% of nodes in each epoch (iteration).
+10. the last output layer with 3 nodes since we have 3 class and with **softmax** function.
+
+In **keras** package the above steps will be coded as follows:
+
+```{r}
+model <- keras_model_sequential()
+
+model %>% 
+  layer_conv_2d(filters = 256,
+                        kernel_size = c(3,3),
+                        activation = "relu",
+                        input_shape = c(150,150,3))%>%
+  layer_max_pooling_2d(pool_size = c(3,3), strides = 2)%>%
+  layer_conv_2d(filters = 128,
+               kernel_size = c(5,5),
+                activation = "relu") %>%
+  layer_max_pooling_2d(pool_size = c(2,2), strides = 2)%>%
+  layer_conv_2d(filters = 32,
+                kernel_size = c(3,3),
+                activation = "relu") %>%
+  layer_max_pooling_2d(pool_size = c(2,2), strides = 2)%>%
+  layer_flatten()%>%
+  layer_dense(units=256)%>% layer_activation_leaky_relu(alpha = 0.1)%>%
+  layer_dropout(rate=0.4)%>%
+  layer_dense(units=3, activation = "softmax")
+
+```
+
+
+We can figure out this architecture and how many parameters it has.
+
+```{r}
+summary(model)
+```
+
+As we see we have huge number of parameters **2 961 571**. Even though the data has only 21 instances, the computation process in my laptop (with 4 cores and 8G RAM) lakes few minutes. 
+
+The last step before running the model is to specify the loss function, the optimizer and the metric. 
+
+* For multiclassification problem the most widely used one is **categorical cross entropy**.
+
+* Besides the popular **gradient descent** (with its version , **stochastic gradient descent** and **mini batch gradient descent**), there exist other ones such as **adam** , **adadelta**, **mrsprop** (the last one will be used for our case). In practice sometimes we finetune the hyperparameters by changing these optimizers.
+
+* For classification problems we have many metrics, the famous ones are: **accuracy** (used for our case), **roc**, **area under roc**, **precision**.
+
+
+```{r}
+model %>% compile(loss= "categorical_crossentropy",
+                  optimizer="rmsprop",
+                  metrics="accuracy")
+
+```
+
+
+
+```{r}
+#history <- model %>%
+  fit(trainall, trainy, epoch=50,batch_size=32, validation_split=0.2)
+
+```
+
+unlike machine learning model in which we can set a seed to get the result reproducible, each time we rerun the model we get different result. In practice, we intentionally rerun the model to improve the model performance, and ones we get the best one we save it as follows:
+
+
+```{r}
+# save_model_hdf5(model, "modelcnn.h5")
+```
+
+And we can load it again as follows:
+
+```{r}
+model <- load_model_hdf5("modelcnn.h5")
+```
+
+## model evaluation
+
+We get the model performance using the training set as follows:  
+
+```{r}
+train_evaluate<- evaluate(model, trainall, trainy)
+
+```
+
+The accuracy rate is moderately large ***80.95%** and the loss is **1.7820**. However, the best evaluation when the testing set is used instead.
+
+
+```{r}
+test_evaluate<- evaluate(model, testall, testy)
+
+```
+
+Using the testing set that is not seen by the model,  the accuracy rate is about 55.56%.
+
+## Prediction
+
+We can get the predictions of the testing set as follows:
+
+```{r}
+pred <- predict_classes(model,testall)
+pred
+```
+
+the following picture shows which images are correctly classified :
+
+```{r results="hide"}
+
+pred[pred==0] <- "cat"
+pred[pred==1] <- "dog"
+pred[pred==2] <- "lion"
+
+
+par(mfrow=c(3,3))
+
+
+foreach(i=1:9) %do% {display(test[[i]], method="raster");
+  text(x = 20, y = 20, label = pred[i], 
+       adj = c(0,1), col = "black", cex = 4)
+}
+par(mfrow=c(1,1))
+```
+
+
+```{r results="hide"}
+pred1 <- predict_classes(model,trainall)
+
+pred1[pred1==0] <- "cat"
+pred1[pred1==1] <- "dog"
+pred1[pred1==2] <- "lion"
+
+
+par(mfrow=c(7,3))
+
+
+foreach(i=1:21) %do% {display(train[[i]], method="raster");
+  text(x = 20, y = 20, label = pred1[i], 
+       adj = c(0,1), col = "black", cex = 2)
+}
+par(mfrow=c(1,1))
+```
+
+## Conclusion
+
+As we see this model perfectly identified cats but failed to identify any of the lions in the testing set. However, we can go back and tune some hyperparameters of the model to improve its performance.
+**Note**: Be aware that this model can not be reliable since it has used very small data. However, we may get a higher performance for this model if we implement very large dataset. 
+

@@ -19,7 +19,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-
 You need to install R and RStudion on your computers. We will go through the following steps to install two free programs. Also, you'll understand basic R commands, and the RStudio interface with R in order to start programming.
 
 ## 1. Using Rstudio to interact with R
