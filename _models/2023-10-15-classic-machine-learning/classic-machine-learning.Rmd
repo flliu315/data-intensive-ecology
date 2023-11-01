@@ -20,21 +20,21 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## 1. From statistics to machine learning
 
-Linear regression analysis estimates the value of one variable relative to the value of another. Linear regression is frequently used in statistical data analysis, i.e.,  according to **least squares**, you can calculate its coefficient and intercept. For more details, please check the book. The model performance is examined by $R^2$, and the significance for $R^2$.
+Linear regression is frequently used in statistical data analysis, i.e.,  according to **least squares**, you can calculate its coefficient and intercept. For more details, please check the book. The model performance is examined by $R^2$, and the significance for $R^2$. For details, see the book.
 
 ![](book.png){}. 
 
 Linear regression is also achieved via a machine learning algorithm. That is, **gradient descent (GD)**. The operation of GD works by starting with random values for each coefficient. The sum of the squared errors are calculated for each pair of input and output values. A **learning rate** is used as a scale factor and the coefficients are updated in the direction towards minimizing the sum square errors. The process is repeated until a minimum sum squared error is achieved or no further improvement is possible.
 
+All machine learning models are based on GD algorithms, which are different from statistical methods.
+
 ## 2. Machine learning and its main types
 
-The two main paradigms of ML are supervised and unsupervised learning. Supervised learning is a subfield of ML concerned with finding a function f such that $\hat{y} = f(x)$ where x is an input sample vector, y is an output sample vector, and $\hat{y}$ is a predictor of y. Common supervised learning tasks include classification and regression. Unsupervised learning aims to find a function g which transforms an input
-sample x to a representation z in order to reveal underlying information about the input sample. A common unsupervised learning task is clustering.
+The two main paradigms of ML are supervised and unsupervised learning. Supervised learning is a subfield of ML concerned with finding a function f such that $\hat{y} = f(x)$ where x is an input sample vector, y is an output sample vector, and $\hat{y}$ is a predictor of y. Common supervised learning tasks include classification and regression. Unsupervised learning aims to find a function g which transforms an input sample x to a representation z in order to reveal underlying information about the input sample. A common unsupervised learning task is clustering.
 
-In machine learning algorithms, a parameterisable function $f_{θ}$ is often defined. The parameters θ of the function can then be learned through an iterative process of updating the parameters and evaluating the performance of the function. This process is known as optimisation or training; these training algorithms often rely on a
-function $L(y, \hat{y})$ which quantifies how incorrect a prediction is compared to the target vector. This is usually known as the cost, error, or loss function, and is chosen depending on the task in hand.
+In machine learning algorithms, a parameterisable function $f_{θ}$ is often defined. The parameters θ of the function can then be learned through an iterative process of updating the parameters and evaluating the performance of the function. This process is known as optimization or training; these training algorithms often rely on a function $L(y, \hat{y})$ which quantifies how incorrect a prediction is compared to the target vector. This is usually known as the cost, error, or loss function, and is chosen depending on the task in hand.
 
-During optimisation, parameters are adjusted according to training data. In the case of supervised learning, training data comprises pairs of input and output vectors, each taking the form (x, y). The algorithm will be shown each data sample multiple times. The number of times an algorithm “sees” the entire set of training data is known as an *epoch*, and is used as a measure of how much an algorithm has been trained. In some circumstances, an algorithm can perform well on the training data but does not perform well on new data. This is known as overfitting, and occurs when the algorithm has learned to predict the target output of each sample in the training data by random noise in the input features, rather than by the important underlying variables.
+During optimization, parameters are adjusted according to training data. In the case of supervised learning, training data comprises pairs of input and output vectors, each taking the form (x, y). The algorithm will be shown each data sample multiple times. The number of times an algorithm “sees” the entire set of training data is known as an *epoch*, and is used as a measure of how much an algorithm has been trained. In some circumstances, an algorithm can perform well on the training data but does not perform well on new data. This is known as overfitting, and occurs when the algorithm has learned to predict the target output of each sample in the training data by random noise in the input features, rather than by the important underlying variables.
 
 Overfitting can be detected by splitting the training data into three sets: *training*, *validation*, and *test*. Under this split, the algorithm is trained on the training set, and after each epoch is evaluated on the validation set. When the performance on the validation set does not increase, the algorithm has stopped learning useful properties and has begun to overfit. The algorithm can then be stopped -known as early-stopping - and evaluated on the unseen test set to give a true indication of the algorithm’s performance. The general configuration of the function f is usually governed by *hyperparameters*, which - unlike parameters - are fixed and are not adjusted during training.
 
@@ -49,12 +49,12 @@ ggpubr: for making plot beautiful along with that of ggplot2.
 reshape: for melting dataset.
 caret: providing many machine learning algorithms.
 
-```{r}
-# To load all necessary packages
-library(ggplot2)
-#library(ggpubr) 
-library(reshape)
-library(caret)
+```{r echo=TRUE}
+# # To load all necessary packages
+# library(ggplot2)
+# #library(ggpubr) 
+# library(reshape)
+# library(caret)
 ```
 
 We will walk through each step of implementing Caret package in this part. The general steps to be followed in any Machine learning project are: 
@@ -63,115 +63,115 @@ We will walk through each step of implementing Caret package in this part. The g
 
 Next, we will import our data to a R environment.
 
-```{r}
-# Dataset
-data("iris")
-  
-# To display the first five rows of our data
-head(iris)
+```{r echo=TRUE}
+# # Dataset
+# data("iris")
+#   
+# # To display the first five rows of our data
+# head(iris)
 ```
 
 ### 3.2 Exploratory Data Analysis (EDA)
 
 Understanding and assessing the data you have for your project is one of the important steps in the modeling preparation process. This is accomplished through the use of data exploration, visualization, and statistical data summarization with a measure of central tendencies. You will gain an understanding of your data during this phase, and you will take a broad view of it to get ready for the modeling step. 
 
-```{r}
+```{r echo=TRUE}
 # Summary statistics of data
-summary(iris)
+# summary(iris)
 ```
 
 Visualizing the outliers by using boxplot. As we use ggplot2 we will take numerical variables by subsetting the entire of it. Using of reshape package we melt the data and plot it to check for the presence of any outliers. 
 
-```{r}
-df <- subset(iris, select = c(Sepal.Length, 
-                              Sepal.Width, 
-                              Petal.Length, 
-                              Petal.Width))
-# plot and see the box plot of each variable
-ggplot(data = melt(df), 
-       aes(x=variable, y=value)) + 
-        geom_boxplot(aes(fill=variable))
+```{r echo=TRUE}
+# df <- subset(iris, select = c(Sepal.Length, 
+#                               Sepal.Width, 
+#                               Petal.Length, 
+#                               Petal.Width))
+# # plot and see the box plot of each variable
+# ggplot(data = melt(df), 
+#        aes(x=variable, y=value)) + 
+#         geom_boxplot(aes(fill=variable))
 ```
 
 Let’s now use a histogram plot to visualize the distribution of our data’s continuous variables.
 
-```{r}
-a <- ggplot(data = iris, aes(x = Petal.Length)) +
-    geom_histogram( color = "red", 
-                   fill = "blue", 
-                   alpha = 0.01) + geom_density()
-  
-b <- ggplot(data = iris, aes(x = Petal.Width)) +
-    geom_histogram( color = "red", 
-                   fill = "blue", 
-                   alpha = 0.1) + geom_density()
-c <- ggplot(data = iris, aes(x = Sepal.Length)) +
-    geom_histogram( color = "red", 
-                   fill = "blue", 
-                   alpha = 0.1) + geom_density()
-  
-d <- ggplot(data = iris, aes(x = Sepal.Width)) +
-    geom_histogram( color = "red", 
-                   fill = "blue", 
-                   alpha = 0.1) +geom_density()
-  
-#ggarrange(a, b, c, d + rremove("x.text"), 
-#          labels = c("a", "b", "c", "d"),
-#          ncol = 2, nrow = 2)
+```{r echo=TRUE}
+# a <- ggplot(data = iris, aes(x = Petal.Length)) +
+#     geom_histogram( color = "red", 
+#                    fill = "blue", 
+#                    alpha = 0.01) + geom_density()
+#   
+# b <- ggplot(data = iris, aes(x = Petal.Width)) +
+#     geom_histogram( color = "red", 
+#                    fill = "blue", 
+#                    alpha = 0.1) + geom_density()
+# c <- ggplot(data = iris, aes(x = Sepal.Length)) +
+#     geom_histogram( color = "red", 
+#                    fill = "blue", 
+#                    alpha = 0.1) + geom_density()
+#   
+# d <- ggplot(data = iris, aes(x = Sepal.Width)) +
+#     geom_histogram( color = "red", 
+#                    fill = "blue", 
+#                    alpha = 0.1) +geom_density()
+#   
+# #ggarrange(a, b, c, d + rremove("x.text"), 
+# #          labels = c("a", "b", "c", "d"),
+# #          ncol = 2, nrow = 2)
 ```
 
 Next, we will move to the Data Preparation phase of our machine learning process.  Before that, lets split our dataset into train, test and validation partition.
 
-```{r}
-# Create train-test split of the data 
-limits <- createDataPartition(iris$Species, 
-                              p=0.80, 
-                              list=FALSE)
-  
-# select 20% of the data for validation
-testiris <- iris[-limits,]
-  
-# use the remaining to training and testing the models
-trainiris <- iris[limits,]
+```{r echo=TRUE}
+# # Create train-test split of the data 
+# limits <- createDataPartition(iris$Species, 
+#                               p=0.80, 
+#                               list=FALSE)
+#   
+# # select 20% of the data for validation
+# testiris <- iris[-limits,]
+#   
+# # use the remaining to training and testing the models
+# trainiris <- iris[limits,]
 ```
 
 ### 3.3 Data Preprocessing
 
 The quality of our good predictions from the model depends on the quality of the data itself, data preprocesing is one of the most important steps in machine learning. We can see from the box plot that there are outliers in our data, and the histogram also shows how skewed the data is on the right and left sides. We shall thus eliminate those outliers from our data. 
 
-```{r}
-Q <- quantile(trainiris$Sepal.Width, 
-              probs=c(.25, .75), 
-              na.rm = FALSE)
+```{r echo=TRUE}
+# Q <- quantile(trainiris$Sepal.Width, 
+#               probs=c(.25, .75), 
+#               na.rm = FALSE)
 ```
 
 After obtaining the quantile value, we will additionally compute the interquartile range in order to determine the upper and lower bound cutoff values. Then, we  eliminate the outliers.
 
-```{r}
-# Code to calculate the IQR, upper and lower bounds
-iqr <- IQR(trainiris$Sepal.Width)
-up <-  Q[2]+1.5*iqr 
-low<- Q[1]-1.5*iqr
+```{r echo=TRUE}
+# # Code to calculate the IQR, upper and lower bounds
+# iqr <- IQR(trainiris$Sepal.Width)
+# up <-  Q[2]+1.5*iqr 
+# low<- Q[1]-1.5*iqr
 
-# Elimination of outliers by using of iqr
-normal <- subset(trainiris, 
-                 trainiris$Sepal.Width > (Q[1] - 1.5*iqr) 
-                 & trainiris$Sepal.Width < (Q[2]+1.5*iqr))
-normal
+# # Elimination of outliers by using of iqr
+# normal <- subset(trainiris, 
+#                  trainiris$Sepal.Width > (Q[1] - 1.5*iqr) 
+#                  & trainiris$Sepal.Width < (Q[2]+1.5*iqr))
+# normal
 ```
 
 By using a boxplot, we can additionally see the outliers that were eliminated from the data.
 
-```{r}
-# boxplot using cleaned dataset
-boxes <- subset(normal, 
-                select = c(Sepal.Length, 
-                           Sepal.Width, 
-                           Petal.Length, 
-                           Petal.Width))
-ggplot(data = melt(boxes), 
-       aes(x=variable, y=value)) + 
-        geom_boxplot(aes(fill=variable))
+```{r echo=TRUE}
+# # boxplot using cleaned dataset
+# boxes <- subset(normal, 
+#                 select = c(Sepal.Length, 
+#                            Sepal.Width, 
+#                            Petal.Length, 
+#                            Petal.Width))
+# ggplot(data = melt(boxes), 
+#        aes(x=variable, y=value)) + 
+#         geom_boxplot(aes(fill=variable))
 ```
 
 
@@ -179,45 +179,45 @@ ggplot(data = melt(boxes),
 
 It’s time to use the clean data to create a model. We don’t have a specific algorithm in mind, Let’s compare LDA and SVM for practical purposes and choose the best one. For accuracy and prediction across all samples, we will employ 10-fold cross validation.
 
-```{r}
-# crossvalidation set to 10
-crossfold  <- trainControl(method="cv", 
-                           number=10, 
-                           savePredictions = TRUE)
-metric <- "Accuracy"
+```{r echo=TRUE}
+# # crossvalidation set to 10
+# crossfold  <- trainControl(method="cv", 
+#                            number=10, 
+#                            savePredictions = TRUE)
+# metric <- "Accuracy"
 ```
 
 Let’s start training model with Linear Discriminant Analysis.
 
-```{r}
-# Set a random seed to 42
-set.seed(42) 
-fit.lda <- train(Species~., 
-                 data=trainiris, 
-                 method="lda", 
-                 metric=metric, #
-                 trControl=crossfold)
-print(fit.lda)
+```{r echo=TRUE}
+# # Set a random seed to 42
+# set.seed(42) 
+# fit.lda <- train(Species~., 
+#                  data=trainiris, 
+#                  method="lda", 
+#                  metric=metric, #
+#                  trControl=crossfold)
+# print(fit.lda)
 ```
 
 We can also use SVM model for the training.
 
-```{r}
-set.seed(42)
-fit.svm <- train(Species~., 
-                 data=trainiris, 
-                 method="svmRadial", 
-                 metric=metric,
-                 trControl=crossfold)
-print(fit.svm)
+```{r echo=TRUE}
+# set.seed(42)
+# fit.svm <- train(Species~., 
+#                  data=trainiris, 
+#                  method="svmRadial", 
+#                  metric=metric,
+#                  trControl=crossfold)
+# print(fit.svm)
 ```
 
 The results show that both algorithms functioned admirably with only minor variations. Although the model can be tuned to improve its accuracy accurate, for the purposes of this lesson, let’s stick with LDA and generate predictions using test data.
 
-```{r}
-# prediction on test data
-predictions <- predict(fit.lda, testiris)
-confusionMatrix(predictions, testiris$Species)
+```{r echo=TRUE}
+# # prediction on test data
+# predictions <- predict(fit.lda, testiris)
+# confusionMatrix(predictions, testiris$Species)
 ```
 
 According to the summary of our model above, We see that the prediction performance is poor; this may be because we neglected to consider the LDA algorithm’s premise that the predictor variables should have the same variance, which is accomplished by scaling those features. We won’t deviate from the topic of this lesson because we are interested in developing machine learning utilizing the Caret module in R.
