@@ -364,6 +364,18 @@ And if you add it as the first layer of your network it can act as a kind of ada
 
 You are suggested to visit [the site](https://rpubs.com/Nilafhiosagam/541333) or [another site](https://www.kaggle.com/code/yashgyy/deep-learning-with-r-keras-iris-dataset)
 
+<!-- Generally, the Keras script for ANN probably looked like this. -->
+
+<!-- ```{r} -->
+<!-- # # Load entire dataset -->
+<!-- # # Design model -->
+<!-- # model = Sequential() -->
+<!-- # [...] # Your architecture -->
+<!-- # model.compile() -->
+<!-- # # Train model on your dataset -->
+<!-- # model.fit(x=X, y=y) -->
+<!-- ``` -->
+
 <!-- **Step 1: Checking and setting environment** -->
 
 <!-- Please checking your Rstudio whether it runs in a virtural environment by opening the terminal in Rstudio. If not, doing the following things step-by-step and then examining it again. -->

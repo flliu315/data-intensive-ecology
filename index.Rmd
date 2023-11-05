@@ -1,5 +1,5 @@
 ---
-title: "Data-Driven Ecology"
+title: "Data-Intensive Ecology"
 image: "images/Datascience.jpg"
 links:
   # - label: LinkedIn

@@ -1,7 +1,7 @@
 ---
-title: "Lesson 6: One Shot Learning with R"
+title: "Lesson 3: One Shot Learning with R"
 description: |
-  One-shot learning is a machine learning algorithm using a limited amount of training set data to compare the similarities and differences between two images. This section will introduce you touUse R keras for building self define generator, building self define layer, building self define backend function. 
+  One-shot learning is a machine learning algorithm using a limited amount of training set data to compare the similarities and differences between two images. This section will introduce you to build one-shot learning model with R keras. 
 # author: []
 # date: 2023-10-17
 # output:
@@ -19,26 +19,290 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+## 1. Zero-, one- and few-shot learning algorithms
 
-## Example 1: Recognization of mnist number
+Traditional machine learning algorithms, including classic and advanced, require large amounts of labelled data for training. However, in real world, obtaining such data can be expensive, time-consuming, or even impossible. Zero-, one- and few-shot learning algorithms are designed to address the challenge of learning from limited labelled data. Each approach refers to the number of examples available for training and the level of generalization required.
 
-Step 1 : Data Load
+### 1.1 Zero-Shot Learning
 
-Read Data and Split into train、validate and test
+The model is designed to train with no examples for certain classes. It has the two following characteristics.
+
+- Generalization: The goal is to classify instances from classes not seen during training. The model learns to generalize its knowledge to unseen classes.
+- Common Technique: Transfer learning, semantic embeddings, and attribute-based methods are often used in zero-shot learning. These approaches leverage auxiliary information about classes to perform classification.
+
+### 1.2 One-Shot Learning
+
+The model is designed to train with just one example per class. It has the following charateristics.
+
+- Generalization: The goal is to learn a representation that can differentiate between classes based on a single example.
+- Common Technique: **Siamese**, **matching**, and **prototypical** networks are often used in one-shot learning. These architectures focus on learning relationships between examples.
+
+### 1.3 Few-Shot Learning
+
+This is a more general term that encompasses both one-shot learning and scenarios where a small number of examples (more than one) per class are available. It has the following charateristics.
+
+- Generalization: The goal is to enable the model to classify instances from classes with very few training examples.
+- Common Techniques: These methods include variants of one-shot learning models and meta-learning strategies. These techniques teach the ability to adapt quickly to new tasks or classes.
+
+## 2. Ono-Shot learning 
+
+One-Shot learning is to design algorithms that can effectively extract relevant features from the limited data and make accurate predictions or classifications when encountering new, unseen examples. Its challenge comes from data preparation and the network architecture, which has two inputs feeding to a common network architecture. Due to the limited data, the success of one-shot learning highly depends on the model architecture, data representation, and task complexity.
+
+### 2.1 Dataset Preparation
+
+For One-Shot learning, each class has only one example (or very few) available during training. The dataset is organized into classes, each associated with a single example or a small set of examples. 
+
+### 2.2 Feature Extraction
+
+The examples in the dataset are typically raw data such as images, text, or audio.
+Feature extraction is performed to transform the raw data into a format that the model can process. This step is crucial for capturing relevant information from the limited data.
+
+### 2.3 Model Architecture
+
+One-shot learning models often use specialized architectures that can effectively extract features and learn relationships between examples. These architectures like **Siamese**, **matching**, and **prototypical** networks are commonly used in one-shot learning tasks. These architectures are designed to work well with small training datasets.
+
+- **Siamese Networks**: Siamese networks involve training a neural network to learn a similarity metric between pairs of input examples. This allows the network to distinguish between similar and dissimilar instances, making it suitable for one-shot learning tasks in conversion ecology, such as species recognition, identifying plant diseases. 
+
+- **Matching Networks**: Matching networks combine the concepts of attention mechanisms and recurrent networks to make predictions based on a context set of examples. These networks learn to weigh the importance of each sample in the context when making predictions for a new instance.
+
+- **Prototypical Networks**: Prototypical networks learn a prototype representation for each class based on a few examples. During testing, new samples are compared to these prototypes to make predictions.
+
+- **Memory-Augmented Neural Networks**: These networks incorporate external memory structures to store information about seen examples. This allows them to learn and remember patterns even with limited data.
+
+- **Transfer Learning and Fine-Tuning**: Transfer learning involves pre-training a model on a large dataset and then fine-tuning it on the limited one-shot learning dataset. This leverages the knowledge gained from the larger dataset to improve performance on the smaller dataset.
+
+### 2.4 Training
+
+During training, the model is exposed to pairs of examples. For each pair, one example is treated as the “query” example, and the other is treated as a “support” or “reference” example.
+
+The model learns to differentiate between similar and dissimilar pairs. It learns to embed the examples so that similar examples are close in the embedding space and distinct examples are far apart.
+
+### 2.5 Loss Function
+
+The loss function used for training depends on the chosen architecture and the learning objective. For instance, Siamese networks might use a contrastive loss that encourages the embeddings of similar examples to be close and embeddings of dissimilar examples to be distant.
+
+### 2.6 Testing and Inference
+
+After training, the model’s performance is evaluated on new, unseen examples.
+To make predictions, the model typically calculates distances or similarities between the embeddings of the query example and the support examples.
+
+The class associated with the closest support example is predicted as the class for the query example.
+
+### 2.7 Fine-Tuning and Transfer Learning
+
+Sometimes, one-shot learning models can benefit from pretraining on a larger dataset and fine-tuning on the one-shot learning dataset. This leverages knowledge gained from the larger dataset to improve generalization.
+
+## 3. Classifying MNIST by One-Shot learning
+
+We can learn the basics of Keras by walking through a simple example: recognizing handwritten digits from the MNIST dataset. MNIST consists of 28 x 28 grayscale images of handwritten digits. The dataset includes labels for each image, telling us which digit it is.
+
+### 3.1 Classifying MNIST with ANN
+<!-- please visit https://rpubs.com/garynth41/546355 -->
+<!-- https://www.kaggle.com/code/blastchar/digit-recognizer-using-keras-2 -->
+
+#### Preparing the data
+
+The MNIST dataset is included with Keras and can be accessed using the dataset_mnist() function. Here we load the dataset then create variables for our test and training data.
+
+```{r echo=TRUE}
+# library(keras)
+# mnist <- dataset_mnist()
+# x_train <- mnist$train$x
+# y_train <- mnist$train$y
+# x_test <- mnist$test$x
+# y_test <- mnist$test$y
+```
+
+Because of the matrix multiplication we must change the shape of the array. So we convert the 3-d arrays into matrices by reshaping width and height into a single dimension (28x28 images are flattened into length 784 vectors). Then, we convert the grayscale values from integers ranging between 0 to 255 into floating point values ranging between 0 and 1.
+
+```{r echo=TRUE}
+# # reshape
+# x_train <- array_reshape(x_train, c(nrow(x_train), 784))
+# x_test <- array_reshape(x_test, c(nrow(x_test), 784))
+# # rescale
+# x_train <- x_train / 255
+# x_test <- x_test / 255
+```
+
+Note that we use the array_reshape() rather than the dim<-() to reshape the array, because the data is re-interpreted using row-wise (C-style) ordering that is compatible with the way that the Keras library. The x data is a 3-d array (images,width,height) of grayscale values that meets the keras library with 3 dimensions i, j, k, where i is the number of matrices or samples (R uses number of rows in each matrix), j is the number of rows in each matrix (R uses number of columns), and k is the number of columns (R uses number of matrices).
+ 
+The y data is an integer vector with values ranging from 0 to 9. To prepare this data for training we one-hot encode the vectors into binary class matrices using the Keras to_categorical() function.
+
+```{r echo=TRUE}
+# y_train <- to_categorical(y_train, 10)
+# y_test <- to_categorical(y_test, 10)
+```
+
+### Defining the model
+
+The core structure of Keras is a model, a way to organize layers. The simplest type of model is the Sequential model, a linear stack of layers. We create a sequential model and then add layers using the pipe (%>%) operator.
+
+```{r echo=TRUE}
+# model <- keras_model_sequential() 
+# model %>% 
+#   layer_dense(units = 256, activation = 'relu', input_shape = c(784)) %>% 
+#   layer_dropout(rate = 0.4) %>% 
+#   layer_dense(units = 128, activation = 'relu') %>%
+#   layer_dropout(rate = 0.3) %>%
+#   layer_dense(units = 10, activation = 'softmax')
+```
+The input_shape argument to the first layer specifies the shape of the input data (a length 784 numeric vector representing a grayscale image). The final layer outputs a length 10 numeric vector (probabilities for each digit) using a softmax activation function. Use the summary() function to print the details of the model.
+
+```{r echo=TRUE}
+# summary(model)
+```
+Next, compile the model with appropriate loss function, optimizer, and metrics.
+
+```{r echo=TRUE}
+# model %>% compile(
+#   loss = 'categorical_crossentropy',
+#   optimizer = optimizer_rmsprop(),
+#   metrics = c('accuracy')
+# )
+```
+
+### Training model and evaluation
+
+Use the fit() function to train the model for 30 epochs using batches of 128 images.
+
+```{r echo=TRUE}
+# history <- model %>% fit(
+#   x_train, y_train, 
+#   epochs = 30, batch_size = 128, 
+#   validation_split = 0.2
+# )
+```
+The history object returned by fit() includes loss and accuracy metrics which we can plot.
+
+```{r echo=TRUE}
+# plot(history)
+```
+
+Evaluate the model’s performance on the test data.
+
+```{r echo=TRUE}
+# model %>% evaluate(x_test, y_test)
+```
+
+
+Implementations of One-Shot learning typically involve deep learning frameworks like TensorFlow. Here’s a high-level outline of how you might approach building a simple model using TensorFlow from R.
+
+### Example 1: using Siamese Network with a contrastive loss to classify MNIST
+
+#### Step 1: Loading the data
+
+Here is an extant dataset of mnist number. You directly lead Data. The code modified according to [this page](https://tensorflow.rstudio.com/tutorials/keras/classification).
+
+```{r echo=TRUE}
+# rm(list = ls())
+# library(reticulate) # loading virtual environment for project
+# py_config() # By default, the env is ~/.virtualenvs/r-reticulate
+
+library(keras) # loading the package for downloading the data
+library(abind) # operating multidimensional arrays
+# mnist <- dataset_mnist() # load dataset from the keras package
+# np <- import(numpy)
+# mnist <- np$load("/home/tank/Desktop/ecodatasci/images/mnist.npz") # full path
+mnist <- dataset_mnist("/home/tank/Desktop/ecodatasci/images/mnist.npz") # full path
+```
+
+#### Step 2: Exploring the data
+
+Let’s explore the format of the dataset before training the model. 
+
+```{r echo=TRUE}
+str(mnist)
+```
+From above result, we have four arrays: train_images and train_labels arrays are the training set — the data the model uses to learn. The model is tested against the test set: the test_images, and test_labels arrays.
+
+Based on above result, we can separate each array from each other by performing the following code.
+
+```{r echo=TRUE}
+train_images1 <- mnist$train$x
+train_labels1 <- mnist$train$y
+test_images  <- mnist$test$x 
+test_labels  <- mnist$test$y
+```
+The following shows there are 60,000 images in the training set, with each image represented as 28 x 28 pixels, which values ranging between 0 and 255. The labels are arrays of integers, ranging from 0 to 9. 
+
+```{r echo=TRUE}
+dim(train_images1)
+dim(train_labels1)
+train_labels1[1:20]
+```
+The following shows there are 10,000 images in the test set, which is used to evaluate how accurately the network learned. Each image is represented as 28 x 28 pixels.
+
+```{r echo=TRUE}
+dim(test_images)
+dim(test_labels)
+```
+
+### Step 3: Pre-processing the data
+
+This step includes the following work: splitting dataset, building generator, pairs, and is very important for building a  one-shot learning model.
+
+- **splitting data**
+
+If you're using Keras, you can specify a validation split to set aside a portion of the training data for validation during training. This helps monitor model performance and detect overfitting. We split the data the training set into new training set and validation set, by performing the following code. At this point, we only have 48,000 training. Additional 12,000 data is validation.
 
 ```{r}
-# library(keras)
-# library(abind)
-# mnist <- dataset_mnist("./images/mnist.npz")
-# train_images <- mnist$train$x
-# train_labels <- mnist$train$y
-# set.seed(9478) 
-# val_idx      <- sample( 1:nrow(train_images) , size = ceiling(0.2*nrow(train_images)) , replace = F ) 
-# val_images   <- train_images[val_idx,,] 
-# val_labels   <- train_labels[val_idx]  
-# train_images <- train_images[-val_idx,,] 
-# train_labels <- train_labels[-val_idx]  
-# test_images  <- mnist$test$x 
-# test_labels  <- mnist$test$y
+set.seed(9478)
+val_idx      <- sample(1:nrow(train_images1),
+                       size = ceiling(0.2*nrow(train_images1)), # the smallest integer >= the value passed
+                       replace = F)
+val_images   <- train_images1[val_idx,,] # the third comma means the channel of accolor image
+val_labels   <- train_labels1[val_idx]
+train_images <- train_images1[-val_idx,,]
+train_labels <- train_labels1[-val_idx]
 ```
+
+The pixel values fall in the range of 0 to 255. We scale these values to a range of 0 to 1 before feeding to model. The maximum of sample's array is 1 (white) and the minimum of sample's array is 0 (black). You can visualize the mnist's data as blow. The title is its label and image is its array.
+
+```{r echo=TRUE}
+par(mar = c(0,0,4,0)) # sets the bottom, left, top and right margins of a plot region in number of lines of text.
+i <- 1
+plot(as.raster(train_images[i,,]/255)) # i and two comma denote 3-dimensional array of an image
+title(train_labels[i])
+```
+
+- **building generator**
+<!-- W tensorflow/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 150528000 exceeds 10% of free system memory. -->
+When training deep learning models with a large dataset, which require large memory space, it is necessary to build data generators, which allow to load data in small batches and do not fit entirely in memory. In the case, the dataset is too large. so you should build data generator. For this purpose, train_data_list and val_data_list are first built by performing the following chunk.
+
+```{r echo=TRUE}
+train_data_list    <- list() 
+grp_kind     <- sort(unique(train_labels))   
+  for( grp_idx in 1:length(grp_kind)) { # grp_idx = 1     
+    label          <- grp_kind[grp_idx]     
+    tmp_images     <- train_images[train_labels==label,,]     
+    tmp_images     <- array(tmp_images , dim = c(dim(tmp_images), 1))  # why reshape array? because keras image_data_generator only accept rank = 4  
+    train_data_list[[grp_idx]] <- list( data  = tmp_images,                                         
+                                        label = train_labels[train_labels==label])
+  }  
+
+val_data_list      <- list() 
+grp_kind     <- sort( unique( val_labels ) )   
+  for( grp_idx in 1:length(grp_kind) ) { # grp_idx = 1     
+    label                      <- grp_kind[grp_idx]     
+    tmp_images                 <- val_images[val_labels==label,,]     
+    tmp_images                 <- array( tmp_images , dim = c( dim(tmp_images) , 1) )     
+    val_data_list[[grp_idx]]   <- list( data  = tmp_images ,                                         
+                                        label = val_labels[val_labels==label]      
+                                      )   
+  }
+```
+
+
+#### step 3: parameter setting
+
+In a one-shot learning model, you would typically need to set various parameters for configuring the model. The key parameters include Hyperparameters (learning_rate, batch_size, num_epochs, loss_function), Model Architecture, Data Augmentation, Pair Generation, Regularization, Evaluation Metrics, Early Stopping, Model Saving.
+
+
+Create pairs of images. We will train the model to differentiate between digits of different classes. For example, digit 0 needs to be differentiated from the rest of the digits (1 through 9). To carry this out, we will select N random images from class A (for example, for digit 0) and pair them with N random images from another class B (for example, for digit 1). 
+
+
+
+First, you need to structure the data to support one-shot learning, often by creating pairs or sets of examples. Then using data loaders or generators to load the data efficiently. You might need to create pairs or examples to train model effectively.
+
+
 
