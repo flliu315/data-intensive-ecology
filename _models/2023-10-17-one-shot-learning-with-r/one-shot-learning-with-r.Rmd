@@ -19,7 +19,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
-## 1. Zero-, one- and few-shot learning algorithms
+## 1. Learning algorithm with limited data
 
 Traditional machine learning algorithms, including classic and advanced, require large amounts of labelled data for training. However, in real world, obtaining such data can be expensive, time-consuming, or even impossible. Zero-, one- and few-shot learning algorithms are designed to address the challenge of learning from limited labelled data. Each approach refers to the number of examples available for training and the level of generalization required.
 
@@ -44,22 +44,410 @@ This is a more general term that encompasses both one-shot learning and scenario
 - Generalization: The goal is to enable the model to classify instances from classes with very few training examples.
 - Common Techniques: These methods include variants of one-shot learning models and meta-learning strategies. These techniques teach the ability to adapt quickly to new tasks or classes.
 
-## 2. Ono-Shot learning 
+## 2. Building a one-shot learning model
 
-One-Shot learning is to design algorithms that can effectively extract relevant features from the limited data and make accurate predictions or classifications when encountering new, unseen examples. Its challenge comes from data preparation and the network architecture, which has two inputs feeding to a common network architecture. Due to the limited data, the success of one-shot learning highly depends on the model architecture, data representation, and task complexity.
+We can learn the basics of Keras by walking through a simple example of the MNIST dataset. It consists of 28 x 28 grayscale images of handwritten digits. The dataset includes labels for each image, telling us which digit it is. For machine learning, such as ANN, with the dataset, please visit [the site](https://rpubs.com/garynth41/546355) and [another one](https://www.kaggle.com/code/blastchar/digit-recognizer-using-keras-2)
 
-### 2.1 Dataset Preparation
+Here we build one-shot learning model with a dataset of mnist number. The code modified according to [this page](https://tensorflow.rstudio.com/tutorials/keras/classification).
 
-For One-Shot learning, each class has only one example (or very few) available during training. The dataset is organized into classes, each associated with a single example or a small set of examples. 
+### 2.1 Loading and spliting data
 
-### 2.2 Feature Extraction
+First, we load and split the data into training, validation, and testing sets using the Keras and abind libraries in R. Here's the code:
 
-The examples in the dataset are typically raw data such as images, text, or audio.
-Feature extraction is performed to transform the raw data into a format that the model can process. This step is crucial for capturing relevant information from the limited data.
+```{r echo=TRUE}
+# # the first three lines should be run for checking the python env
+# # rm(list = ls())
+# # library(reticulate) # loading virtual environment for project
+# # py_config() # By default, the env is ~/.virtualenvs/r-reticulate
+# library(reticulate)
+# library(keras) # loading the package for data and modelling
+# library(abind) # operating multidimensional arrays, which are often expressed any image.
+# # mnist <- dataset_mnist() # load the dataset from the keras package
+# # np <- import(numpy)
+# # mnist <- np$load("/home/tank/Desktop/ecodatasci/images/mnist.npz") # full path
+# mnist <- dataset_mnist("/home/tank/Desktop/ecodatasci/images/mnist.npz") # full path
+```
 
-### 2.3 Model Architecture
+Let’s explore the format of the dataset before training the model. 
 
-One-shot learning models often use specialized architectures that can effectively extract features and learn relationships between examples. These architectures like **Siamese**, **matching**, and **prototypical** networks are commonly used in one-shot learning tasks. These architectures are designed to work well with small training datasets.
+```{r echo=TRUE}
+# str(mnist)
+```
+
+We have four arrays: train_images and train_labels, test_images and test_labels. We can separate each array from each other by performing the following code.
+
+```{r echo=TRUE}
+# train_images1 <- mnist$train$x
+# train_labels1 <- mnist$train$y
+# test_images  <- mnist$test$x 
+# test_labels  <- mnist$test$y
+```
+
+train_images1 contain 60,000 images. Each image shows 28 x 28 pixels, which values ranging between 0 and 255. train_labels1 with 60000 elements are arrays of integers, ranging from 0 to 9. 
+
+```{r echo=TRUE}
+# dim(train_images1)
+# dim(train_labels1)
+# train_labels1[1:20]
+```
+
+test_images contain 10000 images, which is used to evaluate how accurately the network learned. Each image is represented as 28 x 28 pixels.
+
+```{r echo=TRUE}
+# dim(test_images)
+# dim(test_labels)
+```
+
+Using Keras, we can set aside a portion of the training data for validation. This helps monitor model performance and detect overfitting. At the point, we have 48,000 training. Additional 12,000 data are validation.
+
+```{r echo=TRUE}
+# set.seed(9478)
+# val_idx      <- sample(1:nrow(train_images1),
+#             size = ceiling(0.2*nrow(train_images1)), # the smallest integer > the value
+#                        replace = F)
+# val_images   <- train_images1[val_idx,,] # the third comma means the channel of accolor image
+# val_labels   <- train_labels1[val_idx]
+# train_images <- train_images1[-val_idx,,]
+# train_labels <- train_labels1[-val_idx]
+```
+
+The pixel values fall in the range of 0 to 255. We scale pixel values to a range of 0 (black) to 1 (white) before feeding to model. You can visualize the mnist's data as blow. The title is its label and image is its array.
+
+```{r echo=TRUE}
+# par(mar = c(0,0,4,0)) # seting the bottom, left, top and right margins of a plot region.
+# i <- 1
+# plot(as.raster(train_images[i,,]/255)) # i and two comma denote 3-dimensional array of an image
+# title(train_labels[i])
+```
+
+### 2.2 Building a self define generator
+
+This step includes: setting parameters, building self define generator, building self define layer, building self define backend function.
+
+#### Parameter Setting
+
+In any machine learning model, you would typically need to set various parameters for configuring the model. 
+
+```{r echo=TRUE}
+# num_classes  <- 10 # only number : 0,1,2,3,4,5,6,7,8,9 
+# shape_size   <- 28 # mnist shape (28,28)
+# train_batch  <- 20 
+# val_batch    <- 20 
+# test_batch   <- 1
+```
+
+We create train_data_list and val_data_list to hold the training and validation data.The code is a general template for organizing and reshaping data for using Keras. It can be adapted to other datasets with modifications to class labels, images, and dimensions.
+
+```{r echo=TRUE}
+# train_data_list    <- list() 
+# grp_kind     <- sort(unique(train_labels)) # # get unique class labels from data 
+#   for( grp_idx in 1:length(grp_kind)) { # iterate over each class, grp_idx = 1,  
+#     label    <- grp_kind[grp_idx]  # get label of the current class  
+#     tmp_images <- train_images[train_labels==label,,] # get images of the current class 
+#     tmp_images     <- array(tmp_images, dim = c(dim(tmp_images), 1))  # reshape to 4D (batch_size, height, width, channels) for keras's generator.  
+#     train_data_list[[grp_idx]] <- list( data  = tmp_images, # x                   
+#                                         label = train_labels[train_labels==label])# y
+#   }  
+# 
+# val_data_list      <- list() 
+# grp_kind     <- sort( unique( val_labels ) )   
+#   for( grp_idx in 1:length(grp_kind) ) { # grp_idx = 1     
+#     label                      <- grp_kind[grp_idx]     
+#     tmp_images                 <- val_images[val_labels==label,,]     
+#     tmp_images                 <- array( tmp_images , dim = c( dim(tmp_images) , 1) )     
+#     val_data_list[[grp_idx]]   <- list( data  = tmp_images ,                                         
+#                                         label = val_labels[val_labels==label]      
+#                                       )   
+#   }
+```
+
+To determine the exact number of samples for each class, you can inspect the length of the list within the train_data_list. That is, using length(train_data_list[[1]]$lebal) gives you the number of samples for the first class. You can repeat this for each class to get the number of samples for each class.
+
+```{r echo=TRUE}
+# # Initialize a variable to store the sum
+# total_sum <- 0
+# 
+# # Use a for loop to sum values from 1 to 10
+# for (i in 1:10) {
+#   counts <- length(train_data_list[[i]]$label)
+#   total_sum <- total_sum + counts
+# }
+# 
+# # Print the total sum
+# cat("The sum of values from 1 to 10 is:", total_sum, "\n")
+```
+
+#### Self a define generator
+
+Data augmentation is a technique to increase the diversity of your training dataset by applying various transformations to images, and improves the model's generalization and robustness. Here we first build generators with image_data_generator for each mnist's number to generalize the number, and then collect all numbers' generators into a list. 
+
+```{r echo=TRUE}
+# train_datagen = image_data_generator( # data argumentation
+#   rescale = 1/255          , # scaling pixel values to the range [0, 1]
+#   rotation_range = 5       , # randomly rotate images by up to 5 degrees
+#   width_shift_range = 0.1  , # shift by up to 10% of the image's width
+#   height_shift_range = 0.05, # shift by up to 5% of the image's height
+#   #shear_range = 0.1,
+#   zoom_range = 0.1         , # randomly zoom in/out by up to 10%
+#   horizontal_flip = FALSE  , # disable horizontal flipping
+#   vertical_flip = FALSE    , # disable vertical flipping
+#   fill_mode = "constant"     # fill mode for new pixels (constant value)
+# )
+```
+
+We will train the model to differentiate between digits of different classes. For example, digit 0 needs to be differentiated from the rest of the digits (1 through 9). To carry this out, we will select N random images from class A (for example, for digit 0) and pair them with N random images from another class B (for example, for digit 1). The following code prepares data generators for individual classes, making it easier to handle and process data during training and validation. It is especially useful for one-shot learning tasks.
+
+```{r echo=TRUE}
+# train_0_generator <- flow_images_from_data( # for 0 number
+#   x = train_data_list[[1]]$data  ,   
+#   y = train_data_list[[1]]$label ,   
+#   train_datagen                  , # data augmentation configuration  
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1  # for one-shot learning, each batch contains one pair of images 
+# )
+# 
+# train_1_generator <- flow_images_from_data( # for 1 number  
+#   x = train_data_list[[2]]$data  ,   
+#   y = train_data_list[[2]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_2_generator <- flow_images_from_data( # for 2 number  
+#   x = train_data_list[[3]]$data  ,   
+#   y = train_data_list[[3]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_3_generator <- flow_images_from_data( # for 3 number  
+#   x = train_data_list[[4]]$data  ,   
+#   y = train_data_list[[4]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_4_generator <- flow_images_from_data( # for 4 number  
+#   x = train_data_list[[5]]$data  ,   
+#   y = train_data_list[[5]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_5_generator <- flow_images_from_data( # for 5 number  
+#   x = train_data_list[[6]]$data  ,   
+#   y = train_data_list[[6]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_6_generator <- flow_images_from_data( # for 6 number  
+#   x = train_data_list[[7]]$data  ,   
+#   y = train_data_list[[7]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_7_generator <- flow_images_from_data( # for 7 number  
+#   x = train_data_list[[8]]$data  ,   
+#   y = train_data_list[[8]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_8_generator <- flow_images_from_data( # for 8 number   
+#   x = train_data_list[[9]]$data  ,   
+#   y = train_data_list[[9]]$label ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# train_9_generator <- flow_images_from_data( # for 9 number   
+#   x = train_data_list[[10]]$data ,   
+#   y = train_data_list[[10]]$label,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_test_datagen = image_data_generator(
+#   rescale = 1/255
+# )
+# 
+# val_0_generator <- flow_images_from_data( # for 0 number  
+#   x = val_data_list[[1]]$data    ,   
+#   y = val_data_list[[1]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_1_generator <- flow_images_from_data( # for 1 number  
+#   x = val_data_list[[2]]$data    ,   
+#   y = val_data_list[[2]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_2_generator <- flow_images_from_data( # for 2 number   
+#   x = val_data_list[[3]]$data    ,   
+#   y = val_data_list[[3]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_3_generator <- flow_images_from_data( # for 3 number   
+#   x = val_data_list[[4]]$data    ,   
+#   y = val_data_list[[4]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_4_generator <- flow_images_from_data( # for 4 number   
+#   x = val_data_list[[5]]$data    ,   
+#   y = val_data_list[[5]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_5_generator <- flow_images_from_data( # for 5 number  
+#   x = val_data_list[[6]]$data    ,   
+#   y = val_data_list[[6]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_6_generator <- flow_images_from_data( # for 6 number  
+#   x = val_data_list[[7]]$data    ,   
+#   y = val_data_list[[7]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_7_generator <- flow_images_from_data( # for 7 number  
+#   x = val_data_list[[8]]$data    ,   
+#   y = val_data_list[[8]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_8_generator <- flow_images_from_data( # for 8 number  
+#   x = val_data_list[[9]]$data    ,   
+#   y = val_data_list[[9]]$label   ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+# 
+# val_9_generator <- flow_images_from_data( # for 9 number  
+#   x = val_data_list[[10]]$data   ,   
+#   y = val_data_list[[10]]$label  ,   
+#   train_datagen                  ,   
+#   shuffle = TRUE                 ,   
+#   seed = 9487                    ,   
+#   batch_size = 1 
+# )
+```
+
+The following code is responsible for generating pairs of data samples for one-shot learning, where half of the pairs are from the same class (positive) and the other half are from different classes (negative). It does so by selecting classes and fetching data samples from their corresponding generators. The following code is to create a data generator that generates pairs of data samples and their associated similarity labels for training a siamese neural network.
+
+```{r echo=TRUE}
+# # creating sample pairs from the same and different classes
+# train_generator_list <- list(
+#   train_0_generator ,
+#   train_1_generator ,
+#   train_2_generator ,
+#   train_3_generator ,
+#   train_4_generator ,
+#   train_5_generator ,
+#   train_6_generator ,
+#   train_7_generator ,
+#   train_8_generator ,
+#   train_9_generator 
+# )
+# 
+# val_generator_list <- list(
+#   val_0_generator   ,
+#   val_1_generator   ,
+#   val_2_generator   ,
+#   val_3_generator   ,
+#   val_4_generator   ,
+#   val_5_generator   ,
+#   val_6_generator   ,
+#   val_7_generator   ,
+#   val_8_generator   ,
+#   val_9_generator 
+# )
+# 
+# join_generator <- function(generator_list, batch) { 
+#   function() { 
+#     batch_left  <- NULL 
+#     batch_right <- NULL 
+#     similarity  <- NULL 
+#       for( i in seq_len(batch)) { # i = 1 
+#           if( i <= ceiling(batch/2)) { # front half
+#             grp_same    <- sample(seq_len(num_classes), 1) # randomly sampling one class
+#             # combining array vertically
+#             batch_left  <- abind(batch_left, generator_next(generator_list[[grp_same]])[[1]], along = 1) 
+#             batch_right <- abind(batch_right, generator_next(generator_list[[grp_same]])[[1]], along = 1)
+#             similarity  <- c(similarity, 1) # 1 : from the same number
+#             # par(mar = c(0,0,4,0))
+#             # plot(as.raster(batch_left[21,,,]))
+#             # title(batch_left[[2]])
+#           } else { # after half 
+#             grp_diff    <- sort(sample(seq_len(num_classes) , 2)) 
+#             batch_left  <- abind(batch_left, generator_next(generator_list[[grp_diff[1]]])[[1]], along = 1) 
+#             batch_right <- abind(batch_right, generator_next(generator_list[[grp_diff[2]]])[[1]], along = 1) 
+#             similarity  <- c( similarity , 0 ) # 0 : from the differnet number
+#           } 
+#       } 
+#     return(list(list(batch_left, batch_right), similarity)) 
+#   } 
+# }
+# 
+# train_join_generator   <- join_generator( train_generator_list, train_batch )
+# val_join_generator     <- join_generator( val_generator_list  , val_batch   )
+```
+
+### 2.3 Building and training a model
+
+#### the siamese architecture
+
+In one-shot learning, the model is trained to recognize new objects or classes with only a single example per class. There are several architectures of one-shot learning, including **Siamese**, **matching**, and **prototypical** networks.
 
 - **Siamese Networks**: Siamese networks involve training a neural network to learn a similarity metric between pairs of input examples. This allows the network to distinguish between similar and dissimilar instances, making it suitable for one-shot learning tasks in conversion ecology, such as species recognition, identifying plant diseases. 
 
@@ -67,242 +455,121 @@ One-shot learning models often use specialized architectures that can effectivel
 
 - **Prototypical Networks**: Prototypical networks learn a prototype representation for each class based on a few examples. During testing, new samples are compared to these prototypes to make predictions.
 
-- **Memory-Augmented Neural Networks**: These networks incorporate external memory structures to store information about seen examples. This allows them to learn and remember patterns even with limited data.
+We build simple convolution as conv_base and let two images use the same conv_base model which share the same weight (see the figure).
 
-- **Transfer Learning and Fine-Tuning**: Transfer learning involves pre-training a model on a large dataset and then fine-tuning it on the limited one-shot learning dataset. This leverages the knowledge gained from the larger dataset to improve performance on the smaller dataset.
+<br>
+<center>
+![The architecture of a simple siamese](one-shot-learning.jpg)
+</center>
+</br>
 
-### 2.4 Training
+#### building model with siamese
 
-During training, the model is exposed to pairs of examples. For each pair, one example is treated as the “query” example, and the other is treated as a “support” or “reference” example.
-
-The model learns to differentiate between similar and dissimilar pairs. It learns to embed the examples so that similar examples are close in the embedding space and distinct examples are far apart.
-
-### 2.5 Loss Function
-
-The loss function used for training depends on the chosen architecture and the learning objective. For instance, Siamese networks might use a contrastive loss that encourages the embeddings of similar examples to be close and embeddings of dissimilar examples to be distant.
-
-### 2.6 Testing and Inference
-
-After training, the model’s performance is evaluated on new, unseen examples.
-To make predictions, the model typically calculates distances or similarities between the embeddings of the query example and the support examples.
-
-The class associated with the closest support example is predicted as the class for the query example.
-
-### 2.7 Fine-Tuning and Transfer Learning
-
-Sometimes, one-shot learning models can benefit from pretraining on a larger dataset and fine-tuning on the one-shot learning dataset. This leverages knowledge gained from the larger dataset to improve generalization.
-
-## 3. Classifying MNIST by One-Shot learning
-
-We can learn the basics of Keras by walking through a simple example: recognizing handwritten digits from the MNIST dataset. MNIST consists of 28 x 28 grayscale images of handwritten digits. The dataset includes labels for each image, telling us which digit it is.
-
-### 3.1 Classifying MNIST with ANN
-<!-- please visit https://rpubs.com/garynth41/546355 -->
-<!-- https://www.kaggle.com/code/blastchar/digit-recognizer-using-keras-2 -->
-
-#### Preparing the data
-
-The MNIST dataset is included with Keras and can be accessed using the dataset_mnist() function. Here we load the dataset then create variables for our test and training data.
+The code for building the one-shot learning with siamese is as follows.
 
 ```{r echo=TRUE}
-# library(keras)
-# mnist <- dataset_mnist()
-# x_train <- mnist$train$x
-# y_train <- mnist$train$y
-# x_test <- mnist$test$x
-# y_test <- mnist$test$y
+# left_input_tensor      <- layer_input(shape = list(shape_size, shape_size, 1), name = "left_input_tensor")
+# right_input_tensor     <- layer_input(shape = list(shape_size, shape_size, 1), name = "right_input_tensor")
+# 
+# conv_base              <- keras_model_sequential()           %>%
+#   layer_flatten(input_shape=list(shape_size, shape_size, 1)) %>%
+#   layer_dense(units = 128, activation = "relu", name='fc1')  %>%
+#   layer_dropout(rate = 0.1, name='dropout1')                 %>%
+#   layer_dense(units = 128, activation = "relu", name='fc2')  %>% 
+#   layer_dropout(rate = 0.1, name='dropout2')                 %>%
+#   layer_dense(units = 128, activation = "relu", name='fc3')
+# 
+# left_output_tensor     <- left_input_tensor  %>%   
+#                           conv_base  
+# 
+# right_output_tensor    <- right_input_tensor %>%   
+#                           conv_base  
+# 
+# L1_distance <- function(tensors) { # build keras backend's function  
+#   c(x,y) %<-% tensors   
+#   return( k_abs( x - y ) ) 
+# }       
+# 
+# L1_layer    <- layer_lambda( object = list(left_output_tensor,right_output_tensor) , # To build self define layer, you must use layer_lamda                                
+#                              f = L1_distance                              
+#                            )   
+# 
+# prediction  <- L1_layer%>%                
+#                layer_dense( units = 1 , activation = "sigmoid" )  
+# 
+# model       <- keras_model( list(left_input_tensor,right_input_tensor), prediction)
 ```
 
-Because of the matrix multiplication we must change the shape of the array. So we convert the 3-d arrays into matrices by reshaping width and height into a single dimension (28x28 images are flattened into length 784 vectors). Then, we convert the grayscale values from integers ranging between 0 to 255 into floating point values ranging between 0 and 1.
+#### training the model
 
-```{r echo=TRUE}
-# # reshape
-# x_train <- array_reshape(x_train, c(nrow(x_train), 784))
-# x_test <- array_reshape(x_test, c(nrow(x_test), 784))
-# # rescale
-# x_train <- x_train / 255
-# x_test <- x_test / 255
-```
-
-Note that we use the array_reshape() rather than the dim<-() to reshape the array, because the data is re-interpreted using row-wise (C-style) ordering that is compatible with the way that the Keras library. The x data is a 3-d array (images,width,height) of grayscale values that meets the keras library with 3 dimensions i, j, k, where i is the number of matrices or samples (R uses number of rows in each matrix), j is the number of rows in each matrix (R uses number of columns), and k is the number of columns (R uses number of matrices).
- 
-The y data is an integer vector with values ranging from 0 to 9. To prepare this data for training we one-hot encode the vectors into binary class matrices using the Keras to_categorical() function.
-
-```{r echo=TRUE}
-# y_train <- to_categorical(y_train, 10)
-# y_test <- to_categorical(y_test, 10)
-```
-
-### Defining the model
-
-The core structure of Keras is a model, a way to organize layers. The simplest type of model is the Sequential model, a linear stack of layers. We create a sequential model and then add layers using the pipe (%>%) operator.
-
-```{r echo=TRUE}
-# model <- keras_model_sequential() 
-# model %>% 
-#   layer_dense(units = 256, activation = 'relu', input_shape = c(784)) %>% 
-#   layer_dropout(rate = 0.4) %>% 
-#   layer_dense(units = 128, activation = 'relu') %>%
-#   layer_dropout(rate = 0.3) %>%
-#   layer_dense(units = 10, activation = 'softmax')
-```
-The input_shape argument to the first layer specifies the shape of the input data (a length 784 numeric vector representing a grayscale image). The final layer outputs a length 10 numeric vector (probabilities for each digit) using a softmax activation function. Use the summary() function to print the details of the model.
-
-```{r echo=TRUE}
-# summary(model)
-```
-Next, compile the model with appropriate loss function, optimizer, and metrics.
+During training, the model is exposed to pairs of examples. For each pair, one example is treated as the “query” example, and the other is treated as a “support” or “reference” example. The model learns to differentiate between similar and dissimilar pairs. It learns to embed the examples so that similar examples are close in the embedding space and distinct examples are far apart. The learning rate (1e-5) will lead to slowly optimize progress, so we suggest use 1e-3 as our learning rate. Below is comparison, you will find 1e-3 is learning faster than 1e-5 more.
 
 ```{r echo=TRUE}
 # model %>% compile(
-#   loss = 'categorical_crossentropy',
-#   optimizer = optimizer_rmsprop(),
-#   metrics = c('accuracy')
+#   loss      = "binary_crossentropy",
+#   optimizer = optimizer_rmsprop(learning_rate = 1e-3),
+#   metrics   = c("accuracy")
 # )
-```
-
-### Training model and evaluation
-
-Use the fit() function to train the model for 30 epochs using batches of 128 images.
-
-```{r echo=TRUE}
-# history <- model %>% fit(
-#   x_train, y_train, 
-#   epochs = 30, batch_size = 128, 
-#   validation_split = 0.2
+# 
+# history <- model %>% fit_generator(
+#   train_join_generator,
+#   steps_per_epoch = 100,
+#   epochs = 40,
+#   validation_data = val_join_generator,
+#   validation_steps = 50
 # )
-```
-The history object returned by fit() includes loss and accuracy metrics which we can plot.
-
-```{r echo=TRUE}
+# 
 # plot(history)
 ```
 
-Evaluate the model’s performance on the test data.
+### 2.4 Verifing with test data
+
+#### Same number match
+
+After training, the model’s performance is evaluated on new, unseen examples. To make predictions, the model typically calculates distances or similarities between the embeddings of the query example and the support examples. The class associated with the closest support example is predicted as the class for the query example.
 
 ```{r echo=TRUE}
-# model %>% evaluate(x_test, y_test)
+# # same number
+# mnist_number_left  <- 8
+# filter_idx_left    <- sample( which( test_labels == mnist_number_left  ) , 1 )
+# img_input_left     <- test_images[filter_idx_left ,,]/255
+# mnist_number_right <- 8
+# filter_idx_right   <- sample( which( test_labels == mnist_number_right ) , 1 )
+# img_input_right    <- test_images[filter_idx_right,,]/255
+# img_input_left     <- array_reshape(img_input_left , c(1, shape_size, shape_size, 1))
+# img_input_right    <- array_reshape(img_input_right, c(1, shape_size, shape_size, 1))
+# 
+# similarity         <- model %>% predict(list(img_input_left,img_input_right))
+# par(mar = c(0,0,4,0))
+# plot( as.raster( abind(img_input_left[1,,,] ,
+#                        img_input_right[1,,,],
+#                        along = 2
+#                       ) 
+#                ) 
+# )
+# title( paste0( test_labels[filter_idx_left] , " v.s " , test_labels[filter_idx_right] , " , similarity : " , round(similarity,3) ) )
 ```
 
-
-Implementations of One-Shot learning typically involve deep learning frameworks like TensorFlow. Here’s a high-level outline of how you might approach building a simple model using TensorFlow from R.
-
-### Example 1: using Siamese Network with a contrastive loss to classify MNIST
-
-#### Step 1: Loading the data
-
-Here is an extant dataset of mnist number. You directly lead Data. The code modified according to [this page](https://tensorflow.rstudio.com/tutorials/keras/classification).
+#### Different number match
 
 ```{r echo=TRUE}
-# rm(list = ls())
-# library(reticulate) # loading virtual environment for project
-# py_config() # By default, the env is ~/.virtualenvs/r-reticulate
-
-library(keras) # loading the package for downloading the data
-library(abind) # operating multidimensional arrays
-# mnist <- dataset_mnist() # load dataset from the keras package
-# np <- import(numpy)
-# mnist <- np$load("/home/tank/Desktop/ecodatasci/images/mnist.npz") # full path
-mnist <- dataset_mnist("/home/tank/Desktop/ecodatasci/images/mnist.npz") # full path
+# # different number
+# mnist_number_left  <- 8
+# filter_idx_left    <- sample( which( test_labels == mnist_number_left  ) , 1 )
+# img_input_left     <- test_images[filter_idx_left ,,]/255
+# mnist_number_right <- 7
+# filter_idx_right   <- sample( which( test_labels == mnist_number_right ) , 1 )
+# img_input_right    <- test_images[filter_idx_right,,]/255
+# img_input_left     <- array_reshape(img_input_left , c(1, shape_size, shape_size, 1))
+# img_input_right    <- array_reshape(img_input_right, c(1, shape_size, shape_size, 1))
+# 
+# similarity         <- model %>% predict(list(img_input_left,img_input_right))
+# par(mar = c(0,0,4,0))
+# plot( as.raster( abind(img_input_left[1,,,] ,
+#                        img_input_right[1,,,],
+#                        along = 2
+#                       ) 
+#                ) 
+#     )
+# title( paste0( test_labels[filter_idx_left] , " v.s " , test_labels[filter_idx_right] , " , similarity : " , round(similarity,3) ) )
 ```
-
-#### Step 2: Exploring the data
-
-Let’s explore the format of the dataset before training the model. 
-
-```{r echo=TRUE}
-str(mnist)
-```
-From above result, we have four arrays: train_images and train_labels arrays are the training set — the data the model uses to learn. The model is tested against the test set: the test_images, and test_labels arrays.
-
-Based on above result, we can separate each array from each other by performing the following code.
-
-```{r echo=TRUE}
-train_images1 <- mnist$train$x
-train_labels1 <- mnist$train$y
-test_images  <- mnist$test$x 
-test_labels  <- mnist$test$y
-```
-The following shows there are 60,000 images in the training set, with each image represented as 28 x 28 pixels, which values ranging between 0 and 255. The labels are arrays of integers, ranging from 0 to 9. 
-
-```{r echo=TRUE}
-dim(train_images1)
-dim(train_labels1)
-train_labels1[1:20]
-```
-The following shows there are 10,000 images in the test set, which is used to evaluate how accurately the network learned. Each image is represented as 28 x 28 pixels.
-
-```{r echo=TRUE}
-dim(test_images)
-dim(test_labels)
-```
-
-### Step 3: Pre-processing the data
-
-This step includes the following work: splitting dataset, building generator, pairs, and is very important for building a  one-shot learning model.
-
-- **splitting data**
-
-If you're using Keras, you can specify a validation split to set aside a portion of the training data for validation during training. This helps monitor model performance and detect overfitting. We split the data the training set into new training set and validation set, by performing the following code. At this point, we only have 48,000 training. Additional 12,000 data is validation.
-
-```{r}
-set.seed(9478)
-val_idx      <- sample(1:nrow(train_images1),
-                       size = ceiling(0.2*nrow(train_images1)), # the smallest integer >= the value passed
-                       replace = F)
-val_images   <- train_images1[val_idx,,] # the third comma means the channel of accolor image
-val_labels   <- train_labels1[val_idx]
-train_images <- train_images1[-val_idx,,]
-train_labels <- train_labels1[-val_idx]
-```
-
-The pixel values fall in the range of 0 to 255. We scale these values to a range of 0 to 1 before feeding to model. The maximum of sample's array is 1 (white) and the minimum of sample's array is 0 (black). You can visualize the mnist's data as blow. The title is its label and image is its array.
-
-```{r echo=TRUE}
-par(mar = c(0,0,4,0)) # sets the bottom, left, top and right margins of a plot region in number of lines of text.
-i <- 1
-plot(as.raster(train_images[i,,]/255)) # i and two comma denote 3-dimensional array of an image
-title(train_labels[i])
-```
-
-- **building generator**
-<!-- W tensorflow/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 150528000 exceeds 10% of free system memory. -->
-When training deep learning models with a large dataset, which require large memory space, it is necessary to build data generators, which allow to load data in small batches and do not fit entirely in memory. In the case, the dataset is too large. so you should build data generator. For this purpose, train_data_list and val_data_list are first built by performing the following chunk.
-
-```{r echo=TRUE}
-train_data_list    <- list() 
-grp_kind     <- sort(unique(train_labels))   
-  for( grp_idx in 1:length(grp_kind)) { # grp_idx = 1     
-    label          <- grp_kind[grp_idx]     
-    tmp_images     <- train_images[train_labels==label,,]     
-    tmp_images     <- array(tmp_images , dim = c(dim(tmp_images), 1))  # why reshape array? because keras image_data_generator only accept rank = 4  
-    train_data_list[[grp_idx]] <- list( data  = tmp_images,                                         
-                                        label = train_labels[train_labels==label])
-  }  
-
-val_data_list      <- list() 
-grp_kind     <- sort( unique( val_labels ) )   
-  for( grp_idx in 1:length(grp_kind) ) { # grp_idx = 1     
-    label                      <- grp_kind[grp_idx]     
-    tmp_images                 <- val_images[val_labels==label,,]     
-    tmp_images                 <- array( tmp_images , dim = c( dim(tmp_images) , 1) )     
-    val_data_list[[grp_idx]]   <- list( data  = tmp_images ,                                         
-                                        label = val_labels[val_labels==label]      
-                                      )   
-  }
-```
-
-
-#### step 3: parameter setting
-
-In a one-shot learning model, you would typically need to set various parameters for configuring the model. The key parameters include Hyperparameters (learning_rate, batch_size, num_epochs, loss_function), Model Architecture, Data Augmentation, Pair Generation, Regularization, Evaluation Metrics, Early Stopping, Model Saving.
-
-
-Create pairs of images. We will train the model to differentiate between digits of different classes. For example, digit 0 needs to be differentiated from the rest of the digits (1 through 9). To carry this out, we will select N random images from class A (for example, for digit 0) and pair them with N random images from another class B (for example, for digit 1). 
-
-
-
-First, you need to structure the data to support one-shot learning, often by creating pairs or sets of examples. Then using data loaders or generators to load the data efficiently. You might need to create pairs or examples to train model effectively.
-
-
-
