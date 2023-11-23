@@ -21,11 +21,11 @@ preview: multi_layer.png
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-DL is a subfield of machine learning that works with algorithms inspired by the structure and functions of the human brain called "neural networks". It has 3 types of neural networks: Artificial Neural Network (ANN), Convolutional Neural Network (CNN) and Recurrent Neural Network (RNN), and has a large number of potential applications in ecology, such as image recognition, analysis of acoustic signals, or any other tasks.
+DL is a subfield of machine learning that works with algorithms inspired by the structure and functions of human brain called "neural networks". It has 3 types of neural networks: Artificial Neural Network (ANN), Convolutional Neural Network (CNN) and Recurrent Neural Network (RNN), and has a large number of potential applications in ecology, such as image recognition, analysis of acoustic signals, or any other tasks.
 
-## 1. Building and running DL with R
+## 1. Running DL with Rstudio
 
-### 1.1 R packages for neural networks
+### 1.1 Some R packages for Networks
 There are some [packages](https://subscription.packtpub.com/book/big-data-and-business-intelligence/9781788992893/1/ch01lvl1sec06/setting-up-your-r-environment) that can fit basic neural networks. For example, the **nnet** package can fit feed-forward neural networks with one hidden layer. The **neuralnet** package fits neural networks with multiple hidden layers using back-propagation. The **RSNNS** package makes many model components for training a wide variety of models. The **deepnet** package provides a number of tools for deep learning, as well as allows for different activation functions and the use of dropout for regularization.
 
 The **h2o** (https://www.h2o.ai/) is an excellent, general machine learning framework written in Java, and has an API that allows you to use it from R. However, most deep learning practitioners prefer other deep learning libraries, such as **TensorFlow**, **CNTK**, and **MXNet**. **Keras** is actually a frontend abstraction for other deep learning libraries, and can use TensorFlow in the background. 
@@ -37,7 +37,7 @@ To learn more about using Keras in R, go to https://keras.rstudio.com; this link
 
 ![](r_python.png)
 
-For running keras in Rstudio, you should make sure which python that you can use, and create a virtual environment, such as python3.8-venv.
+For running keras in Rstudio, we should make sure which python that we use, and create a virtual environment. Here is the code for creating a virtual python env. named "r-reticulate".
 
 ```{r echo=TRUE}
 # library(reticulate)
@@ -46,7 +46,7 @@ For running keras in Rstudio, you should make sure which python that you can use
 # install_miniconda() # for win OS
 ```
 
-You can install the python packages of tensorflow and keras using py_install() function from reticulate or open the terminal within Rstudio to install them using pip. After that, you should install the R packages of keras and tensorflow. 
+Then we install the python packages, such as tensorflow and keras using py_install() from reticulate or install them with pip the terminal in Rstudio. After that, we install the R packages of keras and tensorflow. 
 
 ```{r}
 # reticulate::py_install(c('tensorflow-gpu==2.2','tensorflow-addons'), pip = TRUE)
@@ -54,19 +54,21 @@ You can install the python packages of tensorflow and keras using py_install() f
 # library(keras)
 ```
 
-## 2. Artificial Neural Network
+## 2. Basic conception of DL models
 
-### 2.1 The architechture of ANN
+### 2.1 Neutral network architechture
+
 ANN is a forward propagation network that is consists of artificial neurons together and grouped in different levels known as layers. These are the 3 layers applied in structured artificial neural networks: Input Layer, Hidden Layer and Output Layer. This network is like this:
 
 ![](ANN.png){width=40% heigh=20% .external}
-The architechture of ANN is different from that ofRNN, whichise used in natural language and speech recognition applications by processing sequential data. RNN can process different types of data at various moments in time. Its Architecture is like this.
+
+The architecture of ANN is different from that of RNN, which is used in natural language and speech recognition by processing sequential data. RNN can process different types of data at various moments in time. Its Architecture is like this.
 
 ![](RNN.png){width=40% heigh=20% .external}
 
-### 2.2 Constructing ANN networks
+### 2.2 Building neutral networks
 
-A Keras model is the Sequential or functional class. Here we focus on the sequential model and pay attention to: 1) creating a fully-connected neural network architecture, 2) applying neural nets to regression and classification, 3) training neural nets with stochastic gradient descent, and 4) improving performance with dropout, batch normalization, and other techniques. For more details, see [the site](https://www.kaggle.com/code/ryanholbrook/a-single-neuron)
+A Keras model is the Sequential or functional class. Here we focus on the sequential model. For more details, see [the site](https://www.kaggle.com/code/ryanholbrook/a-single-neuron)
 
 Neural networks are composed of neurons, each of which individually performs only a simple computation (see the box1). 
 
@@ -113,9 +115,9 @@ We can define the sequential model for allowing a neural network to "learns" by 
 #])
 ```
 
-The first argument, units, defining how many outputs we want. In this case just predicting 'calories', so units=1. The second argument, input_shape, telling Keras the dimensions of the inputs. Setting input_shape=[3] ensures the model to accept three features as input ('sugars', 'fiber', and 'protein'). This model is now ready to be fit to training data!
+The first argument, units, defining how many outputs we want. In the case just predicting 'calories', so units=1. The second argument, input_shape, tell Keras the dimensions of the inputs. Setting input_shape=[3] ensures the model to accept three features as input ('sugars', 'fiber', and 'protein'). This model is now ready to be fit to training data!
 
-We can combine and modify these single units to model more complex relationships that deep neural nets work for. Let's see the box2 to understand how we stack layers to get complex data transformations. We have some nonlinearity with activation functions (see the box2).
+We can combine and modify the single units to model complex relationships that DL work for. Let's see the box2 to understand how we stack layers to get complex data transformations. We have some nonlinearity with activation functions (see the box2).
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
@@ -135,7 +137,9 @@ Each layer in a neural network performs relatively simple transformation. Throug
 
 **Activation Function**
 
-Without activation functions, neural networks can only learn linear relationships (lines and planes). So we need are activation functions to fit curves. The common activation function is the rectifier function max(0,x).
+We stack layers inside a Sequential model, and add an activation function to each hidden layer, then a network has an ability to learn more complex (non-linear) relationships in data. Without activation functions, neural networks only learn linear relationships (lines and planes). For details on how to choose an activation function of a hidden Layer, see [the website](https://machinelearningmastery.com/choose-an-activation-function-for-deep-learning/).
+
+The common activation function is the rectifier function max(0,x).
 
 <br>
 <center>
@@ -143,13 +147,13 @@ Without activation functions, neural networks can only learn linear relationship
 </center>
 </br>
 
-When we attach the rectifier to a linear unit, we get a rectified linear unit or ReLU. Applying a ReLU activation to a linear unit means the output becomes $max(0, w * x + b)$. We stack layers inside a Sequential model, and add an activation function after the hidden layers, the network has the ability to learn more complex (non-linear) relationships in the data.
+When we attach the rectifier to a linear unit, we get a rectified linear unit or ReLU. Applying a ReLU activation to a linear unit means the output becomes $max(0, w * x + b)$. For the following network, its hidden layers' activation function is ReLU.
 
 <br><center>
 ![](StackingLayers.png){width=50%}
 </center></br>
 
-Notice that the final (output) layer is a linear unit (meaning, no activation function). That makes this network appropriate to a regression task, where we are trying to predict some arbitrary numeric value. Other tasks (like classification) might require an activation function on the output.
+For an output layer, if it is a linear unit with no activation function, that makes this network appropriate to a regression task, where we can predict some arbitrary numeric value. Other tasks (like classification) might require an activation function, such as softmax, on the output.
 
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
@@ -161,14 +165,18 @@ The Sequential model we've been using will connect together a list of layers in 
 
 ```{r echo=TRUE}
 #model = keras.Sequential([
-    # the hidden ReLU layers
-#    layers.Dense(units=4, activation='relu', input_shape=[2]),
-#    layers.Dense(units=3, activation='relu'),
-#    # the linear output layer 
+    # the first hidden layer
+    #   layers.Dense(units=4, activation='relu', input_shape=[2]),
+
+    # the second hidden layer
+    #   layers.Dense(units=3, activation='relu'),
+
+    # the linear output layer
+    #   layers.Dense(units=1),
 ##])
 ```
 
-As for the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), we've chosen a three-layer network with over 1500 neurons. This network should be capable of learning fairly complex relationships in the data.
+As for the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), we choose a three-layer network with over 1500 neurons. It can be capable of learning fairly complex relationships in the data.
 
 ```{r echo=TRUE}
 #model = keras.Sequential([
@@ -181,7 +189,7 @@ As for the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cere
 
 ### 2.3 Compiling neutral networks
 
-Training a network model is to adjust its weights so that it can transform the features (inputs) into the target (output). If successfully train a network, its weights must represent some relationships between those features and that target (see the box3).
+Training a ANN model is to adjust its weights so that it can transform the features (inputs) into the target (output). If successfully train a network, its weights must represent some relationships between those features and that target (see the box3).
 
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
@@ -192,19 +200,19 @@ Training a network model is to adjust its weights so that it can transform the f
 
 **The Loss Function**
 
-The loss function measures the disparity between the the target's true value and the value the model predicts. A common loss function for regression is the mean absolute error (MAE), i.e., abs(y_true - y_pred). Besides MAE, other loss functions for regression problems are the mean-squared error (MSE) or the Huber loss (both available in Keras). For classification, the common function is to measure the accuracy.
+The loss function measures the disparity between the target's true value and the predicted value by models. A common loss function for regression is the mean absolute error (MAE), i.e., abs(y_true - y_pred). Other loss functions for regression problems are the mean-squared error (MSE) or the Huber loss (available in Keras). For classification, the common function is to measure the accuracy.
 
 **Optimizer, minibatch and epoch**
 
-All of the optimization algorithms used in deep learning belong to a family called stochastic gradient descent (SGD). They are iterative algorithms that train a network in steps like this:
+All of the optimization algorithms used in DL belong to a family called stochastic gradient descent (SGD). They are iterative algorithms that train a network in steps like this:
 
-- Sample some training data and run it through the network to make predictions.
-- Measure the loss between the predictions and the true values.
+- Sample training data and run it to pass a network to make predictions.
+- Measure the loss between the predicted and true values.
 - Finally, adjust the weights in a direction that makes the loss smaller.
 
 Adam is an SGD algorithm that has an adaptive learning rate that makes it suitable for most problems without any parameter tuning. Adam is a great general-purpose optimizer. RMSpro is a good one for regression problems.
 
-Each iteration's sample of training data is called a minibatch (often "batch"), while a complete round of the training data is called an epoch. The number of epochs you train is how many times the network will see each training example.
+Each iteration sample of training data is called minibatch or batch, while a complete round of the training data is called an epoch. The number of epochs you train is how many times the network will see each training example.
 
 **Learning Rate and Batch Size**
 
@@ -216,50 +224,46 @@ The learning rate and the size of the minibatches are the two parameters that ha
 </div>
 <br>
 
-After understanding these things, we should compile the squential model with the optimizer and loss function.
+After understanding these, now we can compile the squential model with the optimizer and loss function.
 
 
 ```{r echo=TRUE}
-#model.compile(
+# for regression
+# model.compile(
 #    optimizer='adam',
-#    loss='mae',
-#)
+#    loss='mae')
 ```
 
-Now we're ready to start the training! We've told Keras to feed the optimizer 256 rows of the training data at a time (the batch_size) and to do that 10 times all the way through the dataset (the epochs).
+Now we're ready to start training! We tell Keras to feed the optimizer 256 rows of the training data at a time (the batch_size) and to do that 10 times all the way through the dataset (the epochs).
 
 ```{r echo=TRUE}
 #history = model.fit(
 #    X_train, y_train,
 #    validation_data=(X_valid, y_valid),
 #    batch_size=256,
-#    epochs=10,
-#)
+#    epochs=10)
 ```
 
 ### 2.4 Improving network models
 
-**Capacity**: A model's capacity refers to the size and complexity of the patterns it is able to learn. For neural networks, this is largely determined by how many neurons it has and how they are connected together. If it appears that your network is underfitting data, you should try increasing its capacity.
+**Capacity**: A model capacity (the size and complexity of the patterns it is able to learn) is determined by its architecture, in which how many neurons it has and how the neurons are connected together. If the network is underfitting data, we should try increasing its capacity.
 
-You can increase the capacity of a network either by making it wider (more units to existing layers) or by making it deeper (adding more layers). Wider networks have an easier time learning more linear relationships, while deeper networks prefer more nonlinear ones. Which is better just depends on the dataset.
+We can increase the capacity of a network either by making it wider (more units to layers) or by making it deeper (more layers). The wider networks have an easier time learning more linear relationships, while the deeper networks prefer more nonlinear ones. Which is better just depends on the dataset.
 
 
 ```{r echo=TRUE}
 #model = keras.Sequential([
 #    layers.Dense(16, activation='relu'),
-#    layers.Dense(1),
-#])
+#    layers.Dense(1)])
 
 #wider = keras.Sequential([
 #    layers.Dense(32, activation='relu'),
-#    layers.Dense(1),
-#])
+#    layers.Dense(1)])
 
 #deeper = keras.Sequential([
 #    layers.Dense(16, activation='relu'),
 #    layers.Dense(16, activation='relu'),
-#    layers.Dense(1),
-#])
+#    layers.Dense(1)])
 ```
 
 
@@ -325,16 +329,14 @@ We randomly drop out some fraction of a layer's input units every step of traini
 
 **Batch Normalization**
 
-It's generally a good idea to put all of your data on a common scale. If it's good to normalize the data before it goes into the network, maybe normalizing inside the network would be better! This special kind of layer can do this. A batch normalization layer looks at each batch as it comes in, first normalizing the batch with its own mean and standard deviation, and then putting the data on a new scale with two trainable rescaling parameters.
-
-Batch normalization is another special layer, which can help correct training that is slow or unstable. 
+It's generally a good idea to put all of data on a common scale. A good practise for normalizing inside the network! This special kind of layer can do this. A batch normalization layer looks at each batch as it comes in, first normalizing the batch with its own mean and standard deviation, and then putting the data on a new scale with two trainable rescaling parameters. A batch normalization can correct training that is slow or unstable. 
 
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
 </div>
 <br>
 
-In Keras, the dropout rate argument rate defines what percentage of the input units to shut off. Put the Dropout layer just before the layer you want the dropout applied to:
+In Keras, the dropout rate argument rate defines what percentage of the input units to shut off. Put the Dropout layer just before the layer you want the dropout applied to.
 
 ```{r echo=TRUE}
 #keras.Sequential([
@@ -344,6 +346,7 @@ In Keras, the dropout rate argument rate defines what percentage of the input un
 #    # ...
 #])
 ```
+
 As for batch normalization layers, you can put it after a layer...
 
 ```{r echo=TRUE}
@@ -358,11 +361,12 @@ As for batch normalization layers, you can put it after a layer...
 #layers.BatchNormalization(),
 #layers.Activation('relu'),
 ```
+
 And if you add it as the first layer of your network it can act as a kind of adaptive preprocessor, standing in for something like Sci-Kit Learn's StandardScaler.
 
-### 2.5 Examples of ANN 
+<!-- ### 2.5 Examples of ANN  -->
 
-You are suggested to visit [the site](https://rpubs.com/Nilafhiosagam/541333) or [another site](https://www.kaggle.com/code/yashgyy/deep-learning-with-r-keras-iris-dataset)
+<!-- You are suggested to visit [the site](https://rpubs.com/Nilafhiosagam/541333) or [another site](https://www.kaggle.com/code/yashgyy/deep-learning-with-r-keras-iris-dataset) -->
 
 <!-- Generally, the Keras script for ANN probably looked like this. -->
 
@@ -951,7 +955,7 @@ Basically, flattening just takes the numbers row by row, and put them into this 
 </div>
 <br>
 
-### 3.3 An example of defining and training CNN Model
+### 3.3 Defining and training CNN Model
 #### 3.3.1 Designing CNN model
 
 Now there have some pictures of animals with dogs, cats and loans. There are many architectures for image classification, one of the most popular being convolutional neural networks (CNNs). CNNs are especially effective at image classification because they are able to automatically learn the spatial hierarchies of features, such as edges, textures, and shapes, which are important for recognizing objects in images.
