@@ -21,11 +21,162 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## 2. An example of a CNN model
+## 1. Basically stacking layers
+
+### 1.1 Convolution on an image
+
+CNN is designed for image recognition. They can capture the spatial characteristics of an image. They work in a way like this. 
+
+![Figure from https://serokell.io/blog/introduction-to-convolutional-neural-networks](convolutionNN.png){width=100% heigh=200% .external}
+
+The architectures contain three kinds of layers: convolutional layer, pooling layer, and fully-connected layer. For details about how each layer works, see [here](https://serokell.io/blog/introduction-to-convolutional-neural-networks), as well as [others](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks).
+
+There is much information about CNN conception. You can watch [this video](https://www.youtube.com/watch?v=__6WSqmlJRk&t=10s).
+
+Let's take a look this imagine. It has 8x8 pixels, the values of which range from 0 to 255, representing black and white, respectively. For convolution on the imagine, see the box1. 
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 1: Convoluting on an imagine</b></p>
+<p style='margin-left:1em;'>
+
+**convolution operation**: Convolution is a fundamental operation in image processing because it is a highly effective way to extract features and filter noise from images. The convolution operation involves sliding the filter over the image, computing the dot product between the filter and the corresponding image pixels at each position, and assigning the result to the central pixel of the filter.
+
+<br>
+<center>
+![](convollayer.png){width=80%}
+</center>
+</br>
+You can use multiple filters extract pixel values for getting multiple feature maps, other than only one.
+
+<br>
+<center>
+![](convollayer2.png){width=80%}
+</center>
+</br>
+
+If convolution on a color image (i.e., RGB, three channels), you should select a filter with same channels to combined their values for a feature map like this.
+
+<br>
+<center>
+![](convollayer3.png){width=80%}
+</center>
+</br>
+
+For the convolution operation, you should notice the padding and stride. Padding and stride are two techniques used to improve convolutions operations and make the more efficient. 
+
+**padding**: CNNs commonly use convolution filters with odd height and width values, such as 1, 3, 5, or 7 to  avoid undesirable shrinkage of original imagines.
+
+<br>
+<center>
+![](padding.png){width=80%}
+</center>
+</br>
+
+**stride**: The amount of movement between applications of the filter to the input image is referred to as the stride. The stride of the filter on the input image can be used to downsample the size of the output feature map.
+
+<br>
+<center>
+![](stride.png){width=80%}
+</center>
+</br>
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+### 1.2 Pooling operation
+
+After extracting features with filters, you can reduce data dimension and emphasize features by pooling layers (see the box7).
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 2: Pooling on a feature map</b></p>
+<p style='margin-left:1em;'>
+
+**pooling operation**: The pooling operation involves sliding a two-dimensional filter over each feature map and summarizing the features lying within the region covered by the filter.  This makes the model more robust to variations in the position of the features in the input image. 
+
+<br>
+<center>
+![](poolinglayer.png){width=80%}
+</center>
+</br>
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+### 1.3 Flattening and activation functions
+
+After convolution and pooling steps, we are literally going to flatten our pooled feature map into a column like in the image below to feed ANN later on.
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 3: Flattening for a columon</b></p>
+<p style='margin-left:1em;'>
+
+Basically, flattening just takes the numbers row by row, and put them into this one long column.
+
+<br>
+<center>
+![](flatteninglayer.png){width=80%}
+</center>
+</br>
+
+**Activation function**: First note that the hidden and output layers usually have activation functions such as sigmoid, tanh, ReLU, identity, etc. Activation functions in hidden layers are usually nonlinear, e.g. ReLU (rectified linear unit), which is a piecewise linear function that introduces the most simple nonlinearity. ReLU  Those in an output layer used are linear function g(z)=z, such as softmax.  
+
+<br>
+<center>
+![](activation.png){width=60%}
+</center>
+</br>
+
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+## 2. Building and training CNN Model
+
+### 2.1 Designing CNN model
+
+Now there have some pictures of animals with dogs, cats and loans. There are many architectures for image classification, one of the most popular being CNN. CNN is especially effective at image classification because they are able to automatically learn the spatial hierarchies of features, such as edges, textures, and shapes, which are important for recognizing objects in images.
+
+We define CNN architecture using the Keras library. The model consists of several convolutional layers followed by max pooling layers, and a fully connected layer with a softmax activation function (see the box4).
+
+<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<span>
+<p style='margin-top:1em; text-align:center'>
+<b>Box 4: Designing a CNN model</b></p>
+<p style='margin-left:1em;'>
+
+Here is a CNN architecture for the classification of animal picture.
+<br>
+<center>
+![](imageclass.png){width=90%}
+
+![](imageclass2.png){width=90%}
+<center>
+</br>
+</p>
+<p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
+</div>
+<br>
+
+### 2.2 Defining and training CNN model
+
+For the code, please visit [the website](https://github.com/Metalesaek/image-classification)
+
+## 3. An example of a CNN model
 
 The main code is modified from [the website](https://rpubs.com/syabaruddin/Image_Classification_with_Convulotional_Neural_Network_using_Keras_API), [the website](https://www.r-bloggers.com/2020/09/update-with-tf-2-0-image-classification-with-keras-and-tensorflow/#google_vignette) and [the website](https://rpubs.com/rusdipermana/image-cl).
 
-### 2.1 Preparing data with generator
+### 3.1 Preparing data with generator
 
 In this context, we import a number of libraries that provide specific tools and functions for each stage of our project. These libraries not only facilitate our work, but also ensure that we can make the most of their advanced features. Here are some of the libraries we import.
 
@@ -36,7 +187,7 @@ In this context, we import a number of libraries that provide specific tools and
 # library(caret) # Model Evaluation
 ```
 
-#### 2.1.1 Data list and path
+#### 3.1.1 Data list and path
 
 Image processing is a crucial step. In this stage, raw images need to be processed to make them suitable for use in the desired model, involving image preprocessing, resizing to uniform dimensions, normalizing pixel intensities. Additionally, image augmentation can be performed to enhance data variability and diversity.
 
@@ -64,7 +215,7 @@ Image processing is a crucial step. In this stage, raw images need to be process
 # map(img, plot) # Plot image
 ```
 
-#### 2.1.2 Checking and uniforming data
+#### 3.1.2 Checking and uniforming data
 
 We need to check the image dimension and create a proper input dimension for building the deep learning model. 
 
@@ -110,7 +261,7 @@ Let's resize to uniform dimensions. The dimensions must not too small to avoid a
 # batch_size <- 32
 ```
 
-#### 2.1.3 Spliting dataset
+#### 3.1.3 Spliting dataset
 
 Normalizing pixel intensities, combined with rescaling and validation splitting, can contributes to creating a more robust and diverse dataset for training. We use the train_data_gen generator() to prepares data with the transformations.
 
@@ -166,9 +317,9 @@ Balance target classes is very important for classification task. Here we check 
 #   prop.table()
 ```
 
-### 2.2 Training and turning model
+### 3.2 Training and turning model
 
-#### 2.2.1 Model architecture
+#### 3.2.1 Model architecture
 
 We can start building the model architecture for the deep learning. We will build a simple model first with the following layer:
 
@@ -203,7 +354,7 @@ Don’t forget to set the input size in the first layer. If the input image is i
 # model
 ```
 
-#### 2.2.2 Model Fitting
+#### 3.2.2 Model Fitting
 
 We start fitting the data into the model. For starter, we will use 30 epochs to train the data. For multilabel classification, we use categorical cross-entropy as the loss function. We will also evaluate the model with the validation data from the generator.
 
@@ -231,7 +382,7 @@ We start fitting the data into the model. For starter, we will use 30 epochs to 
 # plot(history)
 ```
 
-#### 2.2.3 Model evaluation
+#### 3.2.3 Model evaluation
 
 Let’s evaluate the model using confusion matrix. First, we need to acquire the file name from the data validation. From the file name, we will extract the categorical label as the actual value of the target variable.
 
@@ -287,7 +438,7 @@ Now let’s evaluate using confusion matrix to check the accuracy and other metr
 #                 as.factor(val_data$class))
 ```
 
-#### 2.2.4 Model Tuning
+#### 3.2.4 Model Tuning
 
 let’s check our model. We actually extract information from an 2D image array. The first layer only extract the general features of our image and then being downsampled using the max pooling layer. Therefore, we can stacks more layers in the model for capturing more information like this.
 
@@ -356,11 +507,11 @@ let’s check our model. We actually extract information from an 2D image array.
 #                 as.factor(val_data$class))
 ```
 
-### 2.3 Prediction with CNN model
+### 3.3 Prediction with CNN model
 
 After we have trained the tuned-model and satisfied with the model performance on the validation dataset, we will do prediction/classification using new data test.
 
-#### 2.3.1 Preparing data
+#### 3.3.1 Preparing data
 
 As the previous section for preparing training data, let's do the same steps for test data.
 
