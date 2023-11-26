@@ -1,7 +1,7 @@
 ---
 title: "Lesson 2: Advanced Machine Learning (Ⅰ)"
 description: |
-   Unlike classic mechine learning algorithms, in which the features that machine learn are extracted manually, deep learning such as CNN can automatically extract features from data. Thus, with the increase of data amount, ANN algorithms are explored for good results. This section will introduce nerual networks.
+   Unlike classic mechine learning, in which the features that machine learnS are extracted manually, artifical neural networks (ANN) can extract features from data automatically. With increase of data amount, ANN (with algorithms of multi-layer percetion, convolutional neural network, etc.) are explored for getting good results. This section will introduce multi-layer precetion (MLP) algorithm.
 # author: []
 # date: 2023-10-15
 # output:
@@ -24,12 +24,20 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ### 1.1 Brief overview of networks
 
-Artificial neural networks (ANNs) refer to a collection of computing algorithms inspired by the structure of biological neural networks. ANNs consist of layers of interconnected nodes. They include Shallow neural network (SNN), such as multi-layer perception (MLP), and Deep neural networks (DNN). MLPs consis of a set of fully connected layers, and use forward propagation for inputs and backpropagation for updating the weights. 
+Artificial neural networks (ANNs) refer to a collection of computing algorithms inspired by the structure of biological neural networks. ANNs consist of layers of interconnected nodes. They include Shallow neural network (SNN), such as multi-layer perception (MLP), and Deep neural networks (DNN). MLPs consis of a set of fully connected layers. They have the 3 types of layers: input layer, hidden layer and output layer, and use forward propagation for inputs and backpropagation for updating the weights. This network is like this:
 
-DNNs can be divided into Convolutional Neural Network (CNN), which is designed for processing grid-like data such as images, and Recurrent Neural Network (RNN), which is designed for sequential data like time series or sentences. CNNs consist of the input layer, convolution layer, pooling layer, fully connected layer, and output layer.
+![](ANN.png){width=40% heigh=20% .external}
+
+DNNs can be divided into Convolutional Neural Network (CNN), which is designed for processing grid-like data such as images, and Recurrent Neural Network (RNN), which is designed for sequential data like time series or sentences. Compared to MLP, CNNs consist of the input layer, convolution layer, pooling layer, fully connected layer, and output layer. 
+
+The architecture of RNN is different from that of MLP, and RNN is used in natural language and speech recognition by processing sequential data. RNN can process different types of data at various moments in time. Its Architecture is like this.
+
+![](RNN.png){width=40% heigh=20% .external}
+
+Overall, deep neural networks have three basic algorithms, which are different in architecture and customized for different data (see the following figure).
 
 <cengter>
-![](artificalnn.png){width=60%}
+![](artificalnn.png){width=50%}
 </center>
 <br>
 
@@ -75,7 +83,7 @@ For example, here is the code for iris classification using the neuralnet packag
 
 To learn more about Keras in R, go to https://keras.rstudio.com; this link will also has more examples of R and Keras, as well as a handy Keras cheat sheet that gives a thorough reference to all of the functionality of the Keras package.
 
-![](r_python.png)
+![](r_python.png){width=80%}
 
 For running keras in Rstudio, we should make sure which python that we use, and create a virtual environment. Here is the code for creating a virtual python env., which is named "r-reticulate".
 
@@ -94,19 +102,9 @@ Then we install the python packages, such as tensorflow and keras using py_insta
 # library(keras)
 ```
 
-## 2. Basic conception of DL models
+## 2. Building MLP models with keras
 
-### 2.1 Neutral network architechture
-
-ANN is a forward propagation network that is consists of artificial neurons together and grouped in different levels known as layers. These are the 3 layers applied in structured artificial neural networks: Input Layer, Hidden Layer and Output Layer. This network is like this:
-
-![](ANN.png){width=40% heigh=20% .external}
-
-The architecture of ANN is different from that of RNN, which is used in natural language and speech recognition by processing sequential data. RNN can process different types of data at various moments in time. Its Architecture is like this.
-
-![](RNN.png){width=40% heigh=20% .external}
-
-### 2.2 Building neutral networks
+### 2.1 The MLP architechture
 
 A Keras model is the Sequential or functional class. Here we focus on the sequential model. For more details, see [the site](https://www.kaggle.com/code/ryanholbrook/a-single-neuron)
 
@@ -120,7 +118,7 @@ Neural networks are composed of neurons, each of which individually performs onl
 
 **Single Input**
 
-A larger network starts with a single neuron model as a baseline. Single neuron models are linear models. For example, training a model with 'sugars' as input and 'calories' as output in the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals) like this.
+A larger network starts with a single neuron model as a baseline. For example, in the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), if we train a model with 'sugars' as input and 'calories' as output, we can build a single neuron model (linear model) like this.
 
 <br>
 <center>
@@ -131,7 +129,7 @@ The formula for this neuron would be $y=wx+b$
 
 **Multiple Inputs**
 
-If we wanted to expand our model to include things like fiber or protein content, we can just add more input connections to the neuron, and multiply each input to its connection weight and then add them all together.
+If we include things like 'fiber' or 'protein' content, we can just add more input connections to the neuron, and multiply each input to its connection weight and then add them all together like this.
 
 <br>
 <center>
@@ -155,9 +153,9 @@ We can define the sequential model for allowing a neural network to "learns" by 
 #])
 ```
 
-The first argument, units, defining how many outputs we want. In the case just predicting 'calories', so units=1. The second argument, input_shape, tell Keras the dimensions of the inputs. Setting input_shape=[3] ensures the model to accept three features as input ('sugars', 'fiber', and 'protein'). This model is now ready to be fit to training data!
+In the layers.Dense(), the argument 'units' defines how many outputs. As just predicting 'calories', units=1. The argument input_shape tell the dimensions of inputs. Setting input_shape=[3] ensures the model to accept 3 features as input ('sugars', 'fiber', 'protein'). This model is now ready to be fit to training data!
 
-We can combine and modify the single units to model complex relationships that DL work for. Let's see the box2 to understand how we stack layers to get complex data transformations. We have some nonlinearity with activation functions (see the box2).
+We can combine and modify single units to model complex relationships. Let's see the box2 to understand how we stack layers to get complex data transformations.
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
@@ -167,17 +165,15 @@ We can combine and modify the single units to model complex relationships that D
 
 **Layers**
 
-We collect together linear units, and then get a dense layer through a common set of inputs. 
+We collect together linear units, and then get a dense layer through a common set of inputs. Each layer in a neural network performs relatively simple transformation. 
 
 <br><center>
 ![](DenseLayer1.png){width=30%}
 </center></br>
 
-Each layer in a neural network performs relatively simple transformation. Through a deep stack of layers, a neural network can transform its inputs in more and more complex ways.
-
 **Activation Function**
 
-We stack layers inside a Sequential model, and add an activation function to each hidden layer, then a network has an ability to learn more complex (non-linear) relationships in data. Without activation functions, neural networks only learn linear relationships (lines and planes). For details on how to choose an activation function of a hidden Layer, see [the website](https://machinelearningmastery.com/choose-an-activation-function-for-deep-learning/).
+By a deep stack of layers, a network can transform its inputs in more complex ways. We stack layers inside a model, and add an activation function to each hidden layer, then a network has an ability to learn more complex (non-linear) relationships in data. Without activation functions, a network can only learn linear relationships (lines and planes). For details in activation function, see [the website](https://machinelearningmastery.com/choose-an-activation-function-for-deep-learning/).
 
 The common activation function is the rectifier function max(0,x).
 
@@ -193,7 +189,7 @@ When we attach the rectifier to a linear unit, we get a rectified linear unit or
 ![](StackingLayers.png){width=50%}
 </center></br>
 
-For an output layer, if it is a linear unit with no activation function, that makes this network appropriate to a regression task, where we can predict some arbitrary numeric value. Other tasks (like classification) might require an activation function, such as softmax, on the output.
+For the output layer, if it is a linear unit without activation function, that makes this network appropriate to a regression task, where we can predict some arbitrary numeric value. Other tasks (like classification) require activation function, such as softmax, on the output.
 
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
@@ -201,7 +197,7 @@ For an output layer, if it is a linear unit with no activation function, that ma
 </div>
 <br>
 
-The Sequential model we've been using will connect together a list of layers in order from first layer (input) to last layer (output). This creates a model in the above figure.
+If the 'sugar', 'protein' as input, and 'calories' as output, by performing the following code, we will connect together a list of layers in order from first layer (input) to last layer (output), and build the regression model like above figure.
 
 ```{r echo=TRUE}
 #model = keras.Sequential([
@@ -216,7 +212,7 @@ The Sequential model we've been using will connect together a list of layers in 
 ##])
 ```
 
-As for the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), we choose a three-layer network with over 1500 neurons. It can be capable of learning fairly complex relationships in the data.
+For the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cereals), if we use all the 11 inputs, and add a three-layer network with over 1500 neurons, the model can be capable of learning fairly complex relationships in the data.
 
 ```{r echo=TRUE}
 #model = keras.Sequential([
@@ -227,15 +223,15 @@ As for the dataset of [cereals](https://www.kaggle.com/datasets/crawford/80-cere
 #])
 ```
 
-### 2.3 Compiling neutral networks
+### 2.2 Compiling MLP model
 
-Training a ANN model is to adjust its weights so that it can transform the features (inputs) into the target (output). If successfully train a network, its weights must represent some relationships between those features and that target (see the box3).
+Training a MLP model is to adjust its weights so that it can transform the features (inputs) into the target (output). If successfully train a network, its weights must represent some relationships between those features and that target. So we need to compile networks properly to control training process in order to get training effectively and successfully (see the box3).
 
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
 <p style='margin-top:1em; text-align:center'>
-<b>Box 3: Compiling neural networks</b></p>
+<b>Box 3: Compiling MLP networks</b></p>
 <p style='margin-left:1em;'>
 
 **The Loss Function**
@@ -244,10 +240,10 @@ The loss function measures the disparity between the target's true value and the
 
 **Optimizer, minibatch and epoch**
 
-All of the optimization algorithms used in DL belong to a family called stochastic gradient descent (SGD). They are iterative algorithms that train a network in steps like this:
+All of the optimization algorithms used in nerual networks belong to a family called stochastic gradient descent (SGD). They are iterative algorithms that train a network in steps like this:
 
 - Sample training data and run it to pass a network to make predictions.
-- Measure the loss between the predicted and true values.
+- Measure the loss between the predicted values and the true values.
 - Finally, adjust the weights in a direction that makes the loss smaller.
 
 Adam is an SGD algorithm that has an adaptive learning rate that makes it suitable for most problems without any parameter tuning. Adam is a great general-purpose optimizer. RMSpro is a good one for regression problems.
@@ -264,8 +260,7 @@ The learning rate and the size of the minibatches are the two parameters that ha
 </div>
 <br>
 
-After understanding these, now we can compile the squential model with the optimizer and loss function.
-
+After understanding these, now we can compile the sequential model with the optimizer and loss function.
 
 ```{r echo=TRUE}
 # for regression
@@ -284,7 +279,7 @@ Now we're ready to start training! We tell Keras to feed the optimizer 256 rows 
 #    epochs=10)
 ```
 
-### 2.4 Improving network models
+### 2.3 Improving MLP models
 
 **Capacity**: A model capacity (the size and complexity of the patterns it is able to learn) is determined by its architecture, in which how many neurons it has and how the neurons are connected together. If the network is underfitting data, we should try increasing its capacity.
 
@@ -306,8 +301,7 @@ We can increase the capacity of a network either by making it wider (more units 
 #    layers.Dense(1)])
 ```
 
-
-**Early Stopping**: Keras keeps a history of the training and validation loss over the epochs. We'll examine the learning curves for evidence of underfitting and overfitting for correcting it (see the box4).
+**Early Stopping**: Keras keeps a history of the training and validation loss over the epochs. We'll examine learning curves for evidence of underfitting and overfitting for correcting it (see the box4).
 
 <div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
 <span>
@@ -317,7 +311,7 @@ We can increase the capacity of a network either by making it wider (more units 
 
 **Learning Curves**
 
-When we train a model we've been plotting the loss on the training set epoch by epoch. To this we'll add a plot the validation data too. These plots we call the learning curves.
+When we train a model we've been plotting the loss on the training set epoch by epoch. To this we'll add a plot the validation data too. The plots we call the learning curves.
 
 <center>
 ![](LearnCurve.png){width=40%}
@@ -333,7 +327,7 @@ When a model is too eagerly learning noise, the validation loss may start to inc
 ![](StopPoint.png){width=40%}
 </center>
 
-Once we detect that the validation loss is starting to rise again, we can reset the weights back to where the minimum occured. This ensures that the model won't continue to learn noise and overfit the data.
+Once we detect that the validation loss is starting to rise again, we can reset the weights back to where the minimum occurred. This ensures that the model won't continue to learn noise and overfit the data.
 
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> 
@@ -361,7 +355,7 @@ In Keras, we include early stopping in our training through a callback. A callba
 
 **Dropout**
 
-We randomly drop out some fraction of a layer's input units every step of training, making it much harder for the network to learn those spurious patterns in the training data. Instead, it has to search for broad, general patterns, whose weight patterns tend to be more robust. If you're familiar with random forests as an ensemble of decision trees, it's the same idea.
+We randomly drop out some fraction of the input units every step of training, making it much harder for the network to learn those spurious patterns in the training data. Instead, it has to search for broad, general patterns, whose weight patterns tend to be more robust.
 
 <center>
 ![](Dropout.gif){width=40%}
@@ -369,7 +363,7 @@ We randomly drop out some fraction of a layer's input units every step of traini
 
 **Batch Normalization**
 
-It's generally a good idea to put all of data on a common scale. A good practise for normalizing inside the network! This special kind of layer can do this. A batch normalization layer looks at each batch as it comes in, first normalizing the batch with its own mean and standard deviation, and then putting the data on a new scale with two trainable rescaling parameters. A batch normalization can correct training that is slow or unstable. 
+It's a good idea to put all data on a common scale. The special layer, such as the batch normalization layer, can do this. It first normalizes the batch with its own mean and standard deviation, and then put the data on a new scale with two trainable rescaling parameters. A batch normalization can correct training that is slow or unstable. 
 
 </p>
 <p style='margin-bottom:1em; margin-right:1em; text-align:right; font-family:Georgia'> </p></span>
@@ -402,476 +396,464 @@ As for batch normalization layers, you can put it after a layer...
 #layers.Activation('relu'),
 ```
 
-And if you add it as the first layer of your network it can act as a kind of adaptive preprocessor, standing in for something like Sci-Kit Learn's StandardScaler.
-
-<!-- ### 2.5 Examples of ANN  -->
-
-<!-- You are suggested to visit [the site](https://rpubs.com/Nilafhiosagam/541333) or [another site](https://www.kaggle.com/code/yashgyy/deep-learning-with-r-keras-iris-dataset) -->
-
-<!-- Generally, the Keras script for ANN probably looked like this. -->
-
-<!-- ```{r} -->
-<!-- # # Load entire dataset -->
-<!-- # # Design model -->
-<!-- # model = Sequential() -->
-<!-- # [...] # Your architecture -->
-<!-- # model.compile() -->
-<!-- # # Train model on your dataset -->
-<!-- # model.fit(x=X, y=y) -->
-<!-- ``` -->
-
-<!-- **Step 1: Checking and setting environment** -->
-
-<!-- Please checking your Rstudio whether it runs in a virtural environment by opening the terminal in Rstudio. If not, doing the following things step-by-step and then examining it again. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # rm(list = ls()) -->
-<!-- # install.packages("reticulate") -->
-<!-- # reticulate::py_config() -->
-<!-- # reticulate::py_install(c('tensorflow-gpu==2.2','tensorflow-addons'), pip = TRUE) -->
-<!-- # library(keras) -->
-<!-- ``` -->
-<!-- Then loading the data and doing some pre-process them. -->
-
-<!-- **Sept 2: Load iris data and pre-process them** -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # library(tidyverse) -->
-<!-- # library(datasets) -->
-<!-- # data(iris) -->
-<!-- ``` -->
-<!-- keras working with a matrix, which elements are the same type, while the targets are factors, the rest is numeric. Use as.numeric() to convert the data to numbers -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # iris[,5] <- as.numeric(iris[,5]) -1 # Transfer the target into numbers, and all -1 for 0, 1, and 2 -->
-<!-- # iris <- as.matrix(iris) # Turn `iris` into a matrix -->
-<!-- # dimnames(iris) <- NULL # Set iris `dimnames` to `NULL`, that is, just a matrix -->
-<!-- ``` -->
-
-<!-- The data are then split into training and test sets by running the following code -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- set.seed(1234) -->
-<!-- ind <- sample(2, nrow(iris), replace=TRUE, prob=c(0.7, 0.3)) # Sample size "2" means two sets of 1 and 2, sample with replacement -->
-
-<!-- xtrain <- iris[ind==1, 1:4] # Split the features -->
-<!-- xtest <- iris[ind==2, 1:4] -->
-<!-- ytrain <- iris[ind==1, 5] # Split the targets -->
-<!-- ytest <- iris[ind==2, 5] -->
-<!-- ``` -->
-
-<!-- For multi-class classification with neural networks, transforming the targets from vector value (0,1,2) to matrix with a boolean for each class -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # trainLabels <- to_categorical(ytrain) # One hot encode training target values -->
-<!-- # testLabels <- to_categorical(ytest) # One hot encode test target values -->
-<!-- # print(testLabels) # Print out the iris.testLabels to double check the result -->
-<!-- ``` -->
-
-<!-- **Step 3: Constructing model and training the model** -->
-
-<!-- Initializing a sequential model that is fully connected, with an activation functions -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # model <- keras_model_sequential() # Initialize a sequential model -->
-<!-- # model %>% # Add layers to the model: 4 columns -->
-<!-- #   layer_dense(units = 8, activation = 'relu', input_shape = c(4)) %>%  -->
-<!-- #   layer_dense(units = 3, activation = 'softmax') -->
-<!-- # summary(model) # Print a summary of a model -->
-<!-- ``` -->
-
-<!-- With two arguments of optimizer and loss, compiling and fitting the model to training data -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # model %>% compile( # Compile the model -->
-<!-- #   loss = 'categorical_crossentropy', # binary classes use binary_crossentropy -->
-<!-- #   optimizer = 'adam', # can use Stochastic Gradient Descent (SGD) and RMSprop -->
-<!-- #   metrics = 'accuracy' #  for a regression use MSE. -->
-<!-- # ) -->
-<!-- ``` -->
-
-<!-- After that, training the model. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # history <- model %>% fit( # Store the fitting history in `history`  -->
-<!-- #   xtrain,  -->
-<!-- #   trainLabels,  -->
-<!-- #   epochs = 200, -->
-<!-- #   batch_size = 5,  -->
-<!-- #   validation_split = 0.2 -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # plot(history) # Plot the history -->
-<!-- ``` -->
-
-<!-- **Step 4: Evaluating the model** -->
-<!-- Visualizing the training history to make two separate, one for the model loss and another for its model accuracy -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # plot(history$metrics$loss, main="Model Loss", xlab = "epoch",  -->
-<!-- #      ylab="loss", col="blue", type="l") # Plot the model loss of the training data -->
-<!-- # lines(history$metrics$val_loss, col="green") # Plot the model loss of the validation data -->
-<!-- # legend("topright", c("train","test"), col=c("blue", "green"), lty=c(1,1)) # Add legend -->
-<!-- #  -->
-<!-- # plot(history$metrics$acc, main="Model Accuracy", xlab = "epoch", ylab="accuracy", col="blue", type="l") # Plot the accuracy of the training data  -->
-<!-- # lines(history$metrics$val_acc, col="green") # Plot the accuracy of the validation data -->
-<!-- # legend("bottomright", c("train","test"), col=c("blue", "green"), lty=c(1,1)) # Add Legend -->
-<!-- ``` -->
-
-<!-- **Step 5: prediction with test data** -->
-<!-- Using the model to predict the labels for the test set. As for the multi-class classification with softmax, model %>% predict(x) %>% k_argmax(). As for binary classification with sigmoid, model %>% predict(x) %>% >(0.5) %>% k_cast("int32") -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # classes <- model %>%  -->
-<!-- #   predict(xtest, batch_size = 28) %>%  -->
-<!-- #   k_argmax() # get the max possibility of a specific class -->
-<!-- # table(ytest, as.vector(classes)) # Confusion matrix -->
-<!-- # score <- model %>% evaluate(xtest, testLabels, batch_size = 128) # Evaluate on test data and labels -->
-<!-- # print(score) # Print the score -->
-<!-- ``` -->
-
-<!-- **Step 6: Fine-tuning model** -->
-
-<!-- Adjusting the number of layers and hidden units as well as the number of epochs or the batch size to improve the model. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # model2 <- keras_model_sequential() # Initialize the sequential model -->
-<!-- # model2 %>% # Adding layers to model -->
-<!-- #   layer_dense(units = 8, activation = 'relu', input_shape = c(4)) %>%  -->
-<!-- #   layer_dense(units = 5, activation = 'relu') %>%  -->
-<!-- #   layer_dense(units = 3, activation = 'softmax') -->
-<!-- #  -->
-<!-- # model2 %>% compile(# Compile the model -->
-<!-- #   loss = 'categorical_crossentropy', -->
-<!-- #   optimizer = 'adam', -->
-<!-- #   metrics = 'accuracy' -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # model2 %>% fit(# Fit the model to the data -->
-<!-- #   xtrain, trainLabels,  -->
-<!-- #   epochs = 200, batch_size = 5,  -->
-<!-- #   validation_split = 0.2 -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # score2 <- model2 %>%  -->
-<!-- #   evaluate(xtest, testLabels, batch_size = 128)# Evaluate the model -->
-<!-- # print(score2) # Print the score -->
-<!-- ``` -->
-
-<!-- By reducing or adding hidden units to model for improving the model, like this. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # model3 <- keras_model_sequential() # Initialize a sequential model -->
-<!-- # model3 %>% # Add layers to model -->
-<!-- #   layer_dense(units = 28, activation = 'relu', input_shape = c(4)) %>%  -->
-<!-- #   layer_dense(units = 3, activation = 'softmax') -->
-<!-- #  -->
-<!-- # model3 %>% compile(# Compile the model -->
-<!-- #   loss = 'categorical_crossentropy', -->
-<!-- #   optimizer = 'adam', -->
-<!-- #   metrics = 'accuracy' -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # model3 %>% fit(# Fit the model to the data -->
-<!-- #   xtrain, trainLabels,  -->
-<!-- #   epochs = 200, batch_size = 5,  -->
-<!-- #   validation_split = 0.2 -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # score3 <- model3 %>%  -->
-<!-- #   evaluate(xtest, testLabels, batch_size = 128) # Evaluate the model -->
-<!-- #  -->
-<!-- # print(score3) # Print the score -->
-<!-- ``` -->
-
-<!-- **Step 7: Saving and Loading the best Model** -->
-
-<!-- You can save and reload the model, and even deploy them on other platforms  -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # save_model_hdf5(model, "results/my_model.h5") -->
-<!-- # model <- load_model_hdf5("results/my_model.h5") -->
-<!-- ``` -->
-
-<!-- #### 2.5.2 Runing DL for regression -->
-
-<!-- Building a regression model using deep learning algorithm, please refer to [the site](https://tensorflow.rstudio.com/tutorials/keras/regression). It also follows these steps. -->
-
-<!-- **Step 1: Checking the environment and loading packages** -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # rm(list = ls()) -->
-<!-- # library(tensorflow) # loading the the four packages -->
-<!-- # library(keras) -->
-<!-- # library(tidyverse) -->
-<!-- # library(tidymodels) -->
-<!-- ``` -->
-
-<!-- **Step 2: Loading data and pre-process** -->
-
-<!-- Loading the data from a website and then clearning them for further analysis. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data" # loading the data from a URL -->
-<!-- # col_names <- c("mpg","cylinders","displacement","horsepower","weight", -->
-<!-- #                "acceleration","model_year", "origin","car_name") -->
-<!-- # raw_dataset <- read.table( -->
-<!-- #   url, -->
-<!-- #   header = T, -->
-<!-- #   col.names = col_names, -->
-<!-- #   na.strings = "?" -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # dataset <- raw_dataset %>% select(-car_name) -->
-<!-- #  -->
-<!-- # # cleaning the data -->
-<!-- # lapply(dataset, function(x) sum(is.na(x))) %>% str() # Drop those rows with NA -->
-<!-- # dataset <- na.omit(dataset) -->
-<!-- #  -->
-<!-- # dataset <- recipe(mpg ~ ., dataset) %>%  # one-hot encode for the original column  -->
-<!-- #   step_num2factor(origin, levels = c("USA", "Europe", "Japan")) %>% -->
-<!-- #   step_dummy(origin, one_hot = TRUE) %>% # using step_dummy(one_hot = FALSE) for binary -->
-<!-- #   prep() %>% # update the recipe -->
-<!-- #   bake(new_data = NULL) # view preProcessing data  -->
-<!-- #  -->
-<!-- # glimpse(dataset) -->
-<!-- ``` -->
-
-<!-- Splitting the data into training and test sets, and separating features from labels. Using train set for building model and test set for evaluation of model. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # split <- initial_split(dataset, 0.8) -->
-<!-- # train_dataset <- training(split) -->
-<!-- # test_dataset <- testing(split)  -->
-<!-- ``` -->
-
-<!-- Reviewing the distribution of a few pairs of columns from the training set, then you may normalize the features and do some conversion of targets. There are lots of things that should be considered. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # train_dataset %>% -->
-<!-- #   select(mpg, cylinders, displacement, weight) %>% -->
-<!-- #   GGally::ggpairs() # help identifying the correlations among variables -->
-<!-- #  -->
-<!-- # skimr::skim(train_dataset) # an alternative to summary() # Note each feature covers a very different range -->
-<!-- #  -->
-<!-- # # Split features from labels and normalizing feature values of train set -->
-<!-- # train_features <- train_dataset %>% select(-mpg) -->
-<!-- # test_features <- test_dataset %>% select(-mpg) -->
-<!-- #  -->
-<!-- # train_labels <- train_dataset %>% select(mpg) -->
-<!-- # test_labels <- test_dataset %>% select(mpg) -->
-<!-- #  -->
-<!-- # # see the different of each feature range and possibly skipping the step -->
-<!-- # # my_skim <- skimr::skim_with(numeric = skimr::sfl(mean, sd)) # self-defining summary -->
-<!-- # # train_dataset %>% -->
-<!-- # #   select(where(~is.numeric(.x))) %>% -->
-<!-- # #   pivot_longer( -->
-<!-- # #     cols = everything(), names_to = "variable", values_to = "values") %>% -->
-<!-- # #   group_by(variable) %>% -->
-<!-- # #   summarise(mean = mean(values), sd = sd(values)) -->
-<!-- #  -->
-<!-- # normalizer <- layer_normalization(axis = -1L) # feature values transferred to the range [0,1] -->
-<!-- # normalizer %>% adapt(as.matrix(train_features)) -->
-<!-- # print(normalizer$mean) -->
-<!-- #  -->
-<!-- # # first <- as.matrix(train_features[1,]) -->
-<!-- # # cat('First example:', first) -->
-<!-- # # cat('Normalized:', as.matrix(normalizer(first))) -->
-
-<!-- # # Normalizing the 'horsepower' input feature  -->
-<!-- # horsepower <- matrix(train_features$horsepower) # creating a matrix of the feature -->
-<!-- # horsepower_normalizer <- layer_normalization(input_shape = shape(1), axis = NULL) -->
-<!-- # horsepower_normalizer %>% adapt(horsepower) -->
-<!-- ``` -->
-
-<!-- **Step 3: Building and evaluating linear Model ** -->
-
-<!-- First, building a linear regression with different conditions. First, building a linear regression between 'mpg' and 'horsepower', i.e., for 1 output. -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # horsepower_model <- keras_model_sequential() %>% -->
-<!-- #   horsepower_normalizer() %>% -->
-<!-- #   layer_dense(units = 1) -->
-<!-- # # summary(horsepower_model) -->
-<!-- # # Using the untrained model on the first 10 ‘horsepower’ values -->
-<!-- # # predict(horsepower_model, horsepower[1:10,]) -->
-
-<!-- # Configuring the training procedure with keras's compile(). -->
-<!-- # horsepower_model %>% compile( -->
-<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
-<!-- #   loss = 'mean_absolute_error' # to be optimized -->
-<!-- # ) -->
-
-<!-- # Executing to train a model for 100 epochs -->
-<!-- # history <- horsepower_model %>% fit( -->
-<!-- #   as.matrix(train_features$horsepower), -->
-<!-- #   as.matrix(train_labels), -->
-<!-- #   epochs = 100, -->
-<!-- #   verbose = 0, # Suppress logging -->
-<!-- #   validation_split = 0.2 # validation on 20% of the training data -->
-<!-- # ) -->
-<!-- # plot(history) # Visualizing the model’s training progress  -->
-
-<!-- # Collecting the results on the test set -->
-<!-- # test_results <- list() -->
-<!-- # test_results[["horsepower_model"]] <- horsepower_model %>% evaluate( -->
-<!-- #   as.matrix(test_features$horsepower), -->
-<!-- #   as.matrix(test_labels), -->
-<!-- #   verbose = 0 -->
-<!-- # ) -->
-<!-- # test_results -->
-<!-- ``` -->
-
-<!-- Second, building a linear regression with multiple inputs -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # # Constructing a linear regression Model -->
-<!-- # linear_model <- keras_model_sequential() %>% -->
-<!-- #   normalizer() %>% -->
-<!-- #   layer_dense(units = 1) -->
-
-<!-- # summary(horsepower_model) -->
-<!-- # Using the untrained model on the first 10 ‘horsepower’ values               -->
-<!-- # predict(linear_model, as.matrix(train_features[1:10, ])) -->
-<!-- # linear_model$layers[[2]]$kernel -->
-
-<!-- # # configuring the training procedure -->
-<!-- # linear_model %>% compile( -->
-<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
-<!-- #   loss = 'mean_absolute_error' -->
-<!-- # ) -->
-
-<!-- # # executing to train a model for 100 epochs -->
-<!-- # history <- linear_model %>% fit( -->
-<!-- #   as.matrix(train_features), -->
-<!-- #   as.matrix(train_labels), -->
-<!-- #   epochs = 100, -->
-<!-- #   verbose = 0, -->
-<!-- #   validation_split = 0.2 -->
-<!-- # ) -->
-
-<!-- # # Visualizing the model’s training progress  -->
-<!-- # plot(history)  -->
-<!-- #  -->
-<!-- # # Collecting the results on the test set -->
-<!-- # test_results[['linear_model']] <- linear_model %>% -->
-<!-- #   evaluate( -->
-<!-- #     as.matrix(test_features), -->
-<!-- #     as.matrix(test_labels), -->
-<!-- #     verbose = 0 -->
-<!-- #   ) -->
-<!-- ``` -->
-
-<!-- Third, building a deep neural network (DNN) regression with a single input -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # # Normalizing the 'horsepower' input feature  -->
-<!-- # horsepower <- matrix(train_features$horsepower) # creating a matrix of the feature -->
-<!-- # horsepower_normalizer <- layer_normalization(input_shape = shape(1), axis = NULL) -->
-<!-- # horsepower_normalizer %>% adapt(horsepower) -->
-<!-- #  -->
-<!-- # # Constructing a linear regression Model for 1 output -->
-<!-- # dnn_horsepower_model <- keras_model_sequential() %>% -->
-<!-- #   horsepower_normalizer() %>% -->
-<!-- #   layer_dense(64, activation = 'relu') %>% -->
-<!-- #   layer_dense(64, activation = 'relu') %>% -->
-<!-- #   layer_dense(1) -->
-<!-- #  -->
-<!-- # # configuring the training procedure with keras's compile() -->
-<!-- # dnn_horsepower_model %>% compile( -->
-<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
-<!-- #   loss = 'mean_absolute_error' # to be optimized -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # # executing to train a model for 100 epochs -->
-<!-- # history <- dnn_horsepower_model %>% fit( -->
-<!-- #   as.matrix(train_features$horsepower), -->
-<!-- #   as.matrix(train_labels), -->
-<!-- #   epochs = 100, -->
-<!-- #   verbose = 0,  -->
-<!-- #   validation_split = 0.2  -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # # Visualizing the model’s training progress  -->
-<!-- # plot(history)  -->
-<!-- #  -->
-<!-- # # Collecting the results on the test set -->
-<!-- # test_results[["dnn_horsepower_model"]] <- dnn_horsepower_model %>% evaluate( -->
-<!-- #   as.matrix(test_features$horsepower), -->
-<!-- #   as.matrix(test_labels), -->
-<!-- #   verbose = 0 -->
-<!-- # ) -->
-
-<!-- ``` -->
-
-<!-- Forth, building a deep neural network (DNN) regression with multiple inputs -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # # Normalizing the input features  -->
-<!-- # # normalizer <- layer_normalization(axis = -1L) # feature values transferred to the range [0,1] -->
-<!-- # # normalizer %>% adapt(as.matrix(train_features)) -->
-<!-- #  -->
-<!-- # # Constructing a linear regression Model -->
-<!-- # dnn_model <- keras_model_sequential() %>% -->
-<!-- #   normalizer() %>% -->
-<!-- #   layer_dense(64, activation = 'relu') %>% -->
-<!-- #   layer_dense(64, activation = 'relu') %>% -->
-<!-- #   layer_dense(1) -->
-<!-- #  -->
-<!-- # # configuring the training procedure -->
-<!-- # dnn_model %>% compile( -->
-<!-- #   optimizer = optimizer_adam(learning_rate = 0.1), -->
-<!-- #   loss = 'mean_absolute_error' -->
-<!-- # ) -->
-<!-- #  -->
-<!-- # # executing to train a model for 100 epochs -->
-<!-- # history <- dnn_model %>% fit( -->
-<!-- #   as.matrix(train_features), -->
-<!-- #   as.matrix(train_labels), -->
-<!-- #   epochs = 100, -->
-<!-- #   verbose = 0, -->
-<!-- #   validation_split = 0.2 -->
-<!-- # ) -->
-<!-- # # Visualizing the model’s training progress  -->
-<!-- # plot(history)  -->
-<!-- #  -->
-<!-- # # Collecting the results on the test set -->
-<!-- # test_results[['dnn_model']] <- dnn_model %>% -->
-<!-- #   evaluate( -->
-<!-- #     as.matrix(test_features), -->
-<!-- #     as.matrix(test_labels), -->
-<!-- #     verbose = 0 -->
-<!-- #   ) -->
-<!-- #  -->
-<!-- # sapply(test_results, function(x) x) -->
-<!-- ``` -->
-
-<!-- **Step 4: Make predictions**  -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # # make prediction on the test set -->
-<!-- # test_predictions <- predict(dnn_model, as.matrix(test_features)) -->
-<!-- # ggplot(data.frame(pred = as.numeric(test_predictions), mpg = test_labels$mpg)) + -->
-<!-- #   geom_point(aes(x = pred, y = mpg)) + -->
-<!-- #   geom_abline(intercept = 0, slope = 1, color = "blue") -->
-<!-- #  -->
-<!-- # # check the error distribution -->
-<!-- # qplot(test_predictions - test_labels$mpg, geom = "density") -->
-<!-- # error <- test_predictions - test_labels -->
-<!-- ``` -->
-
-<!-- **Step 5: saving the model and reloading it** -->
-
-<!-- ```{r echo=TRUE} -->
-<!-- # save_model_tf(dnn_model, 'results/dnn_model1.h5') -->
-<!-- # reloaded <- load_model_tf('results/dnn_model1') -->
-<!-- #  -->
-<!-- # test_results[['reloaded']] <- reloaded %>% evaluate( -->
-<!-- #   as.matrix(test_features), -->
-<!-- #   as.matrix(test_labels), -->
-<!-- #   verbose = 0 -->
-<!-- # ) -->
-<!-- ``` -->
+If adding it as the first layer of a network, a batch normalization layer can act as a kind of adaptive preprocessor, standing in for something like Sci-Kit Learn's StandardScaler.
+
+## 3. Using MLP for classification
+
+You are suggested to visit [the site](https://rpubs.com/Nilafhiosagam/541333) or [another site](https://www.kaggle.com/code/yashgyy/deep-learning-with-r-keras-iris-dataset).
+
+We first check the R environment setting to ensure that our Rstudio correctly runs in a virtural environment.
+
+```{r echo=TRUE}
+# rm(list = ls())
+# install.packages("reticulate")
+# reticulate::py_config()
+# reticulate::py_install(c('tensorflow-gpu==2.2','tensorflow-addons'), pip = TRUE)
+# library(keras)
+```
+
+### 3.1 Loading and processing data 
+
+We use the R's build-in iris dataset as an example to illustrate the process of building MLP. So we load the data and do some pre-process. 
+
+```{r echo=TRUE}
+# library(tidyverse)
+# library(datasets)
+# data(iris)
+```
+The keras package works with a matrix, which elements are the same type, while the targets are factors, the rest is numeric. Use as.numeric() to convert the data to numbers
+
+```{r echo=TRUE}
+# iris[,5] <- as.numeric(iris[,5]) -1 # Transfer the target into numbers, and all -1 for 0, 1, and 2
+# iris <- as.matrix(iris) # Turn `iris` into a matrix
+# dimnames(iris) <- NULL # Set iris `dimnames` to `NULL`, that is, just a matrix
+```
+
+The data are then split into training and test sets by running the following code.
+
+```{r echo=TRUE}
+set.seed(1234)
+ind <- sample(2, nrow(iris), replace=TRUE, prob=c(0.7, 0.3)) #  "2" means to split into two sets of train (1) and test (2), sample with replacement
+
+xtrain <- iris[ind==1, 1:4] # Split the features
+xtest <- iris[ind==2, 1:4]
+ytrain <- iris[ind==1, 5] # Split the targets
+ytest <- iris[ind==2, 5]
+```
+
+For multi-class classification with MLP, transforming the targets from vector value (0,1,2) to matrix with a boolean for each class.
+
+```{r echo=TRUE}
+# trainLabels <- to_categorical(ytrain) # One hot encode training targets
+# testLabels <- to_categorical(ytest) 
+# print(testLabels) # check the result
+```
+
+### 3.2 Building and tuning MLP
+
+#### 3.2.1 Creating MLP model
+
+Initializing a sequential model that is fully connected, with an activation functions.
+
+```{r echo=TRUE}
+# model <- keras_model_sequential() # Initializing a sequential model
+# model %>% # Add layers to the model: 4 columns
+#   layer_dense(units = 8, activation = 'relu', input_shape = c(4)) %>%
+#   layer_dense(units = 3, activation = 'softmax')
+# summary(model)
+```
+
+With two arguments of optimizer and loss, compiling and fitting the model to training data.
+
+```{r echo=TRUE}
+# model %>% compile( # Compile the model
+#   loss = 'categorical_crossentropy', # for binary classes 
+#   optimizer = 'adam', # for regression using RMSprop
+#   metrics = 'accuracy' #  for regression using MSE.
+# )
+# history <- model %>% fit( # Store the fitting history in `history`
+#   xtrain,
+#   trainLabels,
+#   epochs = 200,
+#   batch_size = 5,
+#   validation_split = 0.2
+# )
+#
+# plot(history) # Plot the history
+```
+
+#### 3.2.2 Evaluating MLP model
+
+Visualizing the training history to make two separate, one for the model loss and another for its model accuracy
+
+```{r echo=TRUE}
+# plot(history$metrics$loss, # the loss of the training data
+#      main="Model Loss", xlab = "epoch",
+#      ylab="loss", col="blue", type="l") 
+# lines(history$metrics$val_loss, # the loss of the validation data
+#      col="green") 
+# legend("topright", c("train","test"), col=c("blue", "green"), lty=c(1,1))
+#
+# plot(history$metrics$acc, main="Model Accuracy", xlab = "epoch", ylab="accuracy", col="blue", type="l") 
+# lines(history$metrics$val_acc, col="green")
+# legend("bottomright", c("train","test"), col=c("blue", "green"), lty=c(1,1))
+```
+
+#### 3.2.3 Predicting with test data
+
+Using the MLP to predict the labels for the test set. As for the multi-class classification with softmax, model %>% predict(x) %>% k_argmax(). For binary classification with sigmoid, model %>% predict(x) %>% >(0.5) %>% k_cast("int32").
+
+```{r echo=TRUE}
+# classes <- model %>%
+#   predict(xtest, batch_size = 28) %>%
+#   k_argmax() # getting the max possibility of a specific class
+# table(ytest, as.vector(classes)) # Confusion matrix
+# score <- model %>% evaluate(xtest, testLabels, batch_size = 128)
+# print(score) # Print the score
+```
+
+#### 3.2.4 Fine-tuning MLP model
+
+Adjusting the number of layers and hidden units as well as the number of epochs or the batch size to improve the model.
+
+```{r echo=TRUE}
+# model2 <- keras_model_sequential() # Initialize the sequential model
+# model2 %>% # Adding layers to model
+#   layer_dense(units = 8, activation = 'relu', input_shape = c(4)) %>%
+#   layer_dense(units = 5, activation = 'relu') %>%
+#   layer_dense(units = 3, activation = 'softmax')
+#
+# model2 %>% compile(# Compile the model
+#   loss = 'categorical_crossentropy',
+#   optimizer = 'adam',
+#   metrics = 'accuracy'
+# )
+#
+# model2 %>% fit(# Fit the model to the data
+#   xtrain, trainLabels,
+#   epochs = 200, batch_size = 5,
+#   validation_split = 0.2
+# )
+#
+# score2 <- model2 %>%
+#   evaluate(xtest, testLabels, batch_size = 128) # Evaluate the model
+# print(score2) # Print the score
+```
+
+By reducing or adding hidden units to model for improving the model, like this.
+
+```{r echo=TRUE}
+# model3 <- keras_model_sequential() # Initialize a sequential model
+# model3 %>% # Add layers to model
+#   layer_dense(units = 28, activation = 'relu', input_shape = c(4)) %>%
+#   layer_dense(units = 3, activation = 'softmax')
+#
+# model3 %>% compile(# Compile the model
+#   loss = 'categorical_crossentropy',
+#   optimizer = 'adam',
+#   metrics = 'accuracy'
+# )
+#
+# model3 %>% fit(# Fit the model to the data
+#   xtrain, trainLabels,
+#   epochs = 200, batch_size = 5,
+#   validation_split = 0.2
+# )
+#
+# score3 <- model3 %>%
+#   evaluate(xtest, testLabels, batch_size = 128) # Evaluate the model
+#
+# print(score3) # Print the score
+```
+
+### 3.3 Saving the best MLP
+
+You can save and reload the model, and even deploy them on other platforms
+
+```{r echo=TRUE}
+# save_model_hdf5(model, "results/my_model.h5")
+# model <- load_model_hdf5("results/my_model.h5")
+```
+
+#### 2.5.2 Runing DL for regression
+
+Building a regression model using deep learning algorithm, please refer to [the site](https://tensorflow.rstudio.com/tutorials/keras/regression). It also follows these steps.
+
+**Step 1: Checking the environment and loading packages**
+
+```{r echo=TRUE}
+# rm(list = ls())
+# library(tensorflow) # loading the the four packages
+# library(keras)
+# library(tidyverse)
+# library(tidymodels)
+```
+
+**Step 2: Loading data and pre-process**
+
+Loading the data from a website and then clearning them for further analysis.
+
+```{r echo=TRUE}
+# url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data" # loading the data from a URL
+# col_names <- c("mpg","cylinders","displacement","horsepower","weight",
+#                "acceleration","model_year", "origin","car_name")
+# raw_dataset <- read.table(
+#   url,
+#   header = T,
+#   col.names = col_names,
+#   na.strings = "?"
+# )
+#
+# dataset <- raw_dataset %>% select(-car_name)
+#
+# # cleaning the data
+# lapply(dataset, function(x) sum(is.na(x))) %>% str() # Drop those rows with NA
+# dataset <- na.omit(dataset)
+#
+# dataset <- recipe(mpg ~ ., dataset) %>%  # one-hot encode for the original column
+#   step_num2factor(origin, levels = c("USA", "Europe", "Japan")) %>%
+#   step_dummy(origin, one_hot = TRUE) %>% # using step_dummy(one_hot = FALSE) for binary
+#   prep() %>% # update the recipe
+#   bake(new_data = NULL) # view preProcessing data
+#
+# glimpse(dataset)
+```
+
+Splitting the data into training and test sets, and separating features from labels. Using train set for building model and test set for evaluation of model.
+
+```{r echo=TRUE}
+# split <- initial_split(dataset, 0.8)
+# train_dataset <- training(split)
+# test_dataset <- testing(split)
+```
+
+Reviewing the distribution of a few pairs of columns from the training set, then you may normalize the features and do some conversion of targets. There are lots of things that should be considered.
+
+```{r echo=TRUE}
+# train_dataset %>%
+#   select(mpg, cylinders, displacement, weight) %>%
+#   GGally::ggpairs() # help identifying the correlations among variables
+#
+# skimr::skim(train_dataset) # an alternative to summary() # Note each feature covers a very different range
+#
+# # Split features from labels and normalizing feature values of train set
+# train_features <- train_dataset %>% select(-mpg)
+# test_features <- test_dataset %>% select(-mpg)
+#
+# train_labels <- train_dataset %>% select(mpg)
+# test_labels <- test_dataset %>% select(mpg)
+#
+# # see the different of each feature range and possibly skipping the step
+# # my_skim <- skimr::skim_with(numeric = skimr::sfl(mean, sd)) # self-defining summary
+# # train_dataset %>%
+# #   select(where(~is.numeric(.x))) %>%
+# #   pivot_longer(
+# #     cols = everything(), names_to = "variable", values_to = "values") %>%
+# #   group_by(variable) %>%
+# #   summarise(mean = mean(values), sd = sd(values))
+#
+# normalizer <- layer_normalization(axis = -1L) # feature values transferred to the range [0,1]
+# normalizer %>% adapt(as.matrix(train_features))
+# print(normalizer$mean)
+#
+# # first <- as.matrix(train_features[1,])
+# # cat('First example:', first)
+# # cat('Normalized:', as.matrix(normalizer(first)))
+
+# # Normalizing the 'horsepower' input feature
+# horsepower <- matrix(train_features$horsepower) # creating a matrix of the feature
+# horsepower_normalizer <- layer_normalization(input_shape = shape(1), axis = NULL)
+# horsepower_normalizer %>% adapt(horsepower)
+```
+
+**Step 3: Building and evaluating linear Model **
+
+First, building a linear regression with different conditions. First, building a linear regression between 'mpg' and 'horsepower', i.e., for 1 output.
+
+```{r echo=TRUE}
+# horsepower_model <- keras_model_sequential() %>%
+#   horsepower_normalizer() %>%
+#   layer_dense(units = 1)
+# # summary(horsepower_model)
+# # Using the untrained model on the first 10 ‘horsepower’ values
+# # predict(horsepower_model, horsepower[1:10,])
+
+# Configuring the training procedure with keras's compile().
+# horsepower_model %>% compile(
+#   optimizer = optimizer_adam(learning_rate = 0.1),
+#   loss = 'mean_absolute_error' # to be optimized
+# )
+
+# Executing to train a model for 100 epochs
+# history <- horsepower_model %>% fit(
+#   as.matrix(train_features$horsepower),
+#   as.matrix(train_labels),
+#   epochs = 100,
+#   verbose = 0, # Suppress logging
+#   validation_split = 0.2 # validation on 20% of the training data
+# )
+# plot(history) # Visualizing the model’s training progress
+
+# Collecting the results on the test set
+# test_results <- list()
+# test_results[["horsepower_model"]] <- horsepower_model %>% evaluate(
+#   as.matrix(test_features$horsepower),
+#   as.matrix(test_labels),
+#   verbose = 0
+# )
+# test_results
+```
+
+Second, building a linear regression with multiple inputs
+
+```{r echo=TRUE}
+# # Constructing a linear regression Model
+# linear_model <- keras_model_sequential() %>%
+#   normalizer() %>%
+#   layer_dense(units = 1)
+
+# summary(horsepower_model)
+# Using the untrained model on the first 10 ‘horsepower’ values
+# predict(linear_model, as.matrix(train_features[1:10, ]))
+# linear_model$layers[[2]]$kernel
+
+# # configuring the training procedure
+# linear_model %>% compile(
+#   optimizer = optimizer_adam(learning_rate = 0.1),
+#   loss = 'mean_absolute_error'
+# )
+
+# # executing to train a model for 100 epochs
+# history <- linear_model %>% fit(
+#   as.matrix(train_features),
+#   as.matrix(train_labels),
+#   epochs = 100,
+#   verbose = 0,
+#   validation_split = 0.2
+# )
+
+# # Visualizing the model’s training progress
+# plot(history)
+#
+# # Collecting the results on the test set
+# test_results[['linear_model']] <- linear_model %>%
+#   evaluate(
+#     as.matrix(test_features),
+#     as.matrix(test_labels),
+#     verbose = 0
+#   )
+```
+
+Third, building a deep neural network (DNN) regression with a single input
+
+```{r echo=TRUE}
+# # Normalizing the 'horsepower' input feature
+# horsepower <- matrix(train_features$horsepower) # creating a matrix of the feature
+# horsepower_normalizer <- layer_normalization(input_shape = shape(1), axis = NULL)
+# horsepower_normalizer %>% adapt(horsepower)
+#
+# # Constructing a linear regression Model for 1 output
+# dnn_horsepower_model <- keras_model_sequential() %>%
+#   horsepower_normalizer() %>%
+#   layer_dense(64, activation = 'relu') %>%
+#   layer_dense(64, activation = 'relu') %>%
+#   layer_dense(1)
+#
+# # configuring the training procedure with keras's compile()
+# dnn_horsepower_model %>% compile(
+#   optimizer = optimizer_adam(learning_rate = 0.1),
+#   loss = 'mean_absolute_error' # to be optimized
+# )
+#
+# # executing to train a model for 100 epochs
+# history <- dnn_horsepower_model %>% fit(
+#   as.matrix(train_features$horsepower),
+#   as.matrix(train_labels),
+#   epochs = 100,
+#   verbose = 0,
+#   validation_split = 0.2
+# )
+#
+# # Visualizing the model’s training progress
+# plot(history)
+#
+# # Collecting the results on the test set
+# test_results[["dnn_horsepower_model"]] <- dnn_horsepower_model %>% evaluate(
+#   as.matrix(test_features$horsepower),
+#   as.matrix(test_labels),
+#   verbose = 0
+# )
+
+```
+
+Forth, building a deep neural network (DNN) regression with multiple inputs
+
+```{r echo=TRUE}
+# # Normalizing the input features
+# # normalizer <- layer_normalization(axis = -1L) # feature values transferred to the range [0,1]
+# # normalizer %>% adapt(as.matrix(train_features))
+#
+# # Constructing a linear regression Model
+# dnn_model <- keras_model_sequential() %>%
+#   normalizer() %>%
+#   layer_dense(64, activation = 'relu') %>%
+#   layer_dense(64, activation = 'relu') %>%
+#   layer_dense(1)
+#
+# # configuring the training procedure
+# dnn_model %>% compile(
+#   optimizer = optimizer_adam(learning_rate = 0.1),
+#   loss = 'mean_absolute_error'
+# )
+#
+# # executing to train a model for 100 epochs
+# history <- dnn_model %>% fit(
+#   as.matrix(train_features),
+#   as.matrix(train_labels),
+#   epochs = 100,
+#   verbose = 0,
+#   validation_split = 0.2
+# )
+# # Visualizing the model’s training progress
+# plot(history)
+#
+# # Collecting the results on the test set
+# test_results[['dnn_model']] <- dnn_model %>%
+#   evaluate(
+#     as.matrix(test_features),
+#     as.matrix(test_labels),
+#     verbose = 0
+#   )
+#
+# sapply(test_results, function(x) x)
+```
+
+**Step 4: Make predictions**
+
+```{r echo=TRUE}
+# # make prediction on the test set
+# test_predictions <- predict(dnn_model, as.matrix(test_features))
+# ggplot(data.frame(pred = as.numeric(test_predictions), mpg = test_labels$mpg)) +
+#   geom_point(aes(x = pred, y = mpg)) +
+#   geom_abline(intercept = 0, slope = 1, color = "blue")
+#
+# # check the error distribution
+# qplot(test_predictions - test_labels$mpg, geom = "density")
+# error <- test_predictions - test_labels
+```
+
+**Step 5: saving the model and reloading it**
+
+```{r echo=TRUE}
+# save_model_tf(dnn_model, 'results/dnn_model1.h5')
+# reloaded <- load_model_tf('results/dnn_model1')
+#
+# test_results[['reloaded']] <- reloaded %>% evaluate(
+#   as.matrix(test_features),
+#   as.matrix(test_labels),
+#   verbose = 0
+# )
+```
 
 ## 4. The application of DL to ecology
 

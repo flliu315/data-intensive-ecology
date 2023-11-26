@@ -1,7 +1,7 @@
 ---
 title: "Lesson 3: Advanced Machine Learning (Ⅱ)"
 description: |
-  In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN. 
+  In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN. 
 # author:
 #   - name: flliu315
 # date: 2023-11-25
