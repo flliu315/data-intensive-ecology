@@ -90,29 +90,29 @@ code span.wa { color: #5e5e5e; font-style: italic; }
   <!--radix_placeholder_meta_tags-->
   <title>Lesson 3: Advanced Machine Learning (Ⅱ)</title>
 
-  <meta property="description" itemprop="description" content="In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN." />
+  <meta property="description" itemprop="description" content="In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN." />
 
 
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2023-11-25" />
-  <meta property="article:created" itemprop="dateCreated" content="2023-11-25" />
+  <meta property="article:published" itemprop="datePublished" content="2023-11-26" />
+  <meta property="article:created" itemprop="dateCreated" content="2023-11-26" />
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Lesson 3: Advanced Machine Learning (Ⅱ)" />
   <meta property="og:type" content="article" />
-  <meta property="og:description" content="In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN." />
+  <meta property="og:description" content="In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN." />
   <meta property="og:locale" content="en_US" />
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary" />
   <meta property="twitter:title" content="Lesson 3: Advanced Machine Learning (Ⅱ)" />
-  <meta property="twitter:description" content="In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN." />
+  <meta property="twitter:description" content="In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN." />
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Lesson 3: Advanced Machine Learning (Ⅱ)"]},{"type":"character","attributes":{},"value":["In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN. \n"]},{"type":"character","attributes":{},"value":["2023-11-25"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output","preview"]}},"value":[{"type":"character","attributes":{},"value":["Lesson 3: Advanced Machine Learning (Ⅱ)"]},{"type":"character","attributes":{},"value":["In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN. \n"]},{"type":"character","attributes":{},"value":["2023-11-26"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["cnn.png"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2360,7 +2360,7 @@ distill-header .nav a {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Lesson 3: Advanced Machine Learning (Ⅱ)","description":"In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN.","authors":[],"publishedDate":"2023-11-25T00:00:00.000+08:00"}
+{"title":"Lesson 3: Advanced Machine Learning (Ⅱ)","description":"In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN.","authors":[],"publishedDate":"2023-11-26T00:00:00.000+08:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2374,7 +2374,7 @@ distill-header .nav a {
 
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>In the field of ecology, there are lots of pattern related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN.</p></p>
+<p><p>In the field of ecology, there are a lot of pattern that are related to image recognition, such as species identification, soundscape and remote sensing images. This section will introducde how to do these complex tasks using CNN.</p></p>
 </div>
 
 
@@ -2383,7 +2383,7 @@ distill-header .nav a {
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#how-does-cnn-work" id="toc-how-does-cnn-work">1. How does CNN work</a>
+<li><a href="#basically-stacking-layers" id="toc-basically-stacking-layers">1. Basically stacking layers</a>
 <ul>
 <li><a href="#convolution-on-an-image" id="toc-convolution-on-an-image">1.1 Convolution on an image</a></li>
 <li><a href="#pooling-operation" id="toc-pooling-operation">1.2 Pooling operation</a></li>
@@ -2403,7 +2403,7 @@ distill-header .nav a {
 </ul>
 </nav>
 </div>
-<h2 id="how-does-cnn-work">1. How does CNN work</h2>
+<h2 id="basically-stacking-layers">1. Basically stacking layers</h2>
 <h3 id="convolution-on-an-image">1.1 Convolution on an image</h3>
 <p>CNN is designed for image recognition. They can capture the spatial characteristics of an image. They work in a way like this.</p>
 <figure>

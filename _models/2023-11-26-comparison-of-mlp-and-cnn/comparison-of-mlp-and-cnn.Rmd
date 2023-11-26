@@ -1,0 +1,29 @@
+---
+title: "Lesson 4: Advanced Machine Learning (Ⅲ)"
+description: |
+  Both MLP and CNN can be used for Image classification. However, MLP takes vector as input, while CNN takes tensor as input. CNN can understand spatial relation(relation between nearby pixels of image) between pixels of images better thus for complicated images CNN will perform better than MLP. In this section, we are going to learn the difference between MLP and CNN, as well as RNN.
+# author: []
+# date: 2023-11-26
+# output:
+#   distill::distill_article:
+#     self_contained: false
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+preview: multi_layer.png
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+The three neural networks, MLP, CNN and RNN, should be ideally used for the type of problem designed for. MLP is good for simple image classification, while CNN is good choice for complicated image classification and RNN is good for sequence processing such as time-series data.
+
+MLP is a class of feedforward artificial neural network. A MLP consists of at least three layers of nodes: an input layer, a hidden layer and an output layer. Except for the input nodes, each node is a neuron that uses a nonlinear activation function. MLP utilizes a supervised learning technique called backpropagation for training. Its multiple layers and non-linear activation distinguish MLP from a linear perceptron.
+
+CNN uses a custom matrix (filter) to convolute over images and create a map, and it consist of the input layer, convolution layer, pooling layer, fully connected layer, and output layer. It can account for local connectivity (each filter is panned around the entire image according to certain size and stride, allows the filter to find and match patterns no matter where the pattern is located in a image). It takes matrices as well as vectors as inputs. Layers are sparsely connected or partially connected rather than fully connected. Every node does not connect to every other node.
+
