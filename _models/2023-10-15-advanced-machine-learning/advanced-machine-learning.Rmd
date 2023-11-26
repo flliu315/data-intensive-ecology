@@ -1,7 +1,7 @@
 ---
-title: "Lesson 2: Advanced Machine Learning"
+title: "Lesson 2: Advanced Machine Learning (Ⅰ)"
 description: |
-   Unlike classic mechine learning in which features are extracted manually, deep learning (DL) can automatically extract features from data. When the amount of data is increased, DL is an effective algorithm, and gives better performance than classic machine larning. This section will guide you how to build DL with your own data.
+   Unlike classic mechine learning algorithms, in which the features that machine learn are extracted manually, deep learning such as CNN can automatically extract features from data. Thus, with the increase of data amount, ANN algorithms are explored for good results. This section will introduce nerual networks.
 # author: []
 # date: 2023-10-15
 # output:
@@ -16,28 +16,68 @@ output:
 preview: multi_layer.png
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-DL is a subfield of machine learning that works with algorithms inspired by the structure and functions of human brain called "neural networks". It has 3 types of neural networks: Artificial Neural Network (ANN), Convolutional Neural Network (CNN) and Recurrent Neural Network (RNN), and has a large number of potential applications in ecology, such as image recognition, analysis of acoustic signals, or any other tasks.
+## 1. Artificial neural networks
 
-## 1. Running DL with Rstudio
+### 1.1 Brief overview of networks
 
-### 1.1 Some R packages for Networks
+Artificial neural networks (ANNs) refer to a collection of computing algorithms inspired by the structure of biological neural networks. ANNs consist of layers of interconnected nodes. They include Shallow neural network (SNN), such as multi-layer perception (MLP), and Deep neural networks (DNN). MLPs consis of a set of fully connected layers, and use forward propagation for inputs and backpropagation for updating the weights. 
+
+DNNs can be divided into Convolutional Neural Network (CNN), which is designed for processing grid-like data such as images, and Recurrent Neural Network (RNN), which is designed for sequential data like time series or sentences. CNNs consist of the input layer, convolution layer, pooling layer, fully connected layer, and output layer.
+
+<cengter>
+![](artificalnn.png){width=60%}
+</center>
+<br>
+
+### 1.2 R packages for networks
+
 There are some [packages](https://subscription.packtpub.com/book/big-data-and-business-intelligence/9781788992893/1/ch01lvl1sec06/setting-up-your-r-environment) that can fit basic neural networks. For example, the **nnet** package can fit feed-forward neural networks with one hidden layer. The **neuralnet** package fits neural networks with multiple hidden layers using back-propagation. The **RSNNS** package makes many model components for training a wide variety of models. The **deepnet** package provides a number of tools for deep learning, as well as allows for different activation functions and the use of dropout for regularization.
 
-The **h2o** (https://www.h2o.ai/) is an excellent, general machine learning framework written in Java, and has an API that allows you to use it from R. However, most deep learning practitioners prefer other deep learning libraries, such as **TensorFlow**, **CNTK**, and **MXNet**. **Keras** is actually a frontend abstraction for other deep learning libraries, and can use TensorFlow in the background. 
+For example, here is the code for iris classification using the neuralnet package. For detials, see [the website](https://www.datacamp.com/tutorial/neural-network-models-r).
 
-### 1.2 Setting R env for running keras
-**Keras** is a high-level, open source, deep learning framework that emphasizes iterative and fast development. **Keras** models can be deployed on practically any environment, such as a web server, iOS, Android, a browser, or the Raspberry Pi. Now using Tensorflow’s Keras is recommended over the standalone keras package.
+```{r}
+# library(tidyverse)
+# library(neuralnet)
+# iris <- iris %>% mutate_if(is.character, as.factor)
+# summary(iris)
+# set.seed(245)
+# data_rows <- floor(0.80 * nrow(iris)) # similar to ceiling()
+# train_indices <- sample(c(1:nrow(iris)), data_rows)
+# train_data <- iris[train_indices,]
+# test_data <- iris[-train_indices,]
+# model = neuralnet(
+#     Species~Sepal.Length+Sepal.Width+Petal.Length+Petal.Width,
+# data=train_data,
+# hidden=c(4,2), # two hidden layers, first 4 and second 2 neurons
+# linear.output = FALSE)
+# plot(model,rep = "best")
+# pred <- predict(model, test_data)
+# labels <- c("setosa", "versicolor", "virginca")
+# prediction_label <- data.frame(max.col(pred)) %>%     
+# mutate(pred=labels[max.col.pred.]) %>%
+# select(2) %>%
+# unlist()
+# table(test_data$Species, prediction_label)
+# check = as.numeric(test_data$Species) == max.col(pred)
+# accuracy = (sum(check)/nrow(test_data))*100
+# print(accuracy)
+```
 
-To learn more about using Keras in R, go to https://keras.rstudio.com; this link will also has more examples of R and Keras, as well as a handy Keras cheat sheet that gives a thorough reference to all of the functionality of the Keras package. Please pay much attention to the link of the different languages, and understand it for operating on them. 
+### 1.3 Setting R env for running keras
+
+**h2o** (https://www.h2o.ai/) is a general machine learning framework written in Java, and has an API that allows to use it from R. However, most deep learning practitioners prefer other deep learning libraries, such as **TensorFlow**, **CNTK**, and **MXNet**. **Keras** is actually a frontend abstraction for other deep learning libraries, and can use TensorFlow in the background. 
+
+**Keras** is a high-level deep learning framework that emphasizes iterative and fast development. **Keras** models can be deployed on any environment, such as a web server, iOS, Android, a browser, or the Raspberry Pi. Now using Tensorflow’s Keras is recommended over the standalone keras package.
+
+To learn more about Keras in R, go to https://keras.rstudio.com; this link will also has more examples of R and Keras, as well as a handy Keras cheat sheet that gives a thorough reference to all of the functionality of the Keras package.
 
 ![](r_python.png)
 
-For running keras in Rstudio, we should make sure which python that we use, and create a virtual environment. Here is the code for creating a virtual python env. named "r-reticulate".
+For running keras in Rstudio, we should make sure which python that we use, and create a virtual environment. Here is the code for creating a virtual python env., which is named "r-reticulate".
 
 ```{r echo=TRUE}
 # library(reticulate)
@@ -46,7 +86,7 @@ For running keras in Rstudio, we should make sure which python that we use, and 
 # install_miniconda() # for win OS
 ```
 
-Then we install the python packages, such as tensorflow and keras using py_install() from reticulate or install them with pip the terminal in Rstudio. After that, we install the R packages of keras and tensorflow. 
+Then we install the python packages, such as tensorflow and keras using py_install() from reticulate or use pip at the terminal in Rstudion to istall them. After that, we install the R packages of keras and tensorflow. 
 
 ```{r}
 # reticulate::py_install(c('tensorflow-gpu==2.2','tensorflow-addons'), pip = TRUE)
