@@ -1,7 +1,7 @@
 ---
 title: "Lesson 2: Advanced Machine Learning (Ⅰ)"
 description: |
-   Unlike classic mechine learning, in which the features that machine learnS are extracted manually, artifical neural networks (ANN) can extract features from data automatically. With increase of data amount, ANN (with algorithms of multi-layer percetion, convolutional neural network, etc.) are explored for getting good results. This section will introduce multi-layer precetion (MLP) algorithm.
+   Unlike classic mechine learning, in which the features that machine learnS are extracted manually, artifical neural networks (ANN) can extract features from data automatically. With increase of data amount, multi-layer percetion and convolutional neural network are explored for getting good results. This section will introduce multi-layer precetion (MLP) algorithm.
 # author: []
 # date: 2023-10-15
 # output:
@@ -40,6 +40,16 @@ Overall, deep neural networks have three basic algorithms, which are different i
 ![](artificalnn.png){width=50%}
 </center>
 <br>
+
+Now neural networks have been widely exploring in the field of ecology. The current applications mainly involve in the following aspects:
+
+- **Prediction of farmland fertility**: The networks receive images from satellites like LSAT and can use this information to classify lands based on their level of cultivation. Consequently, this data can be used for making predictions about the fertility level of the grounds or developing a strategy for the optimal use of farmland.
+
+- **Topological analysis**: Ecological researches have been addressing the stability of ecosystems using theoretical techniques. The ideas were introduced by Elton, who described a community matrix M of n × n for which the (i, j)-th entry represents the impact that a species h has on another species j around an equilibrium point of some unobserved dynamical system. This allows stability analysis from dynamical systems literature to be used, where a system is considered stable to small perturbations if the eigenvalues λ of M all have negative real parts. The study was concerned with random community matrices, but the same ideas have since been refined and applied to realistic community matrices. This area of research has been used to contribute to the ongoing debate about the relationship between biodiversity and ecosystem stability.
+
+- **Species importance metrics**: It is often of interest to ecologists which species are the most influential within their ecosystem. These species are known as keystone species. This has consequences in conservation, since the loss of a keystone species could lead to the collapse of an entire ecosystem. Traditionally, keystone species were identified from their natural history, but it is often difficult to experimentally verify this. This has led to the introduction of graph-theoretic species importance metrics which aim to discover keystone species by considering the topology of the network.
+
+- **Network structure prediction**: Recently, attention has turned to the problem of link prediction in the context of ecological networks. This has immediately useful practical applications in ecology. The randomness present in an ecosystem makes it unlikely that all actual interactions are observed when collecting data to construct ecological networks. Thus, the use of link prediction algorithms can help ecologists to discover actual unobserved interactions when used in conjunction with traditional ecological network construction methods.
 
 ### 1.2 R packages for networks
 
@@ -575,11 +585,9 @@ You can save and reload the model, and even deploy them on other platforms
 # model <- load_model_hdf5("results/my_model.h5")
 ```
 
-#### 2.5.2 Runing DL for regression
+## 4. Using MLP for regression
 
-Building a regression model using deep learning algorithm, please refer to [the site](https://tensorflow.rstudio.com/tutorials/keras/regression). It also follows these steps.
-
-**Step 1: Checking the environment and loading packages**
+Building a regression model using deep learning algorithm, please refer to [the site](https://tensorflow.rstudio.com/tutorials/keras/regression). We first check R env for correctly running keras.
 
 ```{r echo=TRUE}
 # rm(list = ls())
@@ -589,32 +597,33 @@ Building a regression model using deep learning algorithm, please refer to [the 
 # library(tidymodels)
 ```
 
-**Step 2: Loading data and pre-process**
+### 4.1 Loading and processing data
 
-Loading the data from a website and then clearning them for further analysis.
+Loading the data from a website and then clearing them for further analysis.
 
 ```{r echo=TRUE}
-# url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data" # loading the data from a URL
+# url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data" 
 # col_names <- c("mpg","cylinders","displacement","horsepower","weight",
 #                "acceleration","model_year", "origin","car_name")
 # raw_dataset <- read.table(
 #   url,
 #   header = T,
 #   col.names = col_names,
-#   na.strings = "?"
-# )
+#   na.strings = "?")
 #
-# dataset <- raw_dataset %>% select(-car_name)
+# dataset <- raw_dataset %>% 
+#           select(-car_name)
 #
 # # cleaning the data
-# lapply(dataset, function(x) sum(is.na(x))) %>% str() # Drop those rows with NA
+# lapply(dataset, function(x) sum(is.na(x))) %>% 
+#       str() # Drop those rows with NA
 # dataset <- na.omit(dataset)
 #
 # dataset <- recipe(mpg ~ ., dataset) %>%  # one-hot encode for the original column
 #   step_num2factor(origin, levels = c("USA", "Europe", "Japan")) %>%
 #   step_dummy(origin, one_hot = TRUE) %>% # using step_dummy(one_hot = FALSE) for binary
 #   prep() %>% # update the recipe
-#   bake(new_data = NULL) # view preProcessing data
+#   bake(new_data = NULL) # view Processing data
 #
 # glimpse(dataset)
 ```
@@ -627,14 +636,14 @@ Splitting the data into training and test sets, and separating features from lab
 # test_dataset <- testing(split)
 ```
 
-Reviewing the distribution of a few pairs of columns from the training set, then you may normalize the features and do some conversion of targets. There are lots of things that should be considered.
+Reviewing the distribution of a few pairs of columns from the training set, then may normalize the features and do some conversion of targets. There are lots of things that should be considered.
 
 ```{r echo=TRUE}
 # train_dataset %>%
 #   select(mpg, cylinders, displacement, weight) %>%
 #   GGally::ggpairs() # help identifying the correlations among variables
 #
-# skimr::skim(train_dataset) # an alternative to summary() # Note each feature covers a very different range
+# skimr::skim(train_dataset) # Note each feature covers a very different range
 #
 # # Split features from labels and normalizing feature values of train set
 # train_features <- train_dataset %>% select(-mpg)
@@ -666,9 +675,9 @@ Reviewing the distribution of a few pairs of columns from the training set, then
 # horsepower_normalizer %>% adapt(horsepower)
 ```
 
-**Step 3: Building and evaluating linear Model **
+### 4.2 Building and evaluating MLP
 
-First, building a linear regression with different conditions. First, building a linear regression between 'mpg' and 'horsepower', i.e., for 1 output.
+First, building a linear regression between 'mpg' and 'horsepower', i.e., for 1 output.
 
 ```{r echo=TRUE}
 # horsepower_model <- keras_model_sequential() %>%
@@ -680,7 +689,7 @@ First, building a linear regression with different conditions. First, building a
 
 # Configuring the training procedure with keras's compile().
 # horsepower_model %>% compile(
-#   optimizer = optimizer_adam(learning_rate = 0.1),
+#   optimizer = RMSprop(),
 #   loss = 'mean_absolute_error' # to be optimized
 # )
 
@@ -719,7 +728,7 @@ Second, building a linear regression with multiple inputs
 
 # # configuring the training procedure
 # linear_model %>% compile(
-#   optimizer = optimizer_adam(learning_rate = 0.1),
+#   optimizer = RMSprop(),
 #   loss = 'mean_absolute_error'
 # )
 
@@ -744,7 +753,7 @@ Second, building a linear regression with multiple inputs
 #   )
 ```
 
-Third, building a deep neural network (DNN) regression with a single input
+Third, building a deep neural network regression with a single input
 
 ```{r echo=TRUE}
 # # Normalizing the 'horsepower' input feature
@@ -786,7 +795,7 @@ Third, building a deep neural network (DNN) regression with a single input
 
 ```
 
-Forth, building a deep neural network (DNN) regression with multiple inputs
+Forth, building a deep neural network regression with multiple inputs
 
 ```{r echo=TRUE}
 # # Normalizing the input features
@@ -828,7 +837,7 @@ Forth, building a deep neural network (DNN) regression with multiple inputs
 # sapply(test_results, function(x) x)
 ```
 
-**Step 4: Make predictions**
+### 4.3 Predicting and saving model
 
 ```{r echo=TRUE}
 # # make prediction on the test set
@@ -840,11 +849,6 @@ Forth, building a deep neural network (DNN) regression with multiple inputs
 # # check the error distribution
 # qplot(test_predictions - test_labels$mpg, geom = "density")
 # error <- test_predictions - test_labels
-```
-
-**Step 5: saving the model and reloading it**
-
-```{r echo=TRUE}
 # save_model_tf(dnn_model, 'results/dnn_model1.h5')
 # reloaded <- load_model_tf('results/dnn_model1')
 #
@@ -854,13 +858,3 @@ Forth, building a deep neural network (DNN) regression with multiple inputs
 #   verbose = 0
 # )
 ```
-
-## 4. The application of DL to ecology
-
-- **Prediction of farmland fertility**: The networks receive images from satellites like LSAT and can use this information to classify lands based on their level of cultivation. Consequently, this data can be used for making predictions about the fertility level of the grounds or developing a strategy for the optimal use of farmland.
-
-- **Topological analysis**: A key aim of ecosystem analysis is to determine how stable an ecosystem is, and how it might react to environmental change. Therefore, a large amount of research has been concerned with determining the stability of ecosystems using theoretical techniques. These ideas were introduced by Elton, who described a community matrix M of size n × n for which the (i, j)-th entry represents the impact that a species h has on another species j around an equilibrium point of some unobserved dynamical system. This allowed stability analysis techniques from dynamical systems literature to be used, where a system is considered stable to small perturbations if the eigenvalues λ of M all have negative real parts. The original study was concerned with random community matrices, but the same ideas have since been refined and applied to realistic community matrices. This area of research has been used to contribute to the ongoing debate about the relationship between biodiversity and ecosystem stability.
-
-- **Species importance metrics**: It is often of interest to ecologists which species are the most influential within their ecosystem. These species are known as keystone species. This has consequences in conservation, since the loss of a keystone species could lead to the collapse of an entire ecosystem. Traditionally, keystone species were identified from their natural history, but it is often difficult to experimentally verify this. This has led to the introduction of graph-theoretic species importance metrics which aim to discover keystone species by considering the topology of the network.
-
-- **Network structure prediction**: Machine learning algorithms are able to discover patterns in data, and use those patterns to make predictions about previously unseen data samples. This had led to widespread use of ML in many different domains to automate laborious tasks which are expensive in terms of both time and money. Ecological networks are generally constructed in such ways, and therefore it is highly desirable to develop machine learning algorithms which automate the process. In addition,mMissing link prediction - as the name suggests - is the problem of predicting which links are missing from a network. There is a wealth of literature in network analysis concerning this problem and its applications to a range of complex networks. Recently, attention has turned to the problem of link prediction in the context of ecological networks. This has immediately useful practical applications in ecology. The randomness present in an ecosystem makes it unlikely that all actual interactions are observed when collecting data to construct ecological networks. Therefore, the use of link prediction algorithms could help ecologists to discover actual unobserved interactions when used in conjunction with traditional ecological network construction methods.
