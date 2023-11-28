@@ -1,0 +1,247 @@
+---
+title: "Lesson 5: Advanced Machine Learning (Ⅳ)"
+description: |
+  RNN stands for "recurrent neural network". In an RNN, prediction depends not only on the features of the current time point, but also the time points that came before the current time point. As a result, RNN's are most useful for modelling patterns in timeseries data. In this section, we're introducing how to implement an RNN model for predicting the next item.
+# author: []
+# date: 2023-11-28
+# output:
+#   distill::distill_article:
+#     self_contained: false
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+preview: rnn.png
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+We will take the dataset of seattle weather as an example. it can be downloaded from [the website](https://github.com/russellromney/seattle-weather/blob/master/seattleWeather_1948-2017.csv). This dataset has information on the weather in Seattle for every single day between January 1, 1948 and December 12, 2017. 
+
+We're going to use an RNN to predict whether it will rain in Seattle given information on whether it rained or not for the previous six days. For more details, see [the website](https://www.kaggle.com/code/rtatman/beginner-s-intro-to-rnn-s-in-r).
+
+## 1. Basic setting for RNN
+
+### 1.1 Set up R enviornment
+
+First, we need to make sure that R environment is set up. We are going to load in a couple of utility packages.
+
+```{r echo=TRUE}
+# rm(list = ls())
+# library(keras) # for deep learning
+# library(tidyverse) # general utility functions
+# library(caret) # machine learning utility functions
+```
+
+Next, we need to read data, and look at the first couple of rows of a dataframe to make sure the data looks reasonable.
+
+```{r echo=TRUE}
+# weather_data <- read_csv("seattleWeather_1948-2017.csv") # read in our data
+# nrow(weather_data)
+# head(weather_data) # check out the first few rows
+```
+
+### 1.2 Set model parameters
+
+We're going to set three parameters for model: 1) The maximum length of the sequence that we're going to look at to try and predict the next item; 2 The batch size, which is the number of distinct sequences to look at at one time during training; 3) The total number of epochs to train for.
+
+```{r echo=TRUE}
+# max_len <- 6 # based on the six days for predicting next day
+# batch_size <- 32 # number of sequences to look at at one time during training
+# total_epochs <- 15 # how many times we'll look @ the whole dataset
+# set.seed(123) # set a random seed for reproducability
+```
+
+## 2. Preparing data for RNN
+
+### 2.1 Generating samples
+
+We need to do some pre-processing to get our data ready to feed into our model. First, we select the column we're interested in predicting and summarize it for checking whether the dataset is balanced and has missing values.
+
+```{r echo=TRUE}
+# rain <- weather_data$RAIN # select the colum with info on how often it rained
+# nrow(weather_data)
+# table(rain) # summery
+```
+
+Next task is to chop this timeseries into samples of our max_length + 1. We can start at the beginning of the vector, and chop it into the non-overlapping chunks of max_length + 1. It will only give us around 3600 (nrow(weather_data)/7) examples (it isn't enough to train a deep learning model). We can stretch out our data by using a moving-block sub-sampling to cut up our vector into overlapping chunks. That is, we move a block of max_length + 1 long and overlap 3 units for getting blocks like this.
+
+<center>
+![](sampling_method.png){width=90%}
+</center>
+</br>
+
+For cutting the text in overlapping sample sequences of max_len characters, we perform the following code.
+
+```{r echo=TRUE}
+# # get a list of start indexes for our (overlapping) chunks
+# start_indexes <- seq(1, length(rain) - (max_len + 1), by = 3)
+# # create an empty matrix to store our data in
+# weather_matrix <- matrix(nrow = length(start_indexes), ncol = max_len + 1)
+# # fill our matrix with the overlapping slices of our dataset
+# for (i in 1:length(start_indexes)){
+#   weather_matrix[i,] <- rain[start_indexes[i]:(start_indexes[i] + max_len)]
+# }
+```
+
+### 2.2 Correcting data format
+
+Now that we have our sample data in a tidy matrix, we just need to do a couple of housekeeping things to make sure everything is good to go.
+
+- Make sure your matrix is numeric. Since Keras expects a numeric matrix, we're going to convert our data from boolean to numeric by multiplying everything by one.
+
+- Remove any na's. If you accidentally end up with na's in your data, your model will compile and train just fine. But the model will prediction all be NaN (not a number). In this case we do need to do it, as is shown in the diagram above, our data slicing approach ended up adding na's to the dataset.
+
+```{r echo=TRUE}
+# # make sure it's numeric
+# weather_matrix <- weather_matrix * 1
+# # remove na's if you have them
+# if(anyNA(weather_matrix)){
+#     weather_matrix <- na.omit(weather_matrix)
+# }
+```
+
+### 2.3 Training and testing split
+
+Now, we can get down to preparing it to be fed into our model. First, we're going to need to split our dataset into the input (the six previous days) and the output (the single day we're interested in predicting). Following convention, we call our inputs X and output y.
+
+```{r echo=TRUE}
+# X <- weather_matrix[,-ncol(weather_matrix)]
+# y <- weather_matrix[,ncol(weather_matrix)]
+```
+
+Now we need to split our data in to the testing and training set using the createDataPartition() function from the caret package. 
+
+```{r echo=TRUE}
+# training_index <- createDataPartition(y, p = .9, list = FALSE, times = 1)
+# # training data
+# X_train <- array(X[training_index,], dim = c(length(training_index), max_len, 1))
+# y_train <- y[training_index]
+# 
+# # testing data
+# X_test <- array(X[-training_index,], dim = c(length(y) - length(training_index), max_len, 1))
+# y_test <- y[-training_index]
+```
+
+## 3. Building and training RNN
+
+### 3.1 Specifying a RNN model
+
+First, we need to tell Keras what type of model we want to build & initialize, which needs to specify in a sequential model. The "sequence" here refers a sequence of the layers in RNN model architecture, other than the data! (another option is to use the functional API). Let's stick with the sequential model with an input layer, a hidden layer and an output layer.
+
+```{r echo=TRUE}
+# model <- keras_model_sequential() # initialize our model
+```
+
+#### 3.1.1 Input layer
+
+Because model takes raw data as input, we need to specify what the dimensions of our data is. Let's look at the dimensions of the matrix that we'll be passing into our model to help figure out what our input_shape should be.
+
+```{r echo=TRUE}
+# dim(X_train)
+```
+
+In this case, the 1st dimension is the number of our training samples, the 2nd is the length of input sequence (max_len), and the 3rd refers to the number of features (here only one: whether it rained or not). We get the dimensions of the input array using the dim() function and pass those in as the input_shape.
+
+The "units" argument tells us how many neurons in the input layer. For a sequence modelling, it makes sense to have the same number of units as the items in our input sequence, which we decided with the max_len parameter, so we are going to pass that to our model directly here.
+
+```{r echo=TRUE}
+# # our input layer
+# model %>%
+#     layer_dense(input_shape = dim(X_train)[2:3], units = max_len)
+```
+
+#### 3.1.2 Hidden layer
+
+Now that we've specified what our input layer will look like, let's tell Keras about our hidden layer. In this model, we're only going to be using a single hidden layer, but for larger and more complex datasets you might want to have more. For the hidden layer, we use a simple RNN layer. But inside it, each neuron is a model of our input sequence, where the second item depends on the first item, the third item depends on the first and second items, the fourth item depends on the first, second and third items, and so on. Here we stick with six neurons. Since this is a recurrent network layer, there will be six different little models of our six-item input sequences. 
+
+```{r echo=TRUE}
+# model %>% 
+#     layer_simple_rnn(units = 6)
+```
+
+#### 3.1.3 Output layer
+
+At this point, our model has 6 different outputs, one for each of the neurons in the hidden layer. But we want to predict only one output: whether it will rain the next day. So, we need to add an output layer that will take all information and squash it down to a single value. We specify this with the "units" argument. Since we predict whether or not it will rain for one day, the units will be 1. 
+
+We use a sigmoid activation function to take all inputs into a cell and transforms them into a number between zero and one, which is the probability that it will rain on the next day.
+
+```{r echo=TRUE}
+# model %>%
+#     layer_dense(units = 1, activation = 'sigmoid') # output
+```
+
+Now let's take a look at our architecture. We can do this by using summary() to look at our model.
+
+```{r echo=TRUE}
+# # look at our model architecture
+# summary(model)
+```
+
+### 3.2 Compiling and training
+
+We need to compile it and specify what the loss and optimizer, as well as what metric to track (if any).
+
+```{r echo=TRUE}
+# model %>% compile(loss = 'binary_crossentropy', 
+#                   optimizer = 'RMSprop', 
+#                   metrics = c('accuracy'))
+```
+
+We should have the validation split for evaluation, and need to pick our batch size and epochs for training.
+
+#### 3.2.1 Epochs and batch size
+
+The number of epochs is the number of times our model see our training dataset during training. Batch size denots how many samples that are fed into our model at a time. Our batch size is less than the total number of training samples, thus technically "mini batches".
+
+#### 3.2.2 Validation split
+
+For validing our model we're setting a validation set to 0.1. This set is different from the test data at the beginning, which will be used to evaluate the final model once we're done training it.
+
+#### 3.2.3 Training the model
+
+Now that we've got everything set up, it's time to train our model!
+
+```{r echo=TRUE}
+# trained_model <- model %>% fit(
+#     x = X_train, # sequence we're using for prediction 
+#     y = y_train, # sequence we're predicting
+#     batch_size = batch_size, 
+#     epochs = total_epochs, 
+#     validation_split = 0.1) 
+```
+
+## 4. Evaluate RNN model
+
+In this case, we wanted to predict whether it would rain tomorrow or not, so we're probably going to be interested in looking at how accurate our predictions are.
+
+First, we can look at how well our model did on our validation data during training after training. This tells us the accuracy and loss on both our training data (first two rows) and validation data (second two rows) after the last epoch of training. We can see that, for our validation data, our model had 74% accuracy in predicting weather it would rain the next day or not based on the previous six days.
+
+```{r echo=TRUE}
+# trained_model
+# plot(trained_model)
+```
+
+This looks pretty good! We could probably have stopped training a couple of epoch earlier, since both accuracy and loss flattened out around 5 epochs. 
+
+Now's the time when we dig it back up and use the test data to check our how good our model is at predicting the weather. For a little more nuanced look into our model results, we're going to use a confusion matrix. 
+
+```{r echo=TRUE}
+# # Predict the classes for the test data
+# classes <- model %>% predict(X_test, batch_size = batch_size) %>%
+#   `>`(0.5) %>% k_cast("int32")
+# 
+# # Confusion matrix
+# table(y_test, as.vector(classes))
+```
+
+We can also find out what our model's loss and accuracy on our training data.
+
+```{r echo=TRUE}
+# model %>% evaluate(X_test, y_test, batch_size = batch_size)
+```
