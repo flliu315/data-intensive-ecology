@@ -13,7 +13,7 @@ output:
     toc: true
     toc_depth: 3
     toc_float: true
-preview:
+preview: oneshot1.png
 ---
 
 
