@@ -1,7 +1,7 @@
 ---
-title: "Lesson 3: One Shot Learning with R"
+title: "Lesson 6: Advanced Machine Learning (Ⅴ)"
 description: |
-  One-shot learning is a machine learning algorithm using a limited amount of training set data to compare the similarities and differences between two images. This section will introduce you to build one-shot learning model with R keras. 
+  One-shot learning is a machine learning algorithm using a limited amount of training data to compare the similarities and differences between two images. This section will introduce how to build one-shot learning model with R keras. 
 # author: []
 # date: 2023-10-17
 # output:
