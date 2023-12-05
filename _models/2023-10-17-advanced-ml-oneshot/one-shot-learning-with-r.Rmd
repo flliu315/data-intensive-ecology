@@ -13,6 +13,7 @@ output:
     toc: true
     toc_depth: 3
     toc_float: true
+preview:
 ---
 
 
@@ -36,6 +37,10 @@ The model is designed to train with just one example per class. It has the follo
 
 - Generalization: The goal is to learn a representation that can differentiate between classes based on a single example.
 - Common Technique: **Siamese**, **matching**, and **prototypical** networks are often used in one-shot learning. These architectures focus on learning relationships between examples.
+
+Siamese networks involve training a NN to learn a similarity metric between pairs of input examples. This allows the NN to distinguish between similar and dissimilar instances, making it suitable for one-shot learning tasks like face recognition.
+
+![](oneshot2.png)
 
 ### 1.3 Few-Shot Learning
 
