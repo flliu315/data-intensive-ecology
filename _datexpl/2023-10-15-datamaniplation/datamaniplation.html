@@ -90,29 +90,29 @@ code span.wa { color: #5e5e5e; font-style: italic; }
   <!--radix_placeholder_meta_tags-->
   <title>Lesson 1: Data manipluation</title>
 
-  <meta property="description" itemprop="description" content="In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis." />
+  <meta property="description" itemprop="description" content="In this section, you will learn what types of data and how to maniplate data, including data import and export, as well as reshape data." />
 
 
   <!--  https://schema.org/Article -->
-  <meta property="article:published" itemprop="datePublished" content="2023-10-15" />
-  <meta property="article:created" itemprop="dateCreated" content="2023-10-15" />
+  <meta property="article:published" itemprop="datePublished" content="2023-12-05" />
+  <meta property="article:created" itemprop="dateCreated" content="2023-12-05" />
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Lesson 1: Data manipluation" />
   <meta property="og:type" content="article" />
-  <meta property="og:description" content="In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis." />
+  <meta property="og:description" content="In this section, you will learn what types of data and how to maniplate data, including data import and export, as well as reshape data." />
   <meta property="og:locale" content="en_US" />
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary" />
   <meta property="twitter:title" content="Lesson 1: Data manipluation" />
-  <meta property="twitter:description" content="In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis." />
+  <meta property="twitter:description" content="In this section, you will learn what types of data and how to maniplate data, including data import and export, as well as reshape data." />
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Lesson 1: Data manipluation"]},{"type":"character","attributes":{},"value":["In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis.\n"]},{"type":"character","attributes":{},"value":["2023-10-15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","date","output","preview"]}},"value":[{"type":"character","attributes":{},"value":["Lesson 1: Data manipluation"]},{"type":"character","attributes":{},"value":["In this section, you will learn what types of data and how to maniplate data, including data import and export, as well as reshape data.\n"]},{"type":"character","attributes":{},"value":["2023-12-05"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[3]},{"type":"logical","attributes":{},"value":[true]}]}]},{"type":"character","attributes":{},"value":["datamanipl.png"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2360,7 +2360,7 @@ distill-header .nav a {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Lesson 1: Data manipluation","description":"In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis.","authors":[],"publishedDate":"2023-10-15T00:00:00.000+08:00"}
+{"title":"Lesson 1: Data manipluation","description":"In this section, you will learn what types of data and how to maniplate data, including data import and export, as well as reshape data.","authors":[],"publishedDate":"2023-12-05T00:00:00.000+08:00"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2374,7 +2374,7 @@ distill-header .nav a {
 
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>In this lesson, you will learn what types of data and how to maniplate data, including data import and export, as well as simple statistic analysis.</p></p>
+<p><p>In this section, you will learn what types of data and how to maniplate data, including data import and export, as well as reshape data.</p></p>
 </div>
 
 
@@ -2421,13 +2421,13 @@ distill-header .nav a {
 <p>In R you can read data from files stored outside the R environment. You can also write data into files which will be stored and accessed by computers. R can read and write into various file formats like csv, excel, xml etc.</p>
 <p>The file should be present in current working directory so that R can read it. You can set our own directory and read files from there. You can use the getwd() function to check current directory, and also use setwd()functional to set a new working directory.</p>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>[1] &quot;D:/education-website/_data_exploration/2023-10-15-datamaniplation&quot;</code></pre>
+<pre><code>[1] &quot;/home/tank/Desktop/ecodatasci/_datexpl/2023-10-15-datamaniplation&quot;</code></pre>
 </div>
 <h4 id="a-csv-or-excel-file">A CSV or excel File</h4>
 <p>The csv file is a text file in which the values in the columns are separated by a comma. You can use read.csv() function to read it into R.</p>
 <p>Microsoft Excel is the most widely used spreadsheet which stores data in the .xls or .xlsx format. R can read directly from the files using some specific packages, such as <em>xlsx</em> package.</p>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>[1] FALSE</code></pre>
+<pre><code>[1] TRUE</code></pre>
 </div>
 <h4 id="from-the-web-site">From the web site</h4>
 <p>Many websites can provide data. For example, WHO provides reports on health and medical information in the form of CSV, txt and XML files. Using R, we can programmatically extract data from websites. Some R packages, such as “RCurl”, “XML”, and “stringr”, are used to connect to the URL’s, identify required links for the data and download them to R environment.</p>
