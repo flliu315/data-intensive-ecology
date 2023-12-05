@@ -20,6 +20,7 @@ preview: oneshot1.png
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ## 1. Learning algorithm with limited data
 
 Traditional machine learning algorithms, including classic and advanced, require large amounts of labelled data for training. However, in real world, obtaining such data can be expensive, time-consuming, or even impossible. Zero-, one- and few-shot learning algorithms are designed to address the challenge of learning from limited labelled data. Each approach refers to the number of examples available for training and the level of generalization required.
