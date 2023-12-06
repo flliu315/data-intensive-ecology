@@ -4,11 +4,11 @@ description: |
   In the field of ecology, there are a lot of the patterns that are related to image recognition, such as species identification, bioacoustics and remote sensing images. This section will introducde how to do these complex tasks using CNN. 
 # author:
 #   - name: flliu315
-# date: 2023-11-25
+date: 2023-10-25
 # output:
 #   distill::distill_article:
 #     self_contained: false
-date: "`r Sys.Date()`"
+# date: "`r Sys.Date()`"
 output:
   distill::distill_article:
     toc: true
