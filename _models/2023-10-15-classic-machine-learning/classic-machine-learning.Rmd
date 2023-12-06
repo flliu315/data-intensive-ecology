@@ -4,12 +4,14 @@ description: |
   The last few years have seen a surge of interest in applying powerful machine learning tools to challenging problems in ecology. Our goal in this work is to introduce ecologically useful ML-based algorithms. 
 # author:
 #   - name: Unknown
-date: "`r Sys.Date()`"
+date: 2023-11-02
+# date: "`r Sys.Date()`"
 output:
   distill::distill_article:
     toc: true
     toc_depth: 3
     toc_float: true
+preview: classical_ml.jpg
 ---
 
 
