@@ -8,6 +8,7 @@ output:
     toc: true
     toc_depth: 3
     toc_float: true
+preview: datavisual.png
 ---
 
 
@@ -15,7 +16,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-This dataset contains four lists: env, fish, xy, species. Of these, the fish file lists all species that were recorded in the Doubs River. The data can be extracted as:
+The dataset contains four lists: env, fish, xy, species. Of these, the fish file lists all species that were recorded in the Doubs River. The data can be extracted as:
 
 
 ```{r echo=TRUE}
