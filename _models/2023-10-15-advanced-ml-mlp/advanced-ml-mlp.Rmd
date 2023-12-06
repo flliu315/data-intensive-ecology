@@ -3,11 +3,11 @@ title: "Lesson 2: Advanced Machine Learning (Ⅰ)"
 description: |
    Unlike classic mechine learning, in which the features that machine learnS are extracted manually, artifical neural networks (ANN) can extract features from data automatically. With increase of data amount, multi-layer percetion and convolutional neural network are explored for getting good results. This section will introduce multi-layer precetion (MLP) algorithm.
 # author: []
-# date: 2023-10-15
+date: 2023-11-10
 # output:
 #   distill::distill_article:
 #     self_contained: false
-date: "`r Sys.Date()`"
+# date: "`r Sys.Date()`"
 output:
   distill::distill_article:
     toc: true
