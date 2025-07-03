@@ -61,13 +61,13 @@
       "title": "ML_models",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2023-12-07T09:23:28+08:00"
+      "last_modified": "2025-07-03T13:49:06+08:00"
     },
     {
       "path": "README.html",
       "author": [],
       "contents": "\nEcodatasci: A primary tutorial of the method for data-intensive ecology\nCourse Summary\nUsing data-intensive method for ecology researches is increasingly important. In this course you will learn how to explore the patterns of ecological data and model ecological process with R, which is one of the most popular tools to accomplish this. For the majority of this course, you will learn everything need to setup your projects using R, as well as runing Python in Rstudio with the reticulate package, which allows R to talk to Python.\nCourse outline and topics\nWelcome to the course\nR basic and machine learning algorithms\nExploratory data analysis\nCommon machine learning\nAdvanced mchine learning\nReprodutive workflow\nConclusion\n",
-      "last_modified": "2023-12-07T09:23:28+08:00"
+      "last_modified": "2025-07-03T13:49:06+08:00"
     }
   ],
   "collections": ["posts/posts.json", "datexpl/datexpl.json", "models/models.json"]
